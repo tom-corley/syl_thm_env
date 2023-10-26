@@ -63,6 +63,7 @@ example {s : R} : C (r * s) = C r * C s := by
 example {n : ℕ} : C r * X ^ n = monomial n r := by
   exact C_mul_X_pow_eq_monomial
 
+--comment
 example : ((X + C 1) ^ 2 : R[X]) = X ^ 2 + 2 * X + 1 := by
   rw [sq, mul_add, add_mul, add_mul, ← sq, add_assoc, add_assoc]
   simp     -- clears the `C`s
