@@ -1,0 +1,21 @@
+Wanted to explain a few things to you guys for using Git.
+
+We will be working on a Git repository (which is really just a glorified online folder), hosted online on Github. (it's @ https://github.com/tom-corley/syl_thm_env).
+
+Gitpod is essentially just VSCode on the browser, but it is also integrated with Git in a nice way which allows us to work directly in this repository. However there are problems in getting lean to work on this format, which I'm currently trying to fix. 
+
+The hard part is managing four people simultaneously updating and adding things to this repository.
+
+The way this works, is by using branches. When anyone works locally, or on gitpod, on files in the repository, they are actually working on a parallel branch of it. To actually save ("commit") their changes to the repository itself, they need to "push" their code onto the main (master) branch.
+
+Essentially, what you guys need to know are the basic commands to download from, and upload to the repository, use the last three successively to update the repository with your changes.
+
+git status: this tell you whether your local branch is behind (you need to pull) or ahead (you need to push) of the master branch
+ 
+git pull : this pulls in any changes made to the repository onto your local branch
+
+git add : this prepares ("stages") any changes you have made to be committed to your local branch, to add all changes (you'll want to use this 90% of the time) use "git add ."
+
+git commit -m "<your_message_here>" : this commits the changes you make, to your local branch. You should always try to include a commit message, because this lets everyone else know what your changes were
+
+git push : this pushes the changes you have committed to your local branch onto the master branch, Updating the repository itself, and allowing other people to pull them in.
