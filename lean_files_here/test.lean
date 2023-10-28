@@ -1,4 +1,4 @@
--- can I see this comment yet?
+-- now I can't see it
 
 import Mathlib.Tactic
 
