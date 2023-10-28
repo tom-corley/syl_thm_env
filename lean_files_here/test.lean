@@ -104,8 +104,8 @@ example : natDegree (C r * X + C 1) = 1 := by
 --  prove using `natDegree_add_eq_left_of_natDegree_lt`
 example [Nontrivial R] : natDegree (X + C 1) = 1 := by
   rw [natDegree_add_eq_left_of_natDegree_lt]
-  exact?
-  simp?
+  exact natDegree_X
+  simp only [map_one, natDegree_one, natDegree_X, zero_lt_one]
 
 --  One thing that could be useful for some of the exercises.
 --  The evaluation of polynomials in `R[X]` at a fixed polynomial `p` is a ring homomorphism
