@@ -189,7 +189,7 @@ class subgroup [Group G] (S : Set G) : Prop :=
 (one_mem : (1 : G) ∈ S)
 (inv_mem : ∀ {a}, a ∈ S → a⁻¹ ∈ S)
 
-
+-- can u see know
 
 
 
