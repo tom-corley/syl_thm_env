@@ -14,7 +14,8 @@ import Mathlib.Algebra.Group.Basic
 import Mathlib.Algebra.Group.Defs
 import Mathlib.GroupTheory.GroupAction.ConjAct
 
-
+import Mathlib.Data.Nat.Prime
+import Mathlib.Data.Nat.Choose.Dvd
 
 
 -- Basic examples
@@ -73,15 +74,20 @@ done
 
 -- Lemma 3.3 page 36 Intro to Group Theory i)
 lemma binomial_codfseff_prop1 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
-sorry
+refine Nat.modEq_of_dvd ?_
 done
 
 #check binomial_codfseff_prop1
 
+
 -- Lemma 3.3 page 36 Intro to Group Theory ii)
-lemma binomial_coefsadf_prop2 (i : ℕ) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+--apply Nat.Prime.dvd_choose hp
+--exact h.right
 sorry
 done
+
+
 
 #check binomial_coefsadf_prop2
 
