@@ -60,7 +60,6 @@ structure Sylow extends Subgroup G where
 def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm about existence
 ∀ k : K, ∃ n : ℕ, orderOf k = p ^ n ∧ ∀ (Q : Subgroup G), p_subgroup_3 p Q → K ≤ Q → Q = K
 
--- Define the conjugate subgroup of H by g
 
 
 
@@ -167,7 +166,8 @@ def conjugate123 (x : G) (H : Sylow p G) : Subgroup G :=
 def ConjAct2312 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
 {
   carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-  one_mem' := by sorry,
+  one_mem' := 
+  }
   mul_mem' := by sorry,
   inv_mem' := by sorry
 }
@@ -189,7 +189,7 @@ class subgroup [Group G] (S : Set G) : Prop :=
 (one_mem : (1 : G) ∈ S)
 (inv_mem : ∀ {a}, a ∈ S → a⁻¹ ∈ S)
 
--- can u see know
+-- can u see now
 
 
 
