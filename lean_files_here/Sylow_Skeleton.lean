@@ -13,9 +13,13 @@ import Mathlib.Data.Nat.Choose.Basic -- contains Nat.choose
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Algebra.Group.Defs
 import Mathlib.GroupTheory.GroupAction.ConjAct
+import Mathlib.GroupTheory.Subgroup.Basic
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Mathlib.Data.Nat.Choose.Dvd --lemma 3.3
+import Mathlib.GroupTheory.Subgroup.Simple -- def of simpel groiup
+import Std.Data.Nat.Lemmas
 
-import Mathlib.Data.Nat.Prime
-import Mathlib.Data.Nat.Choose.Dvd
+
 
 
 -- Basic examples
@@ -56,107 +60,55 @@ structure Sylow extends Subgroup G where
   p_subgroup_3' : p_subgroup_3 p toSubgroup
   is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_3 p Q → toSubgroup ≤ Q → Q = toSubgroup
 
-#check Sylow p G
+instance : CoeOut (Sylow p G) (Subgroup G) :=
+  ⟨Sylow.toSubgroup⟩
+
+
+
+-- proof sketch
+theorem Sylow_set_finite : Fintype (Sylow p G) := by
+sorry
+done
+
 
 def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm about existence
 ∀ k : K, ∃ n : ℕ, orderOf k = p ^ n ∧ ∀ (Q : Subgroup G), p_subgroup_3 p Q → K ≤ Q → Q = K
 
--- Define the conjugate subgroup of H by g
-
 
 
 -- if p prime divides order of G then G has at least one Sylow p-subgroup
-theorem existence_one (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Q=Sylow p G:= by
+theorem existence_one (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p Q := by
+
 sorry
 done
+
+
 
 -- section Sylow_1_Necessary_Lemmas_Wielandt
 
 -- Lemma 3.3 page 36 Intro to Group Theory i)
 lemma binomial_codfseff_prop1 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
-refine Nat.modEq_of_dvd ?_
+sorry
 done
 
 #check binomial_codfseff_prop1
 
-
 -- Lemma 3.3 page 36 Intro to Group Theory ii)
 lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
-apply hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
+apply Nat.Prime.dvd_choose hp
+apply h.right
+
+
+--apply le_refl
+
+done
+
+lemma binomial_coefsadf_prop24 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+linarith
 done
 
 #check binomial_coefsadf_prop2
 
--- section Sylow_2_3_Necessary_for_Proofs
-
--- def conjugadsfte (H : mysubgroup G) (g : G) : mysubgroup G :=
--- { carrier := { a : G | ∃ h ∈ H, a = g * h * g⁻¹ },
---   one_mem' := ⟨1, by simp [H.one_mem]⟩,
---   mul_mem' := by
---     rintro - - ⟨a, ha, rfl⟩ ⟨b, hb, rfl⟩,
---     refine ⟨a * b, H.mul_mem ha hb, by group⟩, -- life much easier with the `group` tactic!
---   inv_mem' := begin
---     rintro - ⟨a, ha, rfl⟩,
---     refine ⟨a⁻¹, H.inv_mem ha, by group⟩,
--- }
-
--- def conjugate {G : Type*} [Group G] (x : G) (H : Subgroup G) : Subgroup G where
---   carrier := {a : G | ∃ h, h ∈ H ∧ a = x * h * x⁻¹}
---   one_mem' := ⟨1, H.one_mem, by simp⟩
---   mul_mem' :=
---   begin
---     rintro - - ⟨a, ha, rfl⟩ ⟨b, hb, rfl⟩,
---     refine ⟨a * b, H.mul_mem ha hb, by group⟩, -- life much easier with the `group` tactic!
---   end,
---   inv_mem' := begin
---     rintro - ⟨a, ha, rfl⟩,
---     refine ⟨a⁻¹, H.inv_mem ha, by group⟩,
---   end }
-
-def ConjAct212 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
-{
-  carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-  one_mem' := by simp [G.one_mem],
-  mul_mem' := λ ⟨a, haQ, ⟨h1, h1H, ha⟩⟩ ⟨b, hbQ, ⟨h2, h2H, hb⟩⟩ =>
-    ⟨a * b, Q.mul_mem' haQ hbQ, ⟨h1 * h2, H.mul_mem' h1H h2H, by rw [←mul_assoc, ←ha, ←hb, ←mul_assoc, mul_assoc]⟩⟩,
-  inv_mem' := λ ⟨a, haQ, ⟨h, hH, ha⟩⟩ =>
-    ⟨a⁻¹, Q.inv_mem' haQ, ⟨h⁻¹, H.inv_mem' hH, by rw [←ha, inv_mul_eq_iff_eq_mul, mul_inv_self, mul_inv_eq_iff_eq_mul]⟩⟩
-}
-
-
-def ConjAct21 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
-  { carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-    one_mem' := by simp [G.one_mem],
-    mul_mem' := {fun _ _ ha hb ↦
-      match ha, hb with
-      | ⟨a, haQ, ⟨h1, h1H, ha⟩⟩, ⟨b, hbQ, ⟨h2, h2H, hb⟩⟩ =>
-        ⟨a * b, Q.mul_mem' haQ hbQ, ⟨h1 * h2, H.mul_mem' h1H h2H, by rw [←mul_assoc, ←ha, ←hb, ←mul_assoc, mul_assoc]⟩⟩},
-    inv_mem' := λ _ ha ↦
-      match ha with
-      | ⟨a, haQ, ⟨h, hH, ha⟩⟩ =>
-        ⟨a⁻¹, Q.inv_mem' haQ, ⟨h⁻¹, H.inv_mem' hH, by rw [←ha, inv_mul_eq_iff_eq_mul, mul_inv_self, mul_inv_eq_iff_eq_mul]⟩⟩
-
-  }
-
-
-def ConjAct1 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
-  { carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-    one_mem' := by simp [G.one_mem],
-    mul_mem' := fun a b ha hb ↦
-      ⟨a * b, Q.mul_mem' haQ hbQ, ⟨h1 * h2, H.mul_mem' h1H h2H, by rw [←mul_assoc, ←ha, ←hb, ←mul_assoc, mul_assoc]⟩⟩,
-    inv_mem' := λ _ ha ↦
-      ⟨a⁻¹, Q.inv_mem' haQ, ⟨h⁻¹, H.inv_mem' hH, by rw [←ha, inv_mul_eq_iff_eq_mul, mul_inv_self, mul_inv_eq_iff_eq_mul]⟩⟩
-  }
-
-def Conj2Act1 (Q : Subgroup G) (x : G) (H : Subgroup G) : Subgroup G :=
-  { carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-    one_mem' := by simp [G.one_mem],
-    mul_mem' := λ _ _ ha hb ↦
-      match ha, hb with
-      | ⟨a, haQ, ⟨h1, h1H, ha⟩⟩, ⟨b, hbQ, ⟨h2, h2H, hb⟩⟩ =>
-        ⟨a * b, Q.mul_mem' haQ hbQ, ⟨h1 * h2, H.mul_mem' h1H h2H, by rw [←mul_assoc, ←ha, ←hb, ←mul_assoc, mul_assoc]⟩⟩,
-    inv_mem' := λ a ha ↦ by simp [(mul_assoc _ _ _).symm, ha, mul_assoc]
-    }
 
 
 def conjugate123 (x : G) (H : Sylow p G) : Subgroup G :=
@@ -173,37 +125,263 @@ def ConjAct2312 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
   mul_mem' := by sorry,
   inv_mem' := by sorry
 }
+
+
 --Proposition 3.5 page 39 Intro to Group Theory I don't how to write gPg^-1 so that lean understands
-theorem notsure (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G): (H ⊓ (conjugate123 _ P))=Sylow p H:= by
+theorem notsuire (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G): Subgroup.subgroupOf H ((P : Subgroup G).ConjAct2312) ∈ (Sylow p H):= by
 sorry
 done
+
+theorem notsuirse (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G) :
+  ∃ (Q : Sylow p H), Q.carrier = ConjAct2312 P := by
+sorry
+done
+
 
 #check Sylow p G
 
-theorem card_sylow_modEq_one [Fact p.Prime] [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ≡ 1 [MOD p] := by
+
+def normalCore (H : Subgroup G) (Q : Sylow p G): Subgroup G where
+  carrier := { a : G | ∀ b : G, b * a * b⁻¹ ∈ H }
+  one_mem' a := by rw [mul_one, mul_inv_self]; exact H.one_mem
+  inv_mem' {a} h b := (congr_arg (· ∈ H) conj_inv).mp (H.inv_mem (h b))
+  mul_mem' {a b} ha hb c := (congr_arg (· ∈ H) conj_mul).mp (H.mul_mem (ha c) (hb c))
+
+def ConjAct22312 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
+{
+  carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
+  one_mem' := by sorry,
+  mul_mem' := by sorry,
+  inv_mem' := by sorry
+}
+
+def normalCsore (H: Sylow p G) : Subgroup G where
+  carrier := { a : G | ∀ b : G, b * a * b⁻¹ ∈ (H : Subgroup G) }
+  one_mem' a := by rw [mul_one, mul_inv_self]; exact H.one_mem
+  inv_mem' {a} h b := (congr_arg (· ∈ (H : Subgroup G) ) conj_inv).mp (H.inv_mem (h b))
+  mul_mem' {a b} ha hb c := (congr_arg (· ∈ (H : Subgroup G) ) conj_mul).mp (H.mul_mem (ha c) (hb c))
+
+
+-- Corollary 3.7 page 40
+theorem sylow_card_eq_index_normalizer (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (normalCsore (P : Subgroup G)) := by
 sorry
 done
 
-#check card_sylow_modEq_one
-
-class subgroup [Group G] (S : Set G) : Prop :=
-(mul_mem : ∀ {a b : G}, a ∈ S → b ∈ S → a * b ∈ S)
-(one_mem : (1 : G) ∈ S)
-(inv_mem : ∀ {a}, a ∈ S → a⁻¹ ∈ S)
-
--- can u see know
+#check sylow_card_eq_index_normalizer
 
 
+theorem sylow_card_divides_group_/-
+GENERAL COMMENTS:
+please change the names for definitions and theorems if you have a good idea
+please add nice comments explaining our working if you have a good idea
+-/
+
+
+import Mathlib.Data.ZMod.Basic --includes definition of modular equality
+-- import Mathlib.GroupTheory.Index haven't used it yet but will when we talk about the index of a subgroup
+import Mathlib.Data.Finset.Card -- used for Sylow Thm about existence p | |G|
+import Mathlib.GroupTheory.OrderOfElement -- includes orderOf used for p_subgroup_3
+import Mathlib.Data.Nat.Choose.Basic -- contains Nat.choose
+import Mathlib.Algebra.Group.Basic
+import Mathlib.Algebra.Group.Defs
+import Mathlib.GroupTheory.GroupAction.ConjAct
+import Mathlib.GroupTheory.Subgroup.Basic
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Mathlib.Data.Nat.Choose.Dvd --lemma 3.3
+import Mathlib.GroupTheory.Subgroup.Simple -- def of simpel groiup
+import Std.Data.Nat.Lemmas
 
 
 
 
+-- Basic examples
+
+#eval 5 ≡ 8 [MOD 3]
+
+example : 5 ≡ 8 [MOD 3] := by
+rfl
+
+#eval Nat.choose 5 2
+
+example: Nat.choose 4 2 = 6 := by
+rfl
+done
+
+
+-- First we define key terms or just import them
+
+section Definitions
+
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided to define variable first so we don't have to
+
+
+/-- A finite p-group is a finite group in which every element has prime power order -/
+def p_subgroup: Prop := -- this one was in the Sylow.lean
+  ∀ g : G, ∃ k : ℕ, g ^ p ^ k = 1
+
+def p_subgroup_2 : Prop :=   -- somehow this definitions doesn't work when we tried using it in Sylow structure
+ ∃ n : ℕ, Fintype.card G = p ^ n
+
+def p_subgroup_3 : Prop := -- the best option we found
+∀ g : G, ∃ n : ℕ, orderOf g = p^n
+
+ #check p_subgroup_3
+
+/-- A Sylow `p`-subgroup is a maximal `p`-subgroup. -/
+structure Sylow extends Subgroup G where
+  p_subgroup_3' : p_subgroup_3 p toSubgroup
+  is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_3 p Q → toSubgroup ≤ Q → Q = toSubgroup
+
+instance : CoeOut (Sylow p G) (Subgroup G) :=
+  ⟨Sylow.toSubgroup⟩
 
 
 
+-- proof sketch
+theorem Sylow_set_finite : Fintype (Sylow p G) := by
+sorry
+done
+
+
+def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm about existence
+∀ k : K, ∃ n : ℕ, orderOf k = p ^ n ∧ ∀ (Q : Subgroup G), p_subgroup_3 p Q → K ≤ Q → Q = K
 
 
 
+-- if p prime divides order of G then G has at least one Sylow p-subgroup
+theorem existence_one (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p Q := by
+
+sorry
+done
+
+
+
+-- section Sylow_1_Necessary_Lemmas_Wielandt
+
+-- Lemma 3.3 page 36 Intro to Group Theory i)
+lemma binomial_codfseff_prop1 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
+sorry
+done
+
+#check binomial_codfseff_prop1
+
+-- Lemma 3.3 page 36 Intro to Group Theory ii)
+lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+apply Nat.Prime.dvd_choose hp
+apply h.right
+
+
+--apply le_refl
+
+done
+
+lemma binomial_coefsadf_prop24 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+linarith
+done
+
+#check binomial_coefsadf_prop2
+
+
+
+def conjugate123 (x : G) (H : Sylow p G) : Subgroup G :=
+  { carrier := {a : G | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
+    one_mem' := by sorry,
+    mul_mem' := by sorry,
+    inv_mem' := by sorry
+  }
+
+def ConjAct2312 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
+{
+  carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
+  one_mem' := by sorry,
+  mul_mem' := by sorry,
+  inv_mem' := by sorry
+}
+
+
+--Proposition 3.5 page 39 Intro to Group Theory I don't how to write gPg^-1 so that lean understands
+theorem notsuire (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G): Subgroup.subgroupOf H ((P : Subgroup G).ConjAct2312) ∈ (Sylow p H):= by
+sorry
+done
+
+theorem notsuirse (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G) :
+  ∃ (Q : Sylow p H), Q.carrier = ConjAct2312 P := by
+sorry
+done
+
+
+#check Sylow p G
+
+
+def normalCore (H : Subgroup G) (Q : Sylow p G): Subgroup G where
+  carrier := { a : G | ∀ b : G, b * a * b⁻¹ ∈ H }
+  one_mem' a := by rw [mul_one, mul_inv_self]; exact H.one_mem
+  inv_mem' {a} h b := (congr_arg (· ∈ H) conj_inv).mp (H.inv_mem (h b))
+  mul_mem' {a b} ha hb c := (congr_arg (· ∈ H) conj_mul).mp (H.mul_mem (ha c) (hb c))
+
+def ConjAct22312 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
+{
+  carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
+  one_mem' := by sorry,
+  mul_mem' := by sorry,
+  inv_mem' := by sorry
+}
+
+def normalCsore (H: Sylow p G) : Subgroup G where
+  carrier := { a : G | ∀ b : G, b * a * b⁻¹ ∈ (H : Subgroup G) }
+  one_mem' a := by rw [mul_one, mul_inv_self]; exact H.one_mem
+  inv_mem' {a} h b := (congr_arg (· ∈ (H : Subgroup G) ) conj_inv).mp (H.inv_mem (h b))
+  mul_mem' {a b} ha hb c := (congr_arg (· ∈ (H : Subgroup G) ) conj_mul).mp (H.mul_mem (ha c) (hb c))
+
+
+-- Corollary 3.7 page 40
+theorem sylow_card_eq_index_normalizer (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (normalCsore (P : Subgroup G)) := by
+sorry
+done
+
+#check sylow_card_eq_index_normalizer
+
+
+theorem sylow_card_divides_group_order_div_sylow_order (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype P] [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ∣ (Fintype.card G / Fintype.card P) := by
+sorry
+done
+
+#check sylow_card_divides_group_order_div_sylow_order
+
+
+theorem sylow_subgroup_normality_condition (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype P] [Fintype (Sylow p G)] : (P : Subgroup G).Normal ↔ Fintype.card (Sylow p G) = 1 := by
+sorry
+done
+
+#check sylow_subgroup_normality_condition
+
+theorem yes (P : Subgroup G) (hP : p_subgroup p P) : ∃ Q : Sylow p G, P ≤ Q := by
+sorry
+done
+
+-- Sylow 4 statement
+theorem card_sylow_modEq_one [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ≡ 1 [MOD p] := by
+sorry
+done
+
+theorem card_sylow_modEq_one_new [Fintype (Sylow p G)] : p ∣ Fintype.card (Sylow p G) -1 := by
+sorry
+done
+
+-- Theorem 2.22. (Cauchy’s theorem) Let G be a finite group, and let p be a prime divisor of |G|. Then G contains an element of order p. In fact, the number of elements of G of orderp is congruent to −1 modulo p.
+
+theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
+sorry
+done
+
+theorem Cauchy_2 (hdvd : p ∣ Fintype.card G) (H : Set G) [Fintype H] (hgh : ∀ h : H, ∃ g : G, h=g ∧ orderOf g = p): Fintype.card H ≡ p-1 [MOD p] := by
+sorry
+done
+
+-- For a group G of order pq, where p andq are distinct primes and q is not congruent to 1 (mod p), the groupG is isomorphic to Cpq
+theorem C_pq (q : ℕ) [Fact q.Prime] (hdvd: p<q ∧ Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
+sorry
+done
 
 
 
@@ -212,3 +390,112 @@ class subgroup [Group G] (S : Set G) : Prop :=
 --   (H K : set G) [Sylow H hp] [Sylow K hp] :
 --   ∃ g : G, H = conjugate_set g K :=
 --
+
+
+-- Sylow Game
+--Let G be a group of order 20. Can G be simple?
+
+lemma sylow_five_subgroup_exists [Fact (Fintype.card G = 20)] [h : Fact (5 ∣ Fintype.card G)] : ∃ H : Subgroup G, Fintype.card H = 5 ∧ Sylow 5 H := by
+sorry
+done
+
+-- theorem existence_one_five (hdvd : 5 ∣ Fintype.card G) (Q: Subgroup G): Sylow 5 Q := by
+-- apply existence_one
+-- apply hdvd
+-- done
+
+theorem sylow_card_divides_group_order_div_sylow_order_five (hdvd: 5 ∣ Fintype.card G) (hG: Fintype.card G =20) [Fintype (Sylow 5 G)] (P : Sylow 5 G) (hP: Fintype P ): Fintype.card (Sylow 5 G) ∣ (Fintype.card G / 5) := by
+sorry
+done
+
+theorem sylow_card_divides_group_worder_div_sylow_order_five [Fact (Fintype.card G = 20)] [h : Fact (5 ∣ Fintype.card G)]  (P : Sylow 5 G) [Fintype P] [Fintype (Sylow 5 G)] : Fintype.card (Sylow 5 G) ∣ 4 := by
+refine (Nat.ord_compl_dvd_ord_compl_iff_dvd (Fintype.card (Sylow 5 G)) 4).mp ?_
+sorry
+done
+
+example (hG : Fintype.card G = 20) [Fintype (Sylow 5 G)] (P: Subgroup G)  [Fintype P]: ¬ IsSimpleGroup G := by
+  have h₀ : Nat.Prime 5 := by norm_num
+  have h₁ : Fintype.card G = 2^2 * 5 :=  by linarith [hG]
+  have h₂ : 5 ∣ (Fintype.card G) := by use 4
+  obtain ⟨P, hP⟩ : Sylow 5 P:= by exact existence_one 5 G h₂ P
+  have h_3 : Fintype.card (Sylow 5 P) = 5 := by apply?
+  have h₂ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := by exact card_sylow_modEq_one 5 G
+  have h_6 : Fintype.card (Sylow 5 G) ∣ (Fintype.card G / Fintype.card P) := by sorryorder_div_sylow_order (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype P] [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ∣ (Fintype.card G / Fintype.card P) := by
+sorry
+done
+
+#check sylow_card_divides_group_order_div_sylow_order
+
+
+theorem sylow_subgroup_normality_condition (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype P] [Fintype (Sylow p G)] : (P : Subgroup G).Normal ↔ Fintype.card (Sylow p G) = 1 := by
+sorry
+done
+
+#check sylow_subgroup_normality_condition
+
+theorem yes (P : Subgroup G) (hP : p_subgroup p P) : ∃ Q : Sylow p G, P ≤ Q := by
+sorry
+done
+
+-- Sylow 4 statement
+theorem card_sylow_modEq_one [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ≡ 1 [MOD p] := by
+sorry
+done
+
+theorem card_sylow_modEq_one_new [Fintype (Sylow p G)] : p ∣ Fintype.card (Sylow p G) -1 := by
+sorry
+done
+
+-- Theorem 2.22. (Cauchy’s theorem) Let G be a finite group, and let p be a prime divisor of |G|. Then G contains an element of order p. In fact, the number of elements of G of orderp is congruent to −1 modulo p.
+
+theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
+sorry
+done
+
+theorem Cauchy_2 (hdvd : p ∣ Fintype.card G) (H : Set G) [Fintype H] (hgh : ∀ h : H, ∃ g : G, h=g ∧ orderOf g = p): Fintype.card H ≡ p-1 [MOD p] := by
+sorry
+done
+
+-- For a group G of order pq, where p andq are distinct primes and q is not congruent to 1 (mod p), the groupG is isomorphic to Cpq
+theorem C_pq (q : ℕ) [Fact q.Prime] (hdvd: p<q ∧ Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
+sorry
+done
+
+
+
+
+-- lemma sylow_2 [fintype G] {p : ℕ} (hp : nat.prime p)
+--   (H K : set G) [Sylow H hp] [Sylow K hp] :
+--   ∃ g : G, H = conjugate_set g K :=
+--
+
+
+-- Sylow Game
+--Let G be a group of order 20. Can G be simple?
+
+lemma sylow_five_subgroup_exists [Fact (Fintype.card G = 20)] [h : Fact (5 ∣ Fintype.card G)] : ∃ H : Subgroup G, Fintype.card H = 5 ∧ Sylow 5 H := by
+sorry
+done
+
+-- theorem existence_one_five (hdvd : 5 ∣ Fintype.card G) (Q: Subgroup G): Sylow 5 Q := by
+-- apply existence_one
+-- apply hdvd
+-- done
+
+theorem sylow_card_divides_group_order_div_sylow_order_five (hdvd: 5 ∣ Fintype.card G) (hG: Fintype.card G =20) [Fintype (Sylow 5 G)] (P : Sylow 5 G) (hP: Fintype P ): Fintype.card (Sylow 5 G) ∣ (Fintype.card G / 5) := by
+sorry
+done
+
+theorem sylow_card_divides_group_worder_div_sylow_order_five [Fact (Fintype.card G = 20)] [h : Fact (5 ∣ Fintype.card G)]  (P : Sylow 5 G) [Fintype P] [Fintype (Sylow 5 G)] : Fintype.card (Sylow 5 G) ∣ 4 := by
+refine (Nat.ord_compl_dvd_ord_compl_iff_dvd (Fintype.card (Sylow 5 G)) 4).mp ?_
+sorry
+done
+
+example (hG : Fintype.card G = 20) [Fintype (Sylow 5 G)] (P: Subgroup G)  [Fintype P]: ¬ IsSimpleGroup G := by
+  have h₀ : Nat.Prime 5 := by norm_num
+  have h₁ : Fintype.card G = 2^2 * 5 :=  by linarith [hG]
+  have h₂ : 5 ∣ (Fintype.card G) := by use 4
+  obtain ⟨P, hP⟩ : Sylow 5 P:= by exact existence_one 5 G h₂ P
+  have h_3 : Fintype.card (Sylow 5 P) = 5 := by apply?
+  have h₂ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := by exact card_sylow_modEq_one 5 G
+  have h_6 : Fintype.card (Sylow 5 G) ∣ (Fintype.card G / Fintype.card P) := by sorry
