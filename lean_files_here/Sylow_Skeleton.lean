@@ -21,6 +21,10 @@ import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Data.Nat.Choose.Dvd --lemma 3.3
 import Mathlib.GroupTheory.Subgroup.Simple -- def of simple group
 import Std.Data.Nat.Lemmas
+import Mathlib.Data.Nat.Prime
+import Mathlib.Data.Nat.Choose.Dvd
+import Mathlib.Data.Polynomial.Basic
+import Mathlib.Algebra.BigOperators.Basic
 
 -- ======================
 -- === Basic examples ===
@@ -41,6 +45,21 @@ done
 -- ===== Definitions ======
 -- ========================
 
+-- DEFINITION OF GROUP AND SUBGROUP
+
+/-
+class Group (G : Type u) extends DivInvMonoid G where
+  protected mul_left_inv : ∀ a : G, a⁻¹ * a = 1
+#align group Group
+-/
+
+/-
+structure Subgroup (G : Type*) [Group G] extends Submonoid G where
+  /-- `G` is closed under inverses -/
+  inv_mem' {x} : x ∈ carrier → x⁻¹ ∈ carrier
+#align subgroup Subgroup
+-/
+
 section Definitions
 
 -- P is a prime, G is a finite group?
@@ -49,6 +68,7 @@ variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided t
 
 -- ** Defining a finite p-group : A finite group of order p^n for some natural n, where p is prime
 
+-- Proposition, that given a prime p and a group, G is a p_subgroup
 def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib)
   ∀ g : G, ∃ k : ℕ, g ^ p ^ k = 1
 
@@ -67,9 +87,10 @@ def p_subgroup_3 : Prop := -- the best option we found, for all elements in G, t
 /-- A Sylow `p`-subgroup is a maximal `p`-subgroup. -/
 
 -- Note that here, Subgroup G is not a single subgroup of G, but in fact the set of subgroups of G?
+-- Extension of the structure subgroup, with two additional properties
 structure Sylow extends Subgroup G where
   p_subgroup_3' : p_subgroup_3 p toSubgroup
-  -- For all subgroups of G, ???
+  -- For all subgroups Q in G, If Q is a p subgroup,
   is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_3 p Q → toSubgroup ≤ Q → Q = toSubgroup
 
 -- Coersion?
@@ -94,8 +115,9 @@ def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm 
 -- **********************
 
 -- Lemma 3.3 page 36 Intro to Group Theory i)
-lemma binomial_coefseff_prop1 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
-  sorry
+lemma binomial_coefsadf_prop1 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i :=
+  hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
+
   done
 
 -- typecheck
@@ -179,7 +201,7 @@ def normalCsore (H: Sylow p G) : Subgroup G where
 
 -- Sylows 1st Theorem: (Existence of a Sylow p-subgroup in G)
 -- if p prime divides order of G then G has at least one Sylow p-subgroup
-theorem Sylow_1 (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p Q := by
+theorem Sylow_1 (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p G := by
 -- hypotheses: p divides order of G, Q is a subgroup in G?
   sorry
   done
@@ -198,6 +220,11 @@ theorem Sylow_3 (P : Subgroup G) (hP : p_subgroup p P) : ∃ Q : Sylow p G, P �
 
 -- Sylow's 4th Theorem, number of Sylow p-subgroups is congruent to 1 mod p
 theorem Sylow_4 [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ≡ 1 [MOD p] := by
+  sorry
+  done
+
+-- p divides the number of Sylow p subgroups -1 (where in notes???) "Alternative Sylow thm4)
+theorem card_sylow_modEq_one_new [Fintype (Sylow p G)] : p ∣ Fintype.card (Sylow p G) -1 := by
   sorry
   done
 
@@ -227,11 +254,6 @@ theorem sylow_subgroup_normality_condition (hdvd : p ∣ Fintype.card G) (P : Sy
   done
 
 #check sylow_subgroup_normality_condition
-
--- p divides the number of Sylow p subgroups -1 (where in notes???)
-theorem card_sylow_modEq_one_new [Fintype (Sylow p G)] : p ∣ Fintype.card (Sylow p G) -1 := by
-  sorry
-  done
 
 -- ======================
 -- === Other Theorems ===
