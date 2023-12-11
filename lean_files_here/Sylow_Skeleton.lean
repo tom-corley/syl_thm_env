@@ -19,7 +19,7 @@ import Mathlib.GroupTheory.GroupAction.ConjAct
 import Mathlib.GroupTheory.Subgroup.Basic
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Data.Nat.Choose.Dvd --lemma 3.3
-import Mathlib.GroupTheory.Subgroup.Simple -- def of simpel groiup
+import Mathlib.GroupTheory.Subgroup.Simple -- def of simple group
 import Std.Data.Nat.Lemmas
 
 -- ======================
@@ -54,6 +54,7 @@ def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib)
 
 def p_subgroup_2 : Prop :=   -- somehow this definition doesn't work when we tried using it in Sylow structure
  ∃ n : ℕ, Fintype.card G = p ^ n
+ -- G is a finite type of cardinality p^n
 
 def p_subgroup_3 : Prop := -- the best option we found, for all elements in G, there exists n, such that the order is p^n
   ∀ g : G, ∃ n : ℕ, orderOf g = p^n
@@ -79,9 +80,9 @@ instance : CoeOut (Sylow p G) (Subgroup G) :=
 -- === Necessary preliminary results ===
 -- =====================================
 
--- proof sketch: Prove that the set Syl_p(G) of Sylow p-subgroups of finite G, is finite
-theorem Sylow_set_finite (Fintype.card G): Fintype (Sylow p G) := by
-  sorry
+-- proof sketch: Prove that the set Syl_p(G) of Sylow p-subgroups of a finite group G, is finite
+theorem Sylow_set_finite [Fintype G] : Fintype (Sylow p G) := by
+  apply?
   done
 
 -- Defining the property that a subgroup is a Sylow-p subgroup
@@ -112,11 +113,13 @@ lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) :
   apply Nat.Prime.dvd_choose hp
   apply h.right
   sorry
+  sorry
   --apply le_refl
   done
 
 lemma binomial_coefsadf_prop24 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
-  linarith
+  sorry
+  --linarith
   done
 
 -- typecheck
@@ -150,7 +153,7 @@ theorem notsuire (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G):
   done
 
 theorem notsuirse (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G) :
-  ∃ (Q : Sylow p H), Q.carrier = ConjAct2312 P := by
+∃ (Q : Sylow p H), Q.carrier = ConjAct2312 P := by
   sorry
   done
 
@@ -177,7 +180,6 @@ def normalCsore (H: Sylow p G) : Subgroup G where
 
 #check binomial_coefsadf_prop2
 #check Sylow p G
-#check sylow_card_eq_index_normalizer
 
 -- ===================================
 -- ====== Sylow's Theorems 1-4 =======
@@ -239,7 +241,7 @@ theorem sylow_card_eq_index_normalizer (hdvd : p ∣ Fintype.card G) (P : Sylow 
   sorry
   done
 
-#check sylow_card_eq_index_normalizer
+-- #check sylow_card_eq_index_normalizer
 
 -- Corollary 3.7(ii)
 -- If p divides the order of G, and P is a Sylow p-subgroup of G, number of Sylow p-subgroups divides |G|/|G|_p
@@ -311,7 +313,7 @@ example (hG : Fintype.card G = 20) [Fintype (Sylow 5 G)] (P: Subgroup G)  [Finty
   have h₀ : Nat.Prime 5 := by norm_num
   have h₁ : Fintype.card G = 2^2 * 5 :=  by linarith [hG]
   have h₂ : 5 ∣ (Fintype.card G) := by use 4
-  obtain ⟨P, hP⟩ : Sylow 5 P:= by exact existence_one 5 G h₂ P
+  obtain ⟨P, hP⟩ : Sylow 5 P:= by exact Sylow_1 5 G h₂ P
   have h_3 : Fintype.card (Sylow 5 P) = 5 := by apply?
   have h₂ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := by exact card_sylow_modEq_one 5 G
   have h_6 : Fintype.card (Sylow 5 G) ∣ (Fintype.card G / Fintype.card P) := by sorry
