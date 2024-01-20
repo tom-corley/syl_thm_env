@@ -21,6 +21,7 @@ import Mathlib.Algebra.Group.Defs -- includes definition of a group; for example
 import Mathlib.GroupTheory.Subgroup.Basic -- includes definition of a subgroup and normal subgroup; for example used in the sylow_subgroup_normality
 import Mathlib.GroupTheory.SpecificGroups.Cyclic -- includes definition of a cyclic group; for example used in theorem C_pq
 import Mathlib.Data.Nat.Prime -- includes definition of a prime number; for example used in variables
+
 -- ======================
 -- === Basic examples ===
 -- ======================
