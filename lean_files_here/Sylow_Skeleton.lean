@@ -104,7 +104,7 @@ lemma binomial_coefseff_prop1 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m
 lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
   apply Nat.Prime.dvd_choose hp
   apply h.right
-  sorry
+
   --apply le_refl
   done
 
