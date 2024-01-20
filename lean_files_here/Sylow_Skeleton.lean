@@ -69,7 +69,7 @@ variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided t
 -- ** Defining a finite p-group : A finite group of order p^n for some natural n, where p is prime
 
 -- Proposition, that given a prime p and a group, G is a p_subgroup
-def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib)
+def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib) (PGroup.lean???)
   ∀ g : G, ∃ k : ℕ, g ^ p ^ k = 1
 
 def p_subgroup_2 : Prop :=   -- somehow this definition doesn't work when we tried using it in Sylow structure
@@ -117,18 +117,17 @@ def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm 
 -- Lemma 3.3 page 36 Intro to Group Theory i)
 lemma binomial_coefsadf_prop1 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i :=
   hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
-
   done
 
 -- typecheck
 #check binomial_coefseff_prop1
 
--- Lemma 3.3 page 36 Intro to Group Theory ii)
+-- Lemma 3.3 page 36 Intro to Group Theory ii) probs doable
 lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
   apply Nat.Prime.dvd_choose hp
   apply h.right
   sorry
-  sorry
+  apply le_refl
   --apply le_refl
   done
 
