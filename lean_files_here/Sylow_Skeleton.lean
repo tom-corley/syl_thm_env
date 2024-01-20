@@ -8,19 +8,14 @@ please add nice comments explaining our working if you have a good idea
 -- ===== Imports ======
 -- ====================
 
--- import Mathlib.Data.ZMod.Basic --includes definition of modular equality; for example used in Sylow_4 theorem
--- import Mathlib.GroupTheory.Index -- includes definition of sylow_card_eq_index_normalizer
-import Mathlib.Data.Finset.Card -- used for Sylow Thm about existence p | |G|
-import Mathlib.GroupTheory.OrderOfElement -- includes orderOf used for p_subgroup_3
-import Mathlib.Data.Nat.Choose.Basic -- contains Nat.choose
-import Mathlib.Algebra.Group.Basic
-import Mathlib.Algebra.Group.Defs
-import Mathlib.GroupTheory.GroupAction.ConjAct
-import Mathlib.GroupTheory.Subgroup.Basic
-import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import Mathlib.Data.Nat.Choose.Dvd --lemma 3.3
-import Mathlib.GroupTheory.Subgroup.Simple -- def of simple group
-import Std.Data.Nat.Lemmas
+import Mathlib.Data.ZMod.Basic -- includes definition of modular equality; for example used in Sylow_4 theorem
+import Mathlib.GroupTheory.Index -- includes definition of index of a group; for example used in the sylow_card_eq_index_normalizer theorem
+import Mathlib.Data.Finset.Card -- includes definition of finite cardinality; for example used in Sylow_1 theorem
+import Mathlib.GroupTheory.OrderOfElement -- includes definition of order of an element of a group; for example used in p_subgroup_3 definition
+import Mathlib.Data.Nat.Choose.Dvd -- 
+import Mathlib.Data.Nat.Choose.Basic -- includes the Nat.choose function, which computes the binomial coefficients; for example used in binomial_coeff_prop1 proposition
+import Mathlib.Algebra.Group.Defs -- includes definition of a group; for example used in Cauchy_1 theorem
+import Mathlib.GroupTheory.Subgroup.Basic -- includes definition of a subgroup and normal subgroup; for example used in the sylow_subgroup_normality
 
 -- ======================
 -- === Basic examples ===
