@@ -8,8 +8,8 @@ please add nice comments explaining our working if you have a good idea
 -- ===== Imports ======
 -- ====================
 
-import Mathlib.Data.ZMod.Basic --includes definition of modular equality
--- import Mathlib.GroupTheory.Index haven't used it yet but will when we talk about the index of a subgroup
+-- import Mathlib.Data.ZMod.Basic --includes definition of modular equality; for example used in Sylow_4 theorem
+-- import Mathlib.GroupTheory.Index -- includes definition of sylow_card_eq_index_normalizer
 import Mathlib.Data.Finset.Card -- used for Sylow Thm about existence p | |G|
 import Mathlib.GroupTheory.OrderOfElement -- includes orderOf used for p_subgroup_3
 import Mathlib.Data.Nat.Choose.Basic -- contains Nat.choose
@@ -43,7 +43,7 @@ done
 
 section Definitions
 
--- P is a prime, G is a finite group?
+-- p is a prime, G is a finite group
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided to define variable first so we don't have to
 
 
