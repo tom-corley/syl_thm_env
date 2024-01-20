@@ -1,7 +1,10 @@
 /-
 GENERAL COMMENTS:
-please change the names for definitions and theorems if you have a good idea
-please add nice comments explaining our working if you have a good idea
+This file is our first attempt at formalizing the Sylow Theorems and their consequences. We included it to show our progress throughout the project and to share the difficulties we faced by commenting on the relevant sections. The main issues that caused us problems were finiteness and type classes.
+
+Normally, if a group is finite, then its subgroups would also be finite. This means that a Sylow p-subgroup is finite and a subgroup. However, Lean does not naturally understand this. Instead, Lean will complain, “failed to synthesize instance Fintype” or that the types didn’t match when comparing to another subgroup and using built-in tactics for subgroups. A partial solution that we found was to use coercion, which helped Lean understand that a Sylow p-subgroup is also a subgroup.
+
+When we wrote our definitions and got them to a point where Lean wouldn’t directly complain to us, we thought the definition was correct. However, we were very wrong about this. The definition was clearly wrong as when we tried implementing it into theorems and proofs, Lean presented us with more errors, mostly being about the type class. This is why we have so many different definitions for a p-subgroup and for conjugation (we did not manage to define conjugation).
 -/
 
 -- ====================
@@ -17,10 +20,12 @@ import Mathlib.Data.Nat.Choose.Basic -- includes the Nat.choose function, which 
 import Mathlib.Algebra.Group.Defs -- includes definition of a group; for example used in Cauchy_1 theorem
 import Mathlib.GroupTheory.Subgroup.Basic -- includes definition of a subgroup and normal subgroup; for example used in the sylow_subgroup_normality
 import Mathlib.GroupTheory.SpecificGroups.Cyclic -- includes definition of a cyclic group; for example used in theorem C_pq
-
+import Mathlib.Data.Nat.Prime -- includes definition of a prime number; for example used in variables
 -- ======================
 -- === Basic examples ===
 -- ======================
+
+-- We incorporate the following to verify if the functions we discovered are the ones we require and are performing effectively.
 
 #eval 5 ≡ 8 [MOD 3]
 
@@ -45,12 +50,17 @@ variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided t
 
 -- ** Defining a finite p-group : A finite group of order p^n for some natural n, where p is prime
 
-def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib)
+def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib) which we try to redefine
   ∀ g : G, ∃ k : ℕ, g ^ p ^ k = 1
 
 def p_subgroup_2 : Prop :=   -- somehow this definition doesn't work when we tried using it in Sylow structure
  ∃ n : ℕ, Fintype.card G = p ^ n
- -- G is a finite type of cardinality p^n
+
+
+
+noncomputable instance (H : Subgroup G) : Fintype {x // x ∈ H} := by
+  sorry
+  done
 
 def p_subgroup_3 : Prop := -- the best option we found, for all elements in G, there exists n, such that the order is p^n
   ∀ g : G, ∃ n : ℕ, orderOf g = p^n
@@ -64,11 +74,10 @@ def p_subgroup_3 : Prop := -- the best option we found, for all elements in G, t
 
 -- Note that here, Subgroup G is not a single subgroup of G, but in fact the set of subgroups of G?
 structure Sylow extends Subgroup G where
-  p_subgroup_3' : p_subgroup_3 p toSubgroup
-  -- For all subgroups of G, ???
+  p_subgroup_3' : p_subgroup_2 p toSubgroup
   is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_3 p Q → toSubgroup ≤ Q → Q = toSubgroup
 
--- Coersion?
+
 instance : CoeOut (Sylow p G) (Subgroup G) :=
   ⟨Sylow.toSubgroup⟩
 
@@ -185,27 +194,6 @@ theorem Sylow_1 (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p Q := by
   done
 
 #check card_sylow_modEq_one
-
-class subgroup [Group G] (S : Set G) : Prop :=
-(mul_mem : ∀ {a b : G}, a ∈ S → b ∈ S → a * b ∈ S)
-(one_mem : (1 : G) ∈ S)
-(inv_mem : ∀ {a}, a ∈ S → a⁻¹ ∈ S)
-
--- can u see know
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 -- lemma sylow_2 [fintype G] {p : ℕ} (hp : nat.prime p)
