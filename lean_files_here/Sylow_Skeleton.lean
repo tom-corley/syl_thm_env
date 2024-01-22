@@ -94,14 +94,14 @@ def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm 
 
 -- Define the conjugate subgroup of H by g
 
-
-
 -- if p prime divides order of G then G has at least one Sylow p-subgroup
 theorem existence_one (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Q=Sylow p G:= by
 sorry
 done
 
--- section Sylow_1_Necessary_Lemmas_Wielandt
+end Definitions
+
+section Sylow_1_Necessary_Lemmas_Wielandt
 
 -- Lemma 3.3 page 36 Intro to Group Theory i)
 lemma binomial_coefseff_prop1 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
@@ -124,7 +124,9 @@ lemma binomial_coefsadf_prop24 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) 
 -- typecheck
 #check binomial_coefsadf_prop2
 
+end Sylow_1_Necessary_Lemmas_Wielandt
 
+section Sylow_2_and_3_Necessary_Props
 -- === Attempts at Conjugation for Sylow thms 2 & 3 ===
 -- *************************
 
@@ -180,6 +182,9 @@ def normalCsore (H: Sylow p G) : Subgroup G where
 #check binomial_coefsadf_prop2
 #check Sylow p G
 
+end Sylow_2_and_3_Necessary_Props
+
+section Sylow_Theorems_Proofs
 -- ===================================
 -- ====== Sylow's Theorems 1-4 =======
 -- ===================================
@@ -209,6 +214,10 @@ theorem Sylow_3 (P : Subgroup G) (hP : p_subgroup p P) : ∃ Q : Sylow p G, P �
 theorem Sylow_4 [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ≡ 1 [MOD p] := by
   sorry
   done
+
+end Sylow_Theorems_Proofs
+
+section Sylow_Consequences
 
 -- ==========================================
 -- ===== CONSEQUENCES OF SYLOWS THEOREMS ====
@@ -262,6 +271,9 @@ theorem C_pq (q : ℕ) [Fact q.Prime] (hdvd: p<q ∧ Fintype.card G = p*q) (h:¬
   sorry
   done
 
+end Sylow_Consequences
+
+section Sylow_Game
 -- =========================
 -- ====== SYLOW GAME =======
 -- =========================
@@ -295,3 +307,5 @@ example (hG : Fintype.card G = 20) [Fintype (Sylow 5 G)] (P: Subgroup G)  [Finty
   have h_3 : Fintype.card (Sylow 5 P) = 5 := by apply?
   have h₂ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := by exact card_sylow_modEq_one 5 G
   have h_6 : Fintype.card (Sylow 5 G) ∣ (Fintype.card G / Fintype.card P) := by sorry
+
+  end Sylow_Game
