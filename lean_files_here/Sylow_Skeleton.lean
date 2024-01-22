@@ -69,13 +69,11 @@ def p_subgroup_3 : Prop := -- the other option we came up with for all elements 
 
 -- ** Defining a Sylow p-group, a p-group where the power of p is maximal
 /-- A Sylow `p`-subgroup is a maximal `p`-subgroup. -/
-
--- Note that here, Subgroup G is not a single subgroup of G, but in fact the set of subgroups of G?
 structure Sylow extends Subgroup G where
   p_subgroup_3' : p_subgroup_2 p toSubgroup
   is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_2 p Q → toSubgroup ≤ Q → Q = toSubgroup
 
-
+-- This instance allows us to seamlessly treat a Sylow subgroup of a group G as a subgroup of G without needing to specify the conversion explicitly each time, which was initially overlooked as a necessity.
 instance : CoeOut (Sylow p G) (Subgroup G) :=
   ⟨Sylow.toSubgroup⟩
 
@@ -84,9 +82,10 @@ instance : CoeOut (Sylow p G) (Subgroup G) :=
 -- =====================================
 
 -- proof sketch: Prove that the set Syl_p(G) of Sylow p-subgroups of a finite group G, is finite
-theorem Sylow_set_finite [Fintype G] : Fintype (Sylow p G) := by
-  apply?
-  done
+noncomputable instance (G: Type*) [Fintype G] [Group G] : Fintype (Subgroup G) := by
+  apply Fintype.ofInjective (u-    : Subgroup G → Set G)
+  intros A B
+  exact SetLike.ext'
 
 -- Defining the property that a subgroup is a Sylow-p subgroup
 def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm about existence
@@ -96,8 +95,8 @@ def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm 
 
 -- if p prime divides order of G then G has at least one Sylow p-subgroup
 theorem existence_one (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Q=Sylow p G:= by
-sorry
-done
+  sorry
+  done
 
 end Definitions
 
