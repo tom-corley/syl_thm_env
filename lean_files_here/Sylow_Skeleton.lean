@@ -51,21 +51,18 @@ variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided t
 
 -- ** Defining a finite p-group : A finite group of order p^n for some natural n, where p is prime
 
-def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib) which we try to redefine
+def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib) which we try to redefine as this one is only valid if G is specified to be finite set as otherwise vector spaces of uncountable dimension over Z/pZ integers modulo p are finite p-groups according to this definition
   ∀ g : G, ∃ k : ℕ, g ^ p ^ k = 1
 
-def p_subgroup_2 : Prop :=   -- somehow this definition doesn't work when we tried using it in Sylow structure
- ∃ n : ℕ, Fintype.card G = p ^ n
-
-
+def p_subgroup_2 : Prop := -- somehow this definition didn't work when we tried using it in Sylow structure at first as we got error "failed to synthesize instance Fintype { x // x ∈ toSubgroup }" which required us to include the noncomputable instance below
+  ∃ n : ℕ, Fintype.card G = p ^ n
 
 noncomputable instance (H : Subgroup G) : Fintype {x // x ∈ H} := by
   sorry
   done
 
-def p_subgroup_3 : Prop := -- the best option we found, for all elements in G, there exists n, such that the order is p^n
+def p_subgroup_3 : Prop := -- the other option we came up with for all elements in G, there exists n, such that the order is p^n
   ∀ g : G, ∃ n : ℕ, orderOf g = p^n
-
 
 -- Typecheck
 #check p_subgroup_3
@@ -76,7 +73,7 @@ def p_subgroup_3 : Prop := -- the best option we found, for all elements in G, t
 -- Note that here, Subgroup G is not a single subgroup of G, but in fact the set of subgroups of G?
 structure Sylow extends Subgroup G where
   p_subgroup_3' : p_subgroup_2 p toSubgroup
-  is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_3 p Q → toSubgroup ≤ Q → Q = toSubgroup
+  is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_2 p Q → toSubgroup ≤ Q → Q = toSubgroup
 
 
 instance : CoeOut (Sylow p G) (Subgroup G) :=
