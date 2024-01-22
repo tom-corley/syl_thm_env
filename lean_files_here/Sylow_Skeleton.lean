@@ -77,9 +77,15 @@ structure Sylow extends Subgroup G where
 instance : CoeOut (Sylow p G) (Subgroup G) :=
   ⟨Sylow.toSubgroup⟩
 
+end Definitions
+
+section Preliminary_Results
+
 -- =====================================
 -- === Necessary preliminary results ===
 -- =====================================
+
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 -- proof sketch: Prove that the set Syl_p(G) of Sylow p-subgroups of a finite group G, is finite
 noncomputable instance (G: Type*) [Fintype G] [Group G] : Fintype (Subgroup G) := by
@@ -98,26 +104,25 @@ theorem existence_one (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Q=Sylow p
   sorry
   done
 
-end Definitions
+end Preliminary_Results
 
 section Sylow_1_Necessary_Lemmas_Wielandt
 
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
+
+--The following Lemmas will help when we
+
 -- Lemma 3.3 page 36 Intro to Group Theory i)
-lemma binomial_coefseff_prop1 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
-  sorry
+lemma binomial_coefsadf_prop1 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+  hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
   done
 
 -- typecheck
 #check binomial_coefseff_prop1
 
 -- Lemma 3.3 page 36 Intro to Group Theory ii)
-lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
-  hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
-  done
-
-lemma binomial_coefsadf_prop24 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+lemma binomial_coefseff_prop2 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
   sorry
-  --linarith
   done
 
 -- typecheck
@@ -126,8 +131,11 @@ lemma binomial_coefsadf_prop24 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) 
 end Sylow_1_Necessary_Lemmas_Wielandt
 
 section Sylow_2_and_3_Necessary_Props
+
 -- === Attempts at Conjugation for Sylow thms 2 & 3 ===
 -- *************************
+
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 -- if x is an element of G, and H is a sylow p-subgroup of G, subgroup G??
 def conjugate123 (x : G) (H : Sylow p G) : Subgroup G :=
@@ -188,6 +196,8 @@ section Sylow_Theorems_Proofs
 -- ====== Sylow's Theorems 1-4 =======
 -- ===================================
 
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
+
 -- Sylows 1st Theorem: (Existence of a Sylow p-subgroup in G)
 -- if p prime divides order of G then G has at least one Sylow p-subgroup
 theorem Sylow_1 (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p Q := by
@@ -221,6 +231,8 @@ section Sylow_Consequences
 -- ==========================================
 -- ===== CONSEQUENCES OF SYLOWS THEOREMS ====
 -- ==========================================
+
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 -- Corollary 3.7(i) page 40
 theorem sylow_card_eq_index_normalizer (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (normalCsore (P : Subgroup G)) := by
@@ -276,6 +288,8 @@ section Sylow_Game
 -- =========================
 -- ====== SYLOW GAME =======
 -- =========================
+
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 --Let G be a group of order 20. Can G be simple?
 
