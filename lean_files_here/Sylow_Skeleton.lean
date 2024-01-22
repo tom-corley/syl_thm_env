@@ -21,6 +21,7 @@ import Mathlib.Algebra.Group.Defs -- includes definition of a group; for example
 import Mathlib.GroupTheory.Subgroup.Basic -- includes definition of a subgroup and normal subgroup; for example used in the sylow_subgroup_normality
 import Mathlib.GroupTheory.SpecificGroups.Cyclic -- includes definition of a cyclic group; for example used in theorem C_pq
 import Mathlib.Data.Nat.Prime -- includes definition of a prime number; for example used in variables
+import Mathlib.Data.Fintype.Basic
 
 -- ======================
 -- === Basic examples ===
@@ -70,7 +71,7 @@ def p_subgroup_3 : Prop := -- the other option we came up with for all elements 
 -- ** Defining a Sylow p-group, a p-group where the power of p is maximal
 /-- A Sylow `p`-subgroup is a maximal `p`-subgroup. -/
 structure Sylow extends Subgroup G where
-  p_subgroup_3' : p_subgroup_2 p toSubgroup
+  p_subgroup_2' : p_subgroup_2 p toSubgroup
   is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_2 p Q → toSubgroup ≤ Q → Q = toSubgroup
 
 -- This instance allows us to seamlessly treat a Sylow subgroup of a group G as a subgroup of G without needing to specify the conversion explicitly each time, which was initially overlooked as a necessity.
@@ -78,33 +79,6 @@ instance : CoeOut (Sylow p G) (Subgroup G) :=
   ⟨Sylow.toSubgroup⟩
 
 end Definitions
-
-section Preliminary_Results
-
--- =====================================
--- === Necessary preliminary results ===
--- =====================================
-
-variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
-
--- proof sketch: Prove that the set Syl_p(G) of Sylow p-subgroups of a finite group G, is finite
-noncomputable instance (G: Type*) [Fintype G] [Group G] : Fintype (Subgroup G) := by
-  apply Fintype.ofInjective (u-    : Subgroup G → Set G)
-  intros A B
-  exact SetLike.ext'
-
--- Defining the property that a subgroup is a Sylow-p subgroup
-def issylow (K : Subgroup G) : Prop := -- this one didn't work in the Sylow Thm about existence
-∀ k : K, ∃ n : ℕ, orderOf k = p ^ n ∧ ∀ (Q : Subgroup G), p_subgroup_3 p Q → K ≤ Q → Q = K
-
--- Define the conjugate subgroup of H by g
-
--- if p prime divides order of G then G has at least one Sylow p-subgroup
-theorem existence_one (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Q=Sylow p G:= by
-  sorry
-  done
-
-end Preliminary_Results
 
 section Sylow_1_Necessary_Lemmas_Wielandt
 
@@ -191,23 +165,28 @@ def normalCsore (H: Sylow p G) : Subgroup G where
 
 end Sylow_2_and_3_Necessary_Props
 
-section Sylow_Theorems_Proofs
+section Sylow_Theorems
+
 -- ===================================
 -- ====== Sylow's Theorems 1-4 =======
 -- ===================================
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
+-- Proof that a subgroup of fintype group is fintype
+noncomputable instance (G: Type*) [Fintype G] [Group G] : Fintype (Subgroup G) := by
+  apply Fintype.ofInjective ((↑) : Subgroup G → Set G)
+  intros A B
+  exact SetLike.ext'
+
 -- Sylows 1st Theorem: (Existence of a Sylow p-subgroup in G)
--- if p prime divides order of G then G has at least one Sylow p-subgroup
-theorem Sylow_1 (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p Q := by
--- hypotheses: p divides order of G, Q is a subgroup in G?
+-- if p prime divides order of G then G has at least one Sylow p-subgroup; this theorem is incorrect as we realised playing Sylow game that it's consquence is just a defintion
+theorem sylow_p_subgroup_exists_1 (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Q=Sylow p G:= by
   sorry
   done
 
 #check card_sylow_modEq_one
 
--- We were unable to state Sylow 2 since it depended on us having a defintion for conjugation which we failed to define
 
 -- lemma sylow_2 [fintype G] {p : ℕ} (hp : nat.prime p)
 --   (H K : set G) [Sylow H hp] [Sylow K hp] :
@@ -225,7 +204,7 @@ theorem Sylow_4 [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ≡ 1 [MOD p] :
   sorry
   done
 
-end Sylow_Theorems_Proofs
+end Sylow_Theorems
 
 section Sylow_Consequences
 
