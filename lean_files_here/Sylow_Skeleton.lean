@@ -207,6 +207,7 @@ theorem Sylow_1 (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p Q := by
 
 #check card_sylow_modEq_one
 
+-- We were unable to state Sylow 2 since it depended on us having a defintion for conjugation which we failed to define
 
 -- lemma sylow_2 [fintype G] {p : ℕ} (hp : nat.prime p)
 --   (H K : set G) [Sylow H hp] [Sylow K hp] :
