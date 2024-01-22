@@ -62,6 +62,12 @@ noncomputable instance (H : Subgroup G) : Fintype {x // x ∈ H} := by
   sorry
   done
 
+-- Proof that a subgroup of fintype group is fintype
+noncomputable instance (G: Type*) [Fintype G] [Group G] : Fintype (Subgroup G) := by
+  apply Fintype.ofInjective ((↑) : Subgroup G → Set G)
+  intros A B
+  exact SetLike.ext'
+
 def p_subgroup_3 : Prop := -- the other option we came up with for all elements in G, there exists n, such that the order is p^n
   ∀ g : G, ∃ n : ℕ, orderOf g = p^n
 
@@ -111,19 +117,19 @@ section Sylow_2_and_3_Necessary_Props
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
---Proposition 3.5 page 39 Intro to Group Theory I don't how to write gPg^-1 so that lean understands
-theorem notsuire (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G): Subgroup.subgroupOf H ((P : Subgroup G).ConjAct2312) ∈ (Sylow p H):= by
+-- Failed to define the conjugation action on P by G gPg^{-1}
+def Conjugate {G : Type*} [Group G] (g : G) (P : Sylow p G) : Subgroup G:=
+{
+  carrier := {x | ∃ y ∈ P.carrier, x = g * y * g⁻¹},
+  one_mem' := by sorry,
+  mul_mem' := by sorry,
+  inv_mem' := by sorry,
+}
+
+--Proposition 3.5 page 39 Intro to Group Theory we don't know how to write gPg^-1 so that lean understands
+theorem prop35 {G : Type*} [Group G] [Fintype G] (hdvd : p ∣ Fintype.card G) (g : G) (P : Sylow p G): Sylow p (Conjugate g P) := by
   sorry
   done
-
-theorem notsuirse (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G) :
-∃ (Q : Sylow p H), Q.carrier = ConjAct2312 P := by
-  sorry
-  done
-
-
-#check binomial_coefsadf_prop2
-#check Sylow p G
 
 end Sylow_2_and_3_Necessary_Props
 
@@ -135,26 +141,19 @@ section Sylow_Theorems
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
--- Proof that a subgroup of fintype group is fintype
-noncomputable instance (G: Type*) [Fintype G] [Group G] : Fintype (Subgroup G) := by
-  apply Fintype.ofInjective ((↑) : Subgroup G → Set G)
-  intros A B
-  exact SetLike.ext'
-
 -- Sylows 1st Theorem: (Existence of a Sylow p-subgroup in G)
 -- if p prime divides order of G then G has at least one Sylow p-subgroup; this theorem is incorrect as we realised playing Sylow game that it's consquence is just a defintion
-theorem sylow_p_subgroup_exists_1 (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Q=Sylow p G:= by
+theorem sylow_p_subgroup_exists_1 (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Sylow p Q := by
   sorry
   done
 
-#check card_sylow_modEq_one
+-- here is our second attempt
+theorem sylow_p_subgroup_exists_2 (hdvd : p ∣ Fintype.card G) : ∃ (Q : Sylow p G), true := by
+ sorry
+ done
 
 -- We were not able to state Sylow 2 due to us failing to provide a correct definition for conjugation
 
--- lemma sylow_2 [fintype G] {p : ℕ} (hp : nat.prime p)
---   (H K : set G) [Sylow H hp] [Sylow K hp] :
---   ∃ g : G, H = conjugate_set g K :=
---
 -- theorem Sylow_2 [fintype G] [hp nat.prime p] [P,K : Sylow p G] : ∃g ∈ G P = gKg^-1
 
 -- Sylow's 3rd Theorem: If P is a p-subgroup of G, It is contained in a Sylow p-subgroup of G
@@ -179,8 +178,8 @@ variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 -- These proofs were not possible as our issues with finiteness and type classes had meant that trying to use our theorems above would not do what we expected and occasionally we ran into errors.
 
--- Corollary 3.7(i) page 40
-theorem sylow_card_eq_index_normaliser (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (normalCsore (P : Subgroup G)) := by
+-- Corollary 3.7(i) page 40 failed to state as lacked conjugation definition
+theorem sylow_card_eq_index_normaliser (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (Conjugate g P) := by
   sorry
   done
 
@@ -230,6 +229,7 @@ theorem C_pq (q : ℕ) [Fact q.Prime] (hdvd: p<q ∧ Fintype.card G = p*q) (h:¬
 end Sylow_Consequences
 
 section Sylow_Game
+
 -- =========================
 -- ====== SYLOW GAME =======
 -- =========================
@@ -237,33 +237,18 @@ section Sylow_Game
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 --Let G be a group of order 20. Can G be simple?
-
--- Example for order 20:
-lemma sylow_five_subgroup_exists [Fact (Fintype.card G = 20)] [h : Fact (5 ∣ Fintype.card G)] : ∃ H : Subgroup G, Fintype.card H = 5 ∧ Sylow 5 H := by
-  sorry
-  done
-
--- theorem existence_one_five (hdvd : 5 ∣ Fintype.card G) (Q: Subgroup G): Sylow 5 Q := by
--- apply existence_one
--- apply hdvd
--- done
-
 theorem sylow_card_divides_group_order_div_sylow_order_five (hdvd: 5 ∣ Fintype.card G) (hG: Fintype.card G =20) [Fintype (Sylow 5 G)] (P : Sylow 5 G) (hP: Fintype P ): Fintype.card (Sylow 5 G) ∣ (Fintype.card G / 5) := by
   sorry
   done
 
-theorem sylow_card_divides_group_worder_div_sylow_order_five [Fact (Fintype.card G = 20)] [h : Fact (5 ∣ Fintype.card G)]  (P : Sylow 5 G) [Fintype P] [Fintype (Sylow 5 G)] : Fintype.card (Sylow 5 G) ∣ 4 := by
-refine (Nat.ord_compl_dvd_ord_compl_iff_dvd (Fintype.card (Sylow 5 G)) 4).mp ?_
-  sorry
-  done
 
 example (hG : Fintype.card G = 20) [Fintype (Sylow 5 G)] (P: Subgroup G)  [Fintype P]: ¬ IsSimpleGroup G := by
   have h₀ : Nat.Prime 5 := by norm_num
   have h₁ : Fintype.card G = 2^2 * 5 :=  by linarith [hG]
   have h₂ : 5 ∣ (Fintype.card G) := by use 4
-  obtain ⟨P, hP⟩ : Sylow 5 P:= by exact Sylow_1 5 G h₂ P
-  have h_3 : Fintype.card (Sylow 5 P) = 5 := by apply?
-  have h₂ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := by exact card_sylow_modEq_one 5 G
+  obtain ⟨P, hP⟩ : Sylow 5 P:= by exact sylow_p_subgroup_exists_1 5 G h₂ P
+  have h_3 : Fintype.card (Sylow 5 P) = 5 := by sorry
+  have h₂ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := by sorry
   have h_6 : Fintype.card (Sylow 5 G) ∣ (Fintype.card G / Fintype.card P) := by sorry
 
   end Sylow_Game
