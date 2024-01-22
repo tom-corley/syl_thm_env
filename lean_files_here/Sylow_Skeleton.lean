@@ -111,24 +111,6 @@ section Sylow_2_and_3_Necessary_Props
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
--- if x is an element of G, and H is a sylow p-subgroup of G, subgroup G??
-def conjugate123 (x : G) (H : Sylow p G) : Subgroup G :=
-  { carrier := {a : G | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-    one_mem' := by sorry,
-    mul_mem' := by sorry,
-    inv_mem' := by sorry
-  }
-
--- Defining the conjugacy action?
-def ConjAct2312 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
-{
-  carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-  one_mem' :=
-  }
-  mul_mem' := by sorry,
-  inv_mem' := by sorry
-}
-
 --Proposition 3.5 page 39 Intro to Group Theory I don't how to write gPg^-1 so that lean understands
 theorem notsuire (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G): Subgroup.subgroupOf H ((P : Subgroup G).ConjAct2312) ∈ (Sylow p H):= by
   sorry
@@ -138,26 +120,6 @@ theorem notsuirse (hdvd : p ∣ Fintype.card G) (H : Subgroup G) (P : Sylow p G)
 ∃ (Q : Sylow p H), Q.carrier = ConjAct2312 P := by
   sorry
   done
-
-def normalCore (H : Subgroup G) (Q : Sylow p G): Subgroup G where
-  carrier := { a : G | ∀ b : G, b * a * b⁻¹ ∈ H }
-  one_mem' a := by rw [mul_one, mul_inv_self]; exact H.one_mem
-  inv_mem' {a} h b := (congr_arg (· ∈ H) conj_inv).mp (H.inv_mem (h b))
-  mul_mem' {a b} ha hb c := (congr_arg (· ∈ H) conj_mul).mp (H.mul_mem (ha c) (hb c))
-
-def ConjAct22312 (Q : Subgroup G) (x : G) (H : Sylow p G) : Subgroup G :=
-{
-  carrier := {a ∈ Q.carrier | ∃ h ∈ H.carrier, a = x * h * x⁻¹},
-  one_mem' := by sorry,
-  mul_mem' := by sorry,
-  inv_mem' := by sorry
-}
-
-def normalCsore (H: Sylow p G) : Subgroup G where
-  carrier := { a : G | ∀ b : G, b * a * b⁻¹ ∈ (H : Subgroup G) }
-  one_mem' a := by rw [mul_one, mul_inv_self]; exact H.one_mem
-  inv_mem' {a} h b := (congr_arg (· ∈ (H : Subgroup G) ) conj_inv).mp (H.inv_mem (h b))
-  mul_mem' {a b} ha hb c := (congr_arg (· ∈ (H : Subgroup G) ) conj_mul).mp (H.mul_mem (ha c) (hb c))
 
 
 #check binomial_coefsadf_prop2
@@ -219,7 +181,7 @@ variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 -- These proofs were not possible as our issues with finiteness and type classes had meant that trying to use our theorems above would not do what we expected and occasionally we ran into errors.
 
 -- Corollary 3.7(i) page 40
-theorem sylow_card_eq_index_normalizer (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (normalCsore (P : Subgroup G)) := by
+theorem sylow_card_eq_index_normaliser (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (normalCsore (P : Subgroup G)) := by
   sorry
   done
 
