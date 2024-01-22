@@ -15,7 +15,7 @@ import Mathlib.Data.ZMod.Basic -- includes definition of modular equality; for e
 import Mathlib.GroupTheory.Index -- includes definition of index of a group; for example used in the sylow_card_eq_index_normalizer theorem
 import Mathlib.Data.Finset.Card -- includes definition of finite cardinality; for example used in Sylow_1 theorem
 import Mathlib.GroupTheory.OrderOfElement -- includes definition of order of an element of a group; for example used in p_subgroup_3 definition
-import Mathlib.Data.Nat.Choose.Dvd --  includes Nat.Prime.dvd_choose theorem; for example used in lemma binomial_coefsadf_prop2 proposition
+import Mathlib.Data.Nat.Choose.Dvd --  includes Nat.Prime.dvd_choose theorem; for example used in lemma binomial_coeffs_prop1 proposition
 import Mathlib.Data.Nat.Choose.Basic -- includes the Nat.choose function, which computes the binomial coefficients; for example used in binomial_coeff_prop1 proposition
 import Mathlib.Algebra.Group.Defs -- includes definition of a group; for example used in Cauchy_1 theorem
 import Mathlib.GroupTheory.Subgroup.Basic -- includes definition of a subgroup and normal subgroup; for example used in the sylow_subgroup_normality
@@ -84,23 +84,23 @@ section Sylow_1_Necessary_Lemmas_Wielandt
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
---The following Lemmas will help when we
-
 -- Lemma 3.3 page 36 Intro to Group Theory i)
-lemma binomial_coefsadf_prop1 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
-  hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
+-- We managed to prove this proposition without much difficulty. We made us of Mathlib.Data.Nat.Choose.Dvd, which allowed us to prove 3 inequalities instead
+lemma binomial_coeffs_prop1 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+  exact hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
   done
 
 -- typecheck
-#check binomial_coefseff_prop1
+#check binomial_coeffs_prop1
 
 -- Lemma 3.3 page 36 Intro to Group Theory ii)
-lemma binomial_coefseff_prop2 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
+-- We did not make much progress on this proof. We first realised that it would be too difficult or maybe not possible to replicate the proof done in MA3K4. So instead we decided to try an induction argument. However this was also quite difficult for us to prove on paper let alone in lean.
+lemma binomial_coeffs_prop2 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
   sorry
   done
 
 -- typecheck
-#check binomial_coefsadf_prop2
+#check binomial_coeffs_prop2
 
 end Sylow_1_Necessary_Lemmas_Wielandt
 
@@ -215,6 +215,8 @@ section Sylow_Consequences
 -- ==========================================
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
+
+-- These proofs were not possible as our issues with finiteness and type classes had meant that trying to use our theorems above would not do what we expected and occasionally we ran into errors.
 
 -- Corollary 3.7(i) page 40
 theorem sylow_card_eq_index_normalizer (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (normalCsore (P : Subgroup G)) := by
