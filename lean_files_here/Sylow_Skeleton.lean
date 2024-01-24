@@ -11,6 +11,24 @@ When we wrote our definitions and got them to a point where Lean wouldn’t dire
 -- ===== Imports ======
 -- ====================
 
+import Mathlib.Data.ZMod.Basic --includes definition of modular equality
+-- import Mathlib.GroupTheory.Index haven't used it yet but will when we talk about the index of a subgroup
+import Mathlib.Data.Finset.Card -- used for Sylow Thm about existence p | |G|
+import Mathlib.GroupTheory.OrderOfElement -- includes orderOf used for p_subgroup_3
+import Mathlib.Data.Nat.Choose.Basic -- contains Nat.choose
+import Mathlib.Algebra.Group.Basic
+import Mathlib.Algebra.Group.Defs
+import Mathlib.GroupTheory.GroupAction.ConjAct
+import Mathlib.GroupTheory.Subgroup.Basic
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Mathlib.Data.Nat.Choose.Dvd --lemma 3.3
+import Mathlib.GroupTheory.Subgroup.Simple -- def of simple group
+import Std.Data.Nat.Lemmas
+import Mathlib.Data.Nat.Prime
+import Mathlib.Data.Nat.Choose.Dvd
+import Mathlib.Data.Polynomial.Basic
+import Mathlib.Algebra.BigOperators.Basic
+=======
 import Mathlib.Data.ZMod.Basic -- includes definition of modular equality; for example used in Sylow_4 theorem
 import Mathlib.GroupTheory.Index -- includes definition of index of a group; for example used in the sylow_card_eq_index_normalizer theorem
 import Mathlib.Data.Finset.Card -- includes definition of finite cardinality; for example used in Sylow_1 theorem
@@ -22,6 +40,7 @@ import Mathlib.GroupTheory.Subgroup.Basic -- includes definition of a subgroup a
 import Mathlib.GroupTheory.SpecificGroups.Cyclic -- includes definition of a cyclic group; for example used in theorem C_pq
 import Mathlib.Data.Nat.Prime -- includes definition of a prime number; for example used in variables
 import Mathlib.Data.Fintype.Basic
+
 
 -- ======================
 -- === Basic examples ===
@@ -44,6 +63,21 @@ done
 -- ===== Definitions ======
 -- ========================
 
+-- DEFINITION OF GROUP AND SUBGROUP
+
+/-
+class Group (G : Type u) extends DivInvMonoid G where
+  protected mul_left_inv : ∀ a : G, a⁻¹ * a = 1
+#align group Group
+-/
+
+/-
+structure Subgroup (G : Type*) [Group G] extends Submonoid G where
+  /-- `G` is closed under inverses -/
+  inv_mem' {x} : x ∈ carrier → x⁻¹ ∈ carrier
+#align subgroup Subgroup
+-/
+
 section Definitions
 
 -- p is a prime, G is a finite group
@@ -52,7 +86,12 @@ variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided t
 
 -- ** Defining a finite p-group : A finite group of order p^n for some natural n, where p is prime
 
+
+-- Proposition, that given a prime p and a group, G is a p_subgroup
+def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib) (PGroup.lean???)
+=======
 def p_subgroup: Prop := -- Original definition from Sylow.lean (Mathlib) which we try to redefine as this one is only valid if G is specified to be finite set as otherwise vector spaces of uncountable dimension over Z/pZ integers modulo p are finite p-groups according to this definition
+
   ∀ g : G, ∃ k : ℕ, g ^ p ^ k = 1
 
 def p_subgroup_2 : Prop := -- somehow this definition didn't work when we tried using it in Sylow structure at first as we got error "failed to synthesize instance Fintype { x // x ∈ toSubgroup }" which required us to include the noncomputable instance below
@@ -76,9 +115,19 @@ def p_subgroup_3 : Prop := -- the other option we came up with for all elements 
 
 -- ** Defining a Sylow p-group, a p-group where the power of p is maximal
 /-- A Sylow `p`-subgroup is a maximal `p`-subgroup. -/
+
+
+-- Note that here, Subgroup G is not a single subgroup of G, but in fact the set of subgroups of G?
+-- Extension of the structure subgroup, with two additional properties
+structure Sylow extends Subgroup G where
+  p_subgroup_3' : p_subgroup_3 p toSubgroup
+  -- For all subgroups Q in G, If Q is a p subgroup,
+  is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_3 p Q → toSubgroup ≤ Q → Q = toSubgroup
+=======
 structure Sylow extends Subgroup G where
   p_subgroup_2' : p_subgroup_2 p toSubgroup
   is_maximal' : ∀ {Q : Subgroup G}, p_subgroup_2 p Q → toSubgroup ≤ Q → Q = toSubgroup
+
 
 -- This instance allows us to seamlessly treat a Sylow subgroup of a group G as a subgroup of G without needing to specify the conversion explicitly each time, which was initially overlooked as a necessity.
 instance : CoeOut (Sylow p G) (Subgroup G) :=
@@ -91,14 +140,32 @@ section Sylow_1_Necessary_Lemmas_Wielandt
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 -- Lemma 3.3 page 36 Intro to Group Theory i)
+
+lemma binomial_coefsadf_prop1 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i :=
+  hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
+=======
 -- We managed to prove this proposition without much difficulty. We made us of Mathlib.Data.Nat.Choose.Dvd, which allowed us to prove 3 inequalities instead
 lemma binomial_coeffs_prop1 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
   exact hp.dvd_choose h.right (Nat.sub_lt_of_pos_le h.left (le_of_lt h.right)) (le_refl _)
+]
   done
 
 -- typecheck
 #check binomial_coeffs_prop1
 
+-- Lemma 3.3 page 36 Intro to Group Theory ii) probs doable
+lemma binomial_coefsadf_prop2 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+  apply Nat.Prime.dvd_choose hp
+  apply h.right
+  sorry
+  apply le_refl
+  --apply le_refl
+  done
+
+lemma binomial_coefsadf_prop24 (i : ℕ) (hp : p.Prime) (h : 1 ≤ i ∧ i < p) : p ∣ Nat.choose p i := by
+  sorry
+  --linarith
+=======
 -- Lemma 3.3 page 36 Intro to Group Theory ii)
 -- We did not make much progress on this proof. We first realised that it would be too difficult or maybe not possible to replicate the proof done in MA3K4. So instead we decided to try an induction argument. However this was also quite difficult for us to prove on paper let alone in lean.
 lemma binomial_coeffs_prop2 {n m : ℕ} (hp : Nat.gcd m p = 1) : Nat.choose (m * p ^ n) (p ^ n) ≡ m [MOD p] := by
@@ -142,6 +209,10 @@ section Sylow_Theorems
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 -- Sylows 1st Theorem: (Existence of a Sylow p-subgroup in G)
+-- if p prime divides order of G then G has at least one Sylow p-subgroup
+theorem Sylow_1 (hdvd : p ∣ Fintype.card G) (Q: Subgroup G) : Sylow p G := by
+-- hypotheses: p divides order of G, Q is a subgroup in G?
+=======
 -- if p prime divides order of G then G has at least one Sylow p-subgroup; this theorem is incorrect as we realised playing Sylow game that it's consquence is just a defintion
 theorem sylow_p_subgroup_exists_1 (hdvd : p ∣ Fintype.card G) (Q : Subgroup G) : Sylow p Q := by
   sorry
@@ -166,6 +237,11 @@ theorem Sylow_4 [Fintype (Sylow p G)] : Fintype.card (Sylow p G) ≡ 1 [MOD p] :
   sorry
   done
 
+-- p divides the number of Sylow p subgroups -1 (where in notes???) "Alternative Sylow thm4)
+theorem card_sylow_modEq_one_new [Fintype (Sylow p G)] : p ∣ Fintype.card (Sylow p G) -1 := by
+  sorry
+  done
+=======
 end Sylow_Theorems
 
 section Sylow_Consequences
@@ -200,11 +276,6 @@ theorem sylow_subgroup_normality_condition (hdvd : p ∣ Fintype.card G) (P : Sy
   done
 
 #check sylow_subgroup_normality_condition
-
--- p divides the number of Sylow p subgroups -1 (where in notes???)
-theorem card_sylow_modEq_one_new [Fintype (Sylow p G)] : p ∣ Fintype.card (Sylow p G) -1 := by
-  sorry
-  done
 
 -- ======================
 -- === Other Theorems ===
