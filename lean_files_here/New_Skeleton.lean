@@ -8,7 +8,9 @@ import Mathlib.GroupTheory.GroupAction.ConjAct
 import Mathlib.GroupTheory.PGroup
 import Mathlib.GroupTheory.NoncommPiCoprod
 import Mathlib.Order.Atoms.Finite
-
+import Mathlib.GroupTheory.OrderOfElement
+import Mathlib.GroupTheory.Coset
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
 -- ========================
 -- ===== Definitions ======
 -- ========================
@@ -44,7 +46,6 @@ instance : CoeOut (Sylow p G) (Subgroup G) :=
 -- ====== Sylow's Theorems 1-4 =======
 -- ===================================
 
--- content here
 
 -- =========================
 -- ====== SYLOW GAME =======
