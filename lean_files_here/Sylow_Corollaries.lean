@@ -27,18 +27,20 @@ theorem Cauchy_12 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
 
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
 theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hdvd: p<q ∧ Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
-   have P : Subgroup G := by exact Subgroup.center G
-   have Q : Subgroup G := by exact Subgroup.center G
+
+   --have P : Subgroup G := by exact Subgroup.center G
+   --have Q : Subgroup G := by exact Subgroup.center G
    have h0 : p ∣ Fintype.card G := by
       rw [hdvd.2]
       exact Nat.dvd_mul_right p q
-   have S1 P : Sylow p G := by exact P
-   have h1 : q ∣ Fintype.card G := by
-      rw [hdvd.2]
-      exact Nat.dvd_mul_left q p
-   have S2 Q : Sylow q G := by exact Q
+   have S1 : ∃ P : Sylow p G, Fintype.card P = p := by
 
-   have O :
+   --have h1 : q ∣ Fintype.card G := by
+   --   rw [hdvd.2]
+    --  exact Nat.dvd_mul_left q p
+   --have S2 Q : Sylow q G := by exact Q
+
+  -- have O :
 
 
    done

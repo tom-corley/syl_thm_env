@@ -864,7 +864,7 @@ theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
   done
 
 theorem sylow_card_eq_index_normaliser (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (Conjugate g P) := by
-  
+
 
 
 end Sylow
