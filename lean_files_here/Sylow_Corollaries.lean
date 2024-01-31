@@ -33,14 +33,28 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
     exact Nat.dvd_mul_right p q
   have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
   rw [pow_one] at p1
-  obtain ⟨P, hP⟩ : Sylow p G := by sorry
+  obtain ⟨P, hP⟩ := by exact p1
 --Define the Sylow q-subgroup
   have q0 : q ∣ Fintype.card G := by
     rw [hpqq]
     exact Nat.dvd_mul_left q p
   have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
   rw [pow_one] at q1
-  obtain ⟨Q, hQ⟩ : Sylow q G := by sorry
+  obtain ⟨Q, hQ⟩ := by exact q1
 --Show the Sylow p-subgroup is normal
-  have p2 : Nat.ModEq.dvd (card_sylow_modEq_one p G)
+  --have p2 : Fintype.card (Sylow p G) = 1 := by
+    --apply exists_eq_mul_left_of_dvd(Nat.ModEq.dvd(card_sylow_modEq_one p G)) by
+
+  have p3 : IsCyclic P := by
+    exact isCyclic_of_prime_card hP
+
+  have q3 : IsCyclic Q := by
+    exact isCyclic_of_prime_card hQ
+
+  have p4 : IsCyclic.commGroup P := by sorry
+
+
+
+
+
   sorry
