@@ -51,7 +51,10 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
   have q3 : IsCyclic Q := by
     exact isCyclic_of_prime_card hQ
 
-  have p4 : IsCyclic.commGroup P := by sorry
+  have p4 : CommGroup P := by exact IsCyclic.commGroup
+
+  have q4 : CommGroup Q := by exact IsCyclic.commGroup
+  
 
 
 
