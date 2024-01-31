@@ -10,6 +10,7 @@ import Mathlib.GroupTheory.Subgroup.Basic
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Data.Nat.Prime
 import Mathlib.GroupTheory.Sylow
+import Mathlib.GroupTheory.Coset
 
 open scoped Classical
 
@@ -54,7 +55,24 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
   have p4 : CommGroup P := by exact IsCyclic.commGroup
 
   have q4 : CommGroup Q := by exact IsCyclic.commGroup
-  
+
+  -- have p5: Subgroup.Normal P := by
+  --   apply normal_of_eq_cosets
+  --   intros g
+
+  -- Show the Sylow p-subgroup is normal
+-- First, let's prove that P is a subgroup of G
+---have p5: Subgroup G := ⟨P, hP.1⟩
+
+-- Next, we'll show that P is normal in G
+  have p6: Subgroup.Normal P  := by
+  {
+    apply Sylow.conjugate_subgroup
+    exact hP.2
+  }
+
+
+
 
 
 
