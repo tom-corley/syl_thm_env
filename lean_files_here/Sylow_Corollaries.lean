@@ -51,4 +51,3 @@ theorem C_p_q (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hdvd: p<q
     exact Nat.dvd_mul_right p q
   have h1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ h0)
   rw [pow_one] at h1
-  sorry
