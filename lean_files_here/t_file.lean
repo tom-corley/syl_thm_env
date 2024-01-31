@@ -9,6 +9,7 @@ import Mathlib.GroupTheory.GroupAction.ConjAct
 import Mathlib.GroupTheory.PGroup
 import Mathlib.GroupTheory.NoncommPiCoprod
 import Mathlib.Order.Atoms.Finite
+import Mathlib.GroupTheory.Sylow
 
 #align_import group_theory.sylow from "leanprover-community/mathlib"@"4be589053caf347b899a494da75410deb55fb3ef"
 
@@ -62,3 +63,29 @@ attribute [coe] Sylow.toSubgroup
 --Porting note: Changed to `CoeOut`
 instance : CoeOut (Sylow p G) (Subgroup G) :=
   ⟨Sylow.toSubgroup⟩
+
+-- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
+theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
+--Define the Sylow p-subgroup
+  have p0 : p ∣ Fintype.card G := by
+    rw [hpqq]
+    exact Nat.dvd_mul_right p q
+  have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
+  rw [pow_one] at p1
+  obtain ⟨P, hP⟩ := by exact p1
+--Define the Sylow q-subgroup
+  have q0 : q ∣ Fintype.card G := by
+    rw [hpqq]
+    exact Nat.dvd_mul_left q p
+  have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
+  rw [pow_one] at q1
+  obtain ⟨Q, hQ⟩ : Sylow q G := by sorry
+--Show the Sylow p-subgroup is normal
+  have p2 : Nat.ModEq.dvd (card_sylow_modEq_one p G)
+  sorry
+  have n_p_eq_1 : Fintype.card (Sylow p G) = 1 := by
+    apply?
+
+
+theorem subgroup_of_comm_group_is_normal (CommGroup H): H.normal := by
+
