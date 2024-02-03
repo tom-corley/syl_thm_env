@@ -29,39 +29,64 @@ The Sylow theorems are the following results for every finite group `G` and ever
 
 ## Main statements
 
+-- SYLOWS 1ST THEOREM (EXISTENCE)
 * `exists_subgroup_card_pow_prime`: A generalization of Sylow's first theorem:
   For every prime power `pⁿ` dividing the cardinality of `G`,
   there exists a subgroup of `G` of order `pⁿ`.
 * `IsPGroup.exists_le_sylow`: A generalization of Sylow's first theorem:
   Every `p`-subgroup is contained in a Sylow `p`-subgroup.
+
+-- SIZE OF SYLOW P-SUBGROUP
 * `Sylow.card_eq_multiplicity`: The cardinality of a Sylow subgroup is `p ^ n`
  where `n` is the multiplicity of `p` in the group order.
+
+
+-- SYLOWS 2ND THEOREM (CONJUGACY)
 * `sylow_conjugate`: A generalization of Sylow's second theorem:
   If the number of Sylow `p`-subgroups is finite, then all Sylow `p`-subgroups are conjugate.
+
+-- SYLOW'S 4TH THEOREM (NUMBER OF SYLOW P-SUBGROUPS)
 * `card_sylow_modEq_one`: A generalization of Sylow's third theorem:
   If the number of Sylow `p`-subgroups is finite, then it is congruent to `1` modulo `p`.
 -/
 
-
+-- This line opens namespaces in mathlib related to finite types, the multiplicative action, and subgroups
 open Fintype MulAction Subgroup
 
+-- This section does not assume groups are finite, introduces local context
 section InfiniteSylow
 
+/- Declares two variables:
+  A natural number p
+  G is a type variable of the most general type possible (contained within an arbitrary type universe),
+  but with the added constraint that G must have a group structure -/
 variable (p : ℕ) (G : Type*) [Group G]
 
-/-- A Sylow `p`-subgroup is a maximal `p`-subgroup. -/
+/-- A Sylow `p`-subgroup is a maximal `p`-subgroup.
+This is a type definition, defining a new structure Sylow, which extends subgroup, in this structure two axioms must be satisfied
+  1) The subgroup we are extending to a Sylow subgroup, must be a p-subgroup
+  2) It is a maximal p-subgroup, mathematically this is written as:
+      For all Subgroups Q of G, If Q is a p-subgroup of G such that the subgroup we are defining is contained in Q, then Q is the subgroup itself.
+-/
 structure Sylow extends Subgroup G where
   isPGroup' : IsPGroup p toSubgroup
   is_maximal' : ∀ {Q : Subgroup G}, IsPGroup p Q → toSubgroup ≤ Q → Q = toSubgroup
 #align sylow Sylow
 
+-- Resets scope of variable p and G, making them implicit
 variable {p} {G}
 
+-- New namespace
 namespace Sylow
 
+-- This line adds a coercion attribute to Sylow.toSubgroup, coercion allows us to convert types automatically,
+-- in this context, allowing us to treat a "Sylow" object like a "Subgroup"
 attribute [coe] Sylow.toSubgroup
 
 --Porting note: Changed to `CoeOut`
+/- CoeOut is a typeclass used for explicit type conversion, which is very useful in lean when dealing with complex hierachical mathematical objects like groups.
+  Here we are defining an instance for coercing a Sylow structure into a subgroup one, the angled brackets indicate the function Sylow.toSubgroup is used.
+-/
 instance : CoeOut (Sylow p G) (Subgroup G) :=
   ⟨Sylow.toSubgroup⟩
 
@@ -69,35 +94,64 @@ instance : CoeOut (Sylow p G) (Subgroup G) :=
 -- @[simp]
 -- theorem toSubgroup_eq_coe {P : Sylow p G} : P.toSubgroup = ↑P :=
 --   rfl
+-- Custom directive
 #noalign sylow.to_subgroup_eq_coe
 
+/- The ext atribute is used for extensionality theorems, in this case, we are proving that if two subgroups are the same,
+Then they are equal in the newly defined Sylow structure. -/
 @[ext]
 theorem ext {P Q : Sylow p G} (h : (P : Subgroup G) = Q) : P = Q := by cases P; cases Q; congr
 #align sylow.ext Sylow.ext
 
+/- This theorem then proves the converse, extending the theorem to an if and only if statement-/
 theorem ext_iff {P Q : Sylow p G} : P = Q ↔ (P : Subgroup G) = Q :=
   ⟨congr_arg _, ext⟩
 #align sylow.ext_iff Sylow.ext_iff
 
+/- Defines Sylow as an instance of the SetLike typeclass, we define the two properties needed for this typeclass:
+  1) coe := we use the general coercion operator, the up arrow ↑ to define the coercion function
+  2) we prove injectivty for this coercion function, that is, if two Sylow p-subgroups (the arguments _ _) have been coerced to the same object (which is the hypothesis h),
+    they are indeed the same Sylow p-subgroup, we prove this by extending this injectivity from G itself  -/
 instance : SetLike (Sylow p G) G where
   coe := (↑)
   coe_injective' _ _ h := ext (SetLike.coe_injective h)
 
+/- Defines Sylow as an instance of the SubgroupClass of G, we show three properties hold,
+proofs for all three use that Sylow extends Subgroup, for which these properties are already proven
+  1) mul_mem, this is that the multiplicative operation is closed within Sylow p G
+  2) one_mem, this is the prescence of the identiy in the subgroup
+  3) inv_mem, this is the prescence of inverses for every element in the subgroup-/
 instance : SubgroupClass (Sylow p G) G where
   mul_mem := Subgroup.mul_mem _
   one_mem _ := Subgroup.one_mem _
   inv_mem := Subgroup.inv_mem _
 
+-- We now fix a Sylow p-subgroup P as a variable
 variable (P : Sylow p G)
 
 /-- The action by a Sylow subgroup is the action by the underlying group. -/
+/- This instance defines for an arbitrary type alpha, and a multiplicative left action of G on it,
+  P, the Sylow p-subgroup, also acts on it by left multiplication. It has previously been proven,
+  that subgroups can act on sets, so we use that P is itself a subgroup, and define this to be the action of P on a-/
 instance mulActionLeft {α : Type*} [MulAction G α] : MulAction P α :=
   inferInstanceAs (MulAction (P : Subgroup G) α)
 #align sylow.mul_action_left Sylow.mulActionLeft
 
+-- K is an arbitary type with a group structure, phi is a group homomorphism to G, and N is a subgroup of G
 variable {K : Type*} [Group K] (ϕ : K →* G) {N : Subgroup G}
 
 /-- The preimage of a Sylow subgroup under a p-group-kernel homomorphism is a Sylow subgroup. -/
+/- The following defines a function which takes a homomomorphism with a p group kernel, and constructs a Sylow p-Subgroup of K.
+  A few clarifications: hphi is the hypothesis that the kernel of the map phi is a p-group,
+  h is the hypothesis that P (coerced with ↑ from a Sylow p group to a subgroup) is a subgroup of the image of phi.
+
+  We take the preimage (comap) of P.1 (P as a subgroup) under phi, and then prove that this is a Sylow p-Subgroup of K.
+
+  First we show it is a p-group, this is done by using the hypothesis hphi
+  Second, we show it is a maximal p-group, this is more difficult,
+  we need to show an arbitrary p-subgroup Q such that P.1.comap phi is contained in Q, Q=P.1.comap phi, with some clever rewrites,
+  using properties of P and the map itself, and then exact, we can finish the proof.
+  -/
 def comapOfKerIsPGroup (hϕ : IsPGroup p ϕ.ker) (h : ↑P ≤ ϕ.range) : Sylow p K :=
   { P.1.comap ϕ with
     isPGroup' := P.2.comap_of_ker_isPGroup ϕ hϕ
@@ -107,6 +161,8 @@ def comapOfKerIsPGroup (hϕ : IsPGroup p ϕ.ker) (h : ↑P ≤ ϕ.range) : Sylow
       exact (comap_map_eq_self ((P.1.ker_le_comap ϕ).trans hle)).symm }
 #align sylow.comap_of_ker_is_p_group Sylow.comapOfKerIsPGroup
 
+/- The following theorem proves that a coercion to a subgroup of the Sylow p-subgroup obtained in the above definition,
+is the same as the pre-image obtained under phi. The proof uses the previous theorem and the coercion operator ↑-/
 @[simp]
 theorem coe_comapOfKerIsPGroup (hϕ : IsPGroup p ϕ.ker) (h : ↑P ≤ ϕ.range) :
     (P.comapOfKerIsPGroup ϕ hϕ h : Subgroup K) = Subgroup.comap ϕ ↑P :=
@@ -114,10 +170,15 @@ theorem coe_comapOfKerIsPGroup (hϕ : IsPGroup p ϕ.ker) (h : ↑P ≤ ϕ.range)
 #align sylow.coe_comap_of_ker_is_p_group Sylow.coe_comapOfKerIsPGroup
 
 /-- The preimage of a Sylow subgroup under an injective homomorphism is a Sylow subgroup. -/
+/- This definition is a special case of the more general definition of the kernel being a p group,
+if the group homomorphism is injective, the kernel is trivial, and therefore a p-group.-/
 def comapOfInjective (hϕ : Function.Injective ϕ) (h : ↑P ≤ ϕ.range) : Sylow p K :=
   P.comapOfKerIsPGroup ϕ (IsPGroup.ker_isPGroup_of_injective hϕ) h
 #align sylow.comap_of_injective Sylow.comapOfInjective
 
+/- The following theorem show equality between:
+  The subgroup coerced from the Sylow p group we obtain from the above definition, and
+  The preimage of P (coerced to a Subgroup) under phi-/
 @[simp]
 theorem coe_comapOfInjective (hϕ : Function.Injective ϕ) (h : ↑P ≤ ϕ.range) :
     ↑(P.comapOfInjective ϕ hϕ h) = Subgroup.comap ϕ ↑P :=
@@ -125,25 +186,34 @@ theorem coe_comapOfInjective (hϕ : Function.Injective ϕ) (h : ↑P ≤ ϕ.rang
 #align sylow.coe_comap_of_injective Sylow.coe_comapOfInjective
 
 /-- A sylow subgroup of G is also a sylow subgroup of a subgroup of G. -/
+/- This definition allows us to construct a Sylow p subgroup of N, if P (coerced to a subgroup) is a subgroup of N,
+the proof uses functions from earlier mathlib files and uses the inclusion map from subtype. -/
 protected def subtype (h : ↑P ≤ N) : Sylow p N :=
   P.comapOfInjective N.subtype Subtype.coe_injective (by rwa [subtype_range])
 #align sylow.subtype Sylow.subtype
 
+/- This theorem states that the subgroup coerced out of the above definition is the same as the subgroupOf function,
+its proven by definitional equality using the rfl tactic-/
 @[simp]
 theorem coe_subtype (h : ↑P ≤ N) : ↑(P.subtype h) = subgroupOf (↑P) N :=
   rfl
 #align sylow.coe_subtype Sylow.coe_subtype
 
+/- This theorem states that the subtype function we defined earlier is injective, that is, given two Sylow p-Subgroups P and Q,
+ both subgroups of N, that evaluate to the same subtype group, P=Q, to prove this we use extensionality and the exact tactic.-/
 theorem subtype_injective {P Q : Sylow p G} {hP : ↑P ≤ N} {hQ : ↑Q ≤ N}
     (h : P.subtype hP = Q.subtype hQ) : P = Q := by
   rw [SetLike.ext_iff] at h ⊢
   exact fun g => ⟨fun hg => (h ⟨g, hP hg⟩).mp hg, fun hg => (h ⟨g, hQ hg⟩).mpr hg⟩
 #align sylow.subtype_injective Sylow.subtype_injective
 
+-- End of the Sylow namespace
 end Sylow
+
 
 /-- A generalization of **Sylow's first theorem**.
   Every `p`-subgroup is contained in a Sylow `p`-subgroup. -/
+-- PROOF OF SYLOWS 1st THEOREM, that is if we have a p subgroup of G, there exists a Sylow p-subgroup Q containing it.
 theorem IsPGroup.exists_le_sylow {P : Subgroup G} (hP : IsPGroup p P) : ∃ Q : Sylow p G, P ≤ Q :=
   Exists.elim
     (zorn_nonempty_partialOrder₀ { Q : Subgroup G | IsPGroup p Q }
