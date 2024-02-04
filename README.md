@@ -6,7 +6,7 @@ In formal written mathematics, A group $G$ is often defined to be a set $G$, end
 
 1.  Associativity: $\; \; \; \; \forall a,b,c\in G, \; a \circ (b \circ c) = (a \circ b) \circ c $
 2.  Identity: $ \; \; \; \; \; \; \; \; \; \;\exists 1_G \in G: \; \forall g \in G, \; 1_G \circ g = g \circ 1_G = g $
-3.  Inverses: $ \; \; \; \; \; \; \; \; \; \;\forall g \in G, \exists g^{-1} \in G: \;  g \circ g^{-1} = g^{-1} \circg = 1_G $
+3.  Inverses: $ \; \; \; \; \; \; \; \; \; \;\forall g \in G, \exists g^{-1} \in G: \;  g \circ g^{-1} = g^{-1} \circ g = 1_G $
 
 For formal verification, and in particular in this case, and also the setting of functional programming it is instead advisable to build up to the structure of a group recursively, through three intermediate structures. We do so by defining the following: 
 
@@ -28,8 +28,8 @@ In the following, G denotes a finite group, and p a prime:
 
 We define the following:
 
-    p-subgroup: A subgroup with order p^i for some natural number i
-    Sylow p-subgroup: A p-subgroup with i maximal, i.e its index in G is not divisible by p
+    p-Subgroup: A subgroup with order p^i for some natural number i
+    Sylow p-Subgroup: A p-subgroup with i maximal, i.e its index in G is not divisible by p
     &Syl_p(G)$: The set of Sylow p-subgroups in G
 
 Insert theorems 1-4 here:

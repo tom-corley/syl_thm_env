@@ -214,6 +214,14 @@ end Sylow
 /-- A generalization of **Sylow's first theorem**.
   Every `p`-subgroup is contained in a Sylow `p`-subgroup. -/
 -- PROOF OF SYLOWS 1st THEOREM, that is if we have a p subgroup of G, there exists a Sylow p-subgroup Q containing it.
+/- Breaking down proof step by step:
+  Exists.elim gets rid of the there exists quantifier, modifies goal to finding a maximal p-group x which contains P,
+  We then use Zorn's Lemma from set theory to construct this maximal element in the set of Subgroups of G which are p groups
+  We then need to show this element satisfies the subgroup structure, so we use some clever tactics to prove this
+  the goal is altered slightly with refine' Exists.imp. The tactic rwa is used for rewrites, this proof is quite complex,
+  it utilises the implementation of set theory in lean, and for full understanding, a lot of set-theoretic knowledge is necessary
+  -/
+
 theorem IsPGroup.exists_le_sylow {P : Subgroup G} (hP : IsPGroup p P) : ∃ Q : Sylow p G, P ≤ Q :=
   Exists.elim
     (zorn_nonempty_partialOrder₀ { Q : Subgroup G | IsPGroup p Q }
@@ -231,6 +239,7 @@ theorem IsPGroup.exists_le_sylow {P : Subgroup G} (hP : IsPGroup p P) : ∃ Q : 
     fun {Q} ⟨hQ1, hQ2, hQ3⟩ => ⟨⟨Q, hQ1, hQ3 _⟩, hQ2⟩
 #align is_p_group.exists_le_sylow IsPGroup.exists_le_sylow
 
+/- Defines the Sylow structure as an instance of the nonempty subclass, a proof for this is simply to use the above theorem -/
 instance Sylow.nonempty : Nonempty (Sylow p G) :=
   nonempty_of_exists IsPGroup.of_bot.exists_le_sylow
 #align sylow.nonempty Sylow.nonempty
@@ -239,17 +248,23 @@ noncomputable instance Sylow.inhabited : Inhabited (Sylow p G) :=
   Classical.inhabited_of_nonempty Sylow.nonempty
 #align sylow.inhabited Sylow.inhabited
 
+/- This theorem states that if P is a Sylow p-Subgroup of H, and f is a Group Homomorphism from H to G,
+   and the kernel of the homomorphism is a p-group, then there exists a Sylow p subgroup of G called Q,
+   such that P is the pre-image Q under the group homomorphism f, the tactics used are similair to earlier comap proofs. -/
 theorem Sylow.exists_comap_eq_of_ker_isPGroup {H : Type*} [Group H] (P : Sylow p H) {f : H →* G}
     (hf : IsPGroup p f.ker) : ∃ Q : Sylow p G, (Q : Subgroup G).comap f = P :=
   Exists.imp (fun Q hQ => P.3 (Q.2.comap_of_ker_isPGroup f hf) (map_le_iff_le_comap.mp hQ))
     (P.2.map f).exists_le_sylow
 #align sylow.exists_comap_eq_of_ker_is_p_group Sylow.exists_comap_eq_of_ker_isPGroup
 
+/- This theorem states that the same as above holds, if instead of assuming p-group kernel, we instead assume the injectivity of f,
+   (which is equivalent to the group homomorphism having trival kernel, which is a p group for any p).-/
 theorem Sylow.exists_comap_eq_of_injective {H : Type*} [Group H] (P : Sylow p H) {f : H →* G}
     (hf : Function.Injective f) : ∃ Q : Sylow p G, (Q : Subgroup G).comap f = P :=
   P.exists_comap_eq_of_ker_isPGroup (IsPGroup.ker_isPGroup_of_injective hf)
 #align sylow.exists_comap_eq_of_injective Sylow.exists_comap_eq_of_injective
 
+/- This theorem is about subtypes, which I need to understand more fully.-/
 theorem Sylow.exists_comap_subtype_eq {H : Subgroup G} (P : Sylow p H) :
     ∃ Q : Sylow p G, (Q : Subgroup G).comap H.subtype = P :=
   P.exists_comap_eq_of_injective Subtype.coe_injective
@@ -257,6 +272,9 @@ theorem Sylow.exists_comap_subtype_eq {H : Subgroup G} (P : Sylow p H) :
 
 /-- If the kernel of `f : H →* G` is a `p`-group,
   then `Fintype (Sylow p G)` implies `Fintype (Sylow p H)`. -/
+/- Fintype is a typeclass in Mathlib4 used for types that contain a finite number of objects, e.g finite groups.
+   This definition shows that if we have a group homomorphism from H to G, with p group kernel,
+   and G has a finite number of Sylow p-Subgroups, then so does H-/
 noncomputable def Sylow.fintypeOfKerIsPGroup {H : Type*} [Group H] {f : H →* G}
     (hf : IsPGroup p f.ker) [Fintype (Sylow p G)] : Fintype (Sylow p H) :=
   let h_exists := fun P : Sylow p H => P.exists_comap_eq_of_ker_isPGroup hf
@@ -266,23 +284,30 @@ noncomputable def Sylow.fintypeOfKerIsPGroup {H : Type*} [Group H] {f : H →* G
 #align sylow.fintype_of_ker_is_p_group Sylow.fintypeOfKerIsPGroup
 
 /-- If `f : H →* G` is injective, then `Fintype (Sylow p G)` implies `Fintype (Sylow p H)`. -/
+/- This is the same definition as above, but we switch the assumption from p group kernel to injectivity.-/
 noncomputable def Sylow.fintypeOfInjective {H : Type*} [Group H] {f : H →* G}
     (hf : Function.Injective f) [Fintype (Sylow p G)] : Fintype (Sylow p H) :=
   Sylow.fintypeOfKerIsPGroup (IsPGroup.ker_isPGroup_of_injective hf)
 #align sylow.fintype_of_injective Sylow.fintypeOfInjective
 
 /-- If `H` is a subgroup of `G`, then `Fintype (Sylow p G)` implies `Fintype (Sylow p H)`. -/
+/- This defines Sylow p H as an instance of Fintype, given that H ≤ G and G has a finite number of Sylow p-subgroups,
+in other words, H also has a finite number of Sylow p-subgroups-/
 noncomputable instance (H : Subgroup G) [Fintype (Sylow p G)] : Fintype (Sylow p H) :=
   Sylow.fintypeOfInjective H.subtype_injective
 
 /-- If `H` is a subgroup of `G`, then `Finite (Sylow p G)` implies `Finite (Sylow p H)`. -/
+/- The same as above but this time computable-/
 instance (H : Subgroup G) [Finite (Sylow p G)] : Finite (Sylow p H) := by
   cases nonempty_fintype (Sylow p G)
   infer_instance
 
+-- Opening new namespace / section
 open Pointwise
 
 /-- `Subgroup.pointwiseMulAction` preserves Sylow subgroups. -/
+/- This shows that the pointwise multilication action of an arbitrary set alpa on G is an action,
+   by verifying the Mathlib definition of Multiplicative action-/
 instance Sylow.pointwiseMulAction {α : Type*} [Group α] [MulDistribMulAction α G] :
     MulAction α (Sylow p G) where
   smul g P :=
@@ -295,37 +320,47 @@ instance Sylow.pointwiseMulAction {α : Type*} [Group α] [MulDistribMulAction �
   mul_smul g h P := Sylow.ext (mul_smul g h P.toSubgroup)
 #align sylow.pointwise_mul_action Sylow.pointwiseMulAction
 
+/- This theorem allows us to work with cosets of Sylow p-subgroups, by writing them as subgroups, proof is by reflexivity.-/
 theorem Sylow.pointwise_smul_def {α : Type*} [Group α] [MulDistribMulAction α G] {g : α}
     {P : Sylow p G} : ↑(g • P) = g • (P : Subgroup G) :=
   rfl
 #align sylow.pointwise_smul_def Sylow.pointwise_smul_def
 
+/- Defining the Action of G on the set of Sylow p-subgroups of G, by showing it is an instance of MulAction G. -/
 instance Sylow.mulAction : MulAction G (Sylow p G) :=
   compHom _ MulAut.conj
 #align sylow.mul_action Sylow.mulAction
 
+/- This theorem formally states that the action of a group element on a Sylow p-subgroup via conjugation,
+ is the same as applying the conjugation automorphism by that element.-/
 theorem Sylow.smul_def {g : G} {P : Sylow p G} : g • P = MulAut.conj g • P :=
   rfl
 #align sylow.smul_def Sylow.smul_def
 
+/- This theorem states that conjugating P by g is the same as conjugating P as a subgroup by g.-/
 theorem Sylow.coe_subgroup_smul {g : G} {P : Sylow p G} :
     ↑(g • P) = MulAut.conj g • (P : Subgroup G) :=
   rfl
 #align sylow.coe_subgroup_smul Sylow.coe_subgroup_smul
 
+/- Similair to the above proposition but we conjugate P as a set not a subgroup. -/
 theorem Sylow.coe_smul {g : G} {P : Sylow p G} : ↑(g • P) = MulAut.conj g • (P : Set G) :=
   rfl
 #align sylow.coe_smul Sylow.coe_smul
 
+/- If P is a subgroup of H, its P under conjugation by some element in H is also a subgroup of H-/
 theorem Sylow.smul_le {P : Sylow p G} {H : Subgroup G} (hP : ↑P ≤ H) (h : H) : ↑(h • P) ≤ H :=
   Subgroup.conj_smul_le_of_le hP h
 #align sylow.smul_le Sylow.smul_le
 
+/- This theorem is about subtypes, which I am finding difficult to pin down exactly. -/
 theorem Sylow.smul_subtype {P : Sylow p G} {H : Subgroup G} (hP : ↑P ≤ H) (h : H) :
     h • P.subtype hP = (h • P).subtype (Sylow.smul_le hP h) :=
   Sylow.ext (Subgroup.conj_smul_subgroupOf hP h)
 #align sylow.smul_subtype Sylow.smul_subtype
 
+/- g is in the normaliser, of P if and only if gPg^-1 = P, basically the definition of the normaliser.
+Proof uses rewrites and exact-/
 theorem Sylow.smul_eq_iff_mem_normalizer {g : G} {P : Sylow p G} :
     g • P = P ↔ g ∈ (P : Subgroup G).normalizer := by
   rw [eq_comm, SetLike.ext_iff, ← inv_mem_iff (G := G) (H := normalizer P.toSubgroup),
@@ -337,15 +372,20 @@ theorem Sylow.smul_eq_iff_mem_normalizer {g : G} {P : Sylow p G} :
           fun hh => ⟨(MulAut.conj g)⁻¹ h, hh, MulAut.apply_inv_self G (MulAut.conj g) h⟩⟩
 #align sylow.smul_eq_iff_mem_normalizer Sylow.smul_eq_iff_mem_normalizer
 
+/- If P is a normal Sylow p subgroup, gPg^-1 = P. Proof uses simp, follows from definition of normality.-/
 theorem Sylow.smul_eq_of_normal {g : G} {P : Sylow p G} [h : (P : Subgroup G).Normal] : g • P = P :=
   by simp only [Sylow.smul_eq_iff_mem_normalizer, normalizer_eq_top.mpr h, mem_top]
 #align sylow.smul_eq_of_normal Sylow.smul_eq_of_normal
 
+/- Theorem about fixed point under conjugation, H is in the normaliser of the Sylow subgroup P,
+  if and only if P is in the fixed points of the conjugation action of H on the Set of sylow p subgroups-/
 theorem Subgroup.sylow_mem_fixedPoints_iff (H : Subgroup G) {P : Sylow p G} :
     P ∈ fixedPoints H (Sylow p G) ↔ H ≤ (P : Subgroup G).normalizer := by
   simp_rw [SetLike.le_def, ← Sylow.smul_eq_iff_mem_normalizer]; exact Subtype.forall
 #align subgroup.sylow_mem_fixed_points_iff Subgroup.sylow_mem_fixedPoints_iff
 
+/- Theorem states that, if P is a p-subgroup of G, and Q is a Sylow p-subgroup,
+ then P intersect Q is the same as P interestect the normaliser of Q-/
 theorem IsPGroup.inf_normalizer_sylow {P : Subgroup G} (hP : IsPGroup p P) (Q : Sylow p G) :
     P ⊓ (Q : Subgroup G).normalizer = P ⊓ Q :=
   le_antisymm
@@ -355,6 +395,8 @@ theorem IsPGroup.inf_normalizer_sylow {P : Subgroup G} (hP : IsPGroup p P) (Q : 
     (inf_le_inf_left P le_normalizer)
 #align is_p_group.inf_normalizer_sylow IsPGroup.inf_normalizer_sylow
 
+/- This theorem states that if P is a p-subgroup of G and Q is a Sylow p subgroup of G, then
+   Q is in the set of fixed points of the action of P on the set of Sylow p G subgroups, if and only if P is a subgroup of Q.-/
 theorem IsPGroup.sylow_mem_fixedPoints_iff {P : Subgroup G} (hP : IsPGroup p P) {Q : Sylow p G} :
     Q ∈ fixedPoints P (Sylow p G) ↔ P ≤ Q := by
   rw [P.sylow_mem_fixedPoints_iff, ← inf_eq_left, hP.inf_normalizer_sylow, inf_eq_left]
@@ -362,6 +404,7 @@ theorem IsPGroup.sylow_mem_fixedPoints_iff {P : Subgroup G} (hP : IsPGroup p P) 
 
 /-- A generalization of **Sylow's second theorem**.
   If the number of Sylow `p`-subgroups is finite, then all Sylow `p`-subgroups are conjugate. -/
+/- SYLOW'S 2ND THEOREM, Sylow p-subgroups are conjugate, given there are a finite number of them.-/
 instance [hp : Fact p.Prime] [Finite (Sylow p G)] : IsPretransitive G (Sylow p G) :=
   ⟨fun P Q => by
     classical
@@ -391,6 +434,7 @@ variable (p) (G)
 
 /-- A generalization of **Sylow's third theorem**.
   If the number of Sylow `p`-subgroups is finite, then it is congruent to `1` modulo `p`. -/
+/- SYLOW'S 4TH THEOREM, The number of sylow p subgroups is congruent to 1 mod p-/
 theorem card_sylow_modEq_one [Fact p.Prime] [Fintype (Sylow p G)] :
     card (Sylow p G) ≡ 1 [MOD p] := by
   refine' Sylow.nonempty.elim fun P : Sylow p G => _
