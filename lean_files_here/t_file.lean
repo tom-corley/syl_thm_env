@@ -1,6 +1,6 @@
 import Mathlib
 
--- review of your code (KB)
+
 -- (KB) for problem at the very end, it seems to be fixed by using `Finite` instead of `Fintype`.
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Finite G]
 

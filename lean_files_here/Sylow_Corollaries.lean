@@ -66,10 +66,7 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
 
 -- Next, we'll show that P is normal in G
   have p6: Subgroup.Normal P  := by
-  {
-    apply Sylow.conjugate_subgroup
-    exact hP.2
-  }
+
 
 
 
