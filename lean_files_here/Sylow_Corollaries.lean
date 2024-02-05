@@ -54,7 +54,9 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
   have p4 : CommGroup P := by exact IsCyclic.commGroup
 
   have q4 : CommGroup Q := by exact IsCyclic.commGroup
+
   
+
 
 
 
