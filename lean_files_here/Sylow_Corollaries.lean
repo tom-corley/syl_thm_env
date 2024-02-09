@@ -65,7 +65,25 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
 ---have p5: Subgroup G := ⟨P, hP.1⟩
 
 -- Next, we'll show that P is normal in G
-  have p6: Subgroup.Normal P  := by
+  have p6: Subgroup.Normal P  := by sorry
+
+
+example (hG : Fintype.card G = 20) [Fintype (Sylow 5 G)] (P: Subgroup G)  [Fintype P]: ¬ IsSimpleGroup G := by
+  have h₀ : Nat.Prime 5 := by norm_num
+  have h₁ : Fintype.card G = 2^2 * 5 :=  by linarith [hG]
+  have h₂ : 5 ∣ (Fintype.card G) := by use 4
+  have h_3 := Sylow.exists_subgroup_card_pow_prime 5 1 ((pow_one 5).symm ▸ h₂)
+    -- rw [pow_one] at h_3
+  -- obtain ⟨P, hP⟩ : ∃ (P : Subgroup G), Fintype.card P = 5 :=
+    -- Sylow.exists_subgroup_card_pow_prime 5 h₀ h₂,
+  obtain ⟨P, hP⟩ := by exact h_3
+  have h_3 : Fintype.card (Sylow 5 P) = 5 := by sorry
+  have h₂ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := by sorry
+  have h_6 : Fintype.card (Sylow 5 G) ∣ (Fintype.card G / Fintype.card P) := by sorry
+
+
+
+
 
 
 

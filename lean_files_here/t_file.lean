@@ -1,60 +1,10 @@
-import Mathlib
-
-
-import Mathlib.Data.ZMod.Basic
-import Mathlib.GroupTheory.Index
-import Mathlib.Data.Finset.Card
-import Mathlib.GroupTheory.OrderOfElement
-import Mathlib.Data.Nat.Choose.Dvd
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Algebra.Group.Defs
-import Mathlib.GroupTheory.Subgroup.Basic
-import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import Mathlib.Data.Nat.Prime
 import Mathlib.GroupTheory.Sylow
-import Mathlib.GroupTheory.Coset
 
-open scoped Classical
-
-variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
-
--- Cauchy's Theorem 1 - G contains an element of order p
-theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
-   exact exists_prime_orderOf_dvd_card p hdvd
-   done
-
-theorem Cauchy_12 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
-   have P := Sylow p G
-
-   done
-
--- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
---Define the Sylow p-subgroup
-  have p0 : p ∣ Fintype.card G := by
-    rw [hpqq]
-    exact Nat.dvd_mul_right p q
-  have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
-  rw [pow_one] at p1
-  obtain ⟨P, hP⟩ := by exact p1
---Define the Sylow q-subgroup
-  have q0 : q ∣ Fintype.card G := by
-    rw [hpqq]
-    exact Nat.dvd_mul_left q p
-  have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
-  rw [pow_one] at q1
-  obtain ⟨Q, hQ⟩ := by exact q1
---Show the Sylow p-subgroup is normal
-  have p2 : Fintype.card (Sylow p G) = 1 := by
-    apply?
+-- p is a prime, G is a finite group
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G] -- decided to define variable first so we don't have to
 
 
-
-
-
-
-
-
-
-
-  sorry
+example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
+  have h₀ : Nat.Prime 5 := by norm_num
+  have h₁ : Fintype.card G = 2^2 * 5^1 :=  by linarith [hG]
+  have h₂ : 5 ∣ (Fintype.card G) := by use 4
