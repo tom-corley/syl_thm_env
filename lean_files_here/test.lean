@@ -16,5 +16,5 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hdvd: p<q ∧ Na
     exact Nat.dvd_mul_right p q -- (KB) I hope you found this with `exact?`. The goal is
     -- *obviously* going to be in the library, it's such a natural statement.
   have h1 : ∃ P : Sylow p G, Nat.card P = p := by
-    apply?
+    
   sorry
