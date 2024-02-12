@@ -10,6 +10,8 @@ import Mathlib.GroupTheory.Subgroup.Basic
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Data.Nat.Prime
 import Mathlib.GroupTheory.Sylow
+import Mathlib.GroupTheory.Coset
+import Mathlib.GroupTheory.GroupAction.Defs
 
 open scoped Classical
 
@@ -20,13 +22,24 @@ theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
    exact exists_prime_orderOf_dvd_card p hdvd
    done
 
-theorem Cauchy_12 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
+theorem Cauchy_12 (hdvd : p ∣ Nat.card G) : ∃ g : G, orderOf g = p := by
    have P := Sylow p G
-
+   sorry
    done
 
+theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
+(h : (P : Subgroup G).Normal) : Unique (Sylow p G) := by
+    refine { uniq := fun Q ↦ ?_ }
+    obtain ⟨x, h1⟩ := exists_smul_eq G P Q
+    obtain ⟨x, h2⟩ := exists_smul_eq G P default
+    rw [Sylow.smul_eq_of_normal] at h1 h2
+    rw [← h1, ← h2]
+    done
+
+
+
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
+theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
 --Define the Sylow p-subgroup
   have p0 : p ∣ Fintype.card G := by
     rw [hpqq]
@@ -42,8 +55,8 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
   rw [pow_one] at q1
   obtain ⟨Q, hQ⟩ := by exact q1
 --Show the Sylow p-subgroup is normal
-  --have p2 : Fintype.card (Sylow p G) = 1 := by
-    --apply exists_eq_mul_left_of_dvd(Nat.ModEq.dvd(card_sylow_modEq_one p G)) by
+  --have p2 : Nat.card (Sylow p G) = 1 := by
+   --apply exists_eq_mul_left_of_dvd(Nat.ModEq.dvd(card_sylow_modEq_one p G))
 
   have p3 : IsCyclic P := by
     exact isCyclic_of_prime_card hP
@@ -55,7 +68,25 @@ theorem C_pq (q : ℕ) [hp : Fact (Nat.Prime p)] [hq : Fact q.Prime] (hpq: p<q) 
 
   have q4 : CommGroup Q := by exact IsCyclic.commGroup
 
-  
+  have p5: Subgroup.Normal P := by sorry
+
+  have q5: Subgroup.Normal Q := by sorry
+
+
+
+
+  -- Show the Sylow p-subgroup is normal
+-- First, let's prove that P is a subgroup of G
+---have p5: Subgroup G := ⟨P, hP.1⟩
+
+-- Next, we'll show that P is normal in G
+  have p6: Subgroup.Normal P  := by
+  {
+    apply Sylow.conjugate_subgroup
+    exact hP.2
+  }
+
+
 
 
 
