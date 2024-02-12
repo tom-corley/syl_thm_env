@@ -47,11 +47,17 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
   rw [pow_one] at p1
   obtain ⟨P, hP⟩ := by exact p1
---Show that the Sylow p-subgroup is unique
-  have p11 : (P : Subgroup G).index = q := by
-      exact?
-  have p1 : Fintype.card (Sylow p G) ∣ q := by
 
+  have p111 : ∃ P : Sylow p G, Fintype.card P = p := by
+    sorry
+--Show that the Sylow p-subgroup is unique
+  have p11 : (P : Subgroup G).index = q :=
+      --Subgroup.card_mul_index
+      sorry
+
+  have p1 : Fintype.card (Sylow p G) ∣ q := by
+    -- apply card_sylow_dvd_index P
+    sorry
 
 --Define the Sylow q-subgroup
   have q0 : q ∣ Fintype.card G := by
