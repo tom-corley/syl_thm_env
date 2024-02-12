@@ -30,8 +30,8 @@ theorem Cauchy_12 (hdvd : p ∣ Nat.card G) : ∃ g : G, orderOf g = p := by
 theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
 (h : (P : Subgroup G).Normal) : Unique (Sylow p G) := by
     refine { uniq := fun Q ↦ ?_ }
-    obtain ⟨x, h1⟩ := exists_smul_eq G P Q
-    obtain ⟨x, h2⟩ := exists_smul_eq G P default
+    obtain ⟨x, h1⟩ := MulAction.exists_smul_eq G P Q
+    obtain ⟨x, h2⟩ := MulAction.exists_smul_eq G P default
     rw [Sylow.smul_eq_of_normal] at h1 h2
     rw [← h1, ← h2]
     done
@@ -47,6 +47,12 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
   rw [pow_one] at p1
   obtain ⟨P, hP⟩ := by exact p1
+--Show that the Sylow p-subgroup is unique
+  have p11 : (P : Subgroup G).index = q := by
+      exact?
+  have p1 : Fintype.card (Sylow p G) ∣ q := by
+
+
 --Define the Sylow q-subgroup
   have q0 : q ∣ Fintype.card G := by
     rw [hpqq]
@@ -54,23 +60,28 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
   rw [pow_one] at q1
   obtain ⟨Q, hQ⟩ := by exact q1
+
+
+
+
+
 --Show the Sylow p-subgroup is normal
   --have p2 : Nat.card (Sylow p G) = 1 := by
    --apply exists_eq_mul_left_of_dvd(Nat.ModEq.dvd(card_sylow_modEq_one p G))
 
-  have p3 : IsCyclic P := by
-    exact isCyclic_of_prime_card hP
+ -- have p3 : IsCyclic P := by
+ --  exact isCyclic_of_prime_card hP
 
-  have q3 : IsCyclic Q := by
-    exact isCyclic_of_prime_card hQ
+ -- have q3 : IsCyclic Q := by
+  --  exact isCyclic_of_prime_card hQ
 
-  have p4 : CommGroup P := by exact IsCyclic.commGroup
+--  have p4 : CommGroup P := by exact IsCyclic.commGroup
 
-  have q4 : CommGroup Q := by exact IsCyclic.commGroup
+ -- have q4 : CommGroup Q := by exact IsCyclic.commGroup
 
-  have p5: Subgroup.Normal P := by sorry
+ -- have p5: Subgroup.Normal P := by sorry
 
-  have q5: Subgroup.Normal Q := by sorry
+ -- have q5: Subgroup.Normal Q := by sorry
 
 
 
