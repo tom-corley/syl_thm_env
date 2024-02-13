@@ -70,11 +70,12 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
     exact isCyclic_of_prime_card hQ
   obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
+  
 -- Show gh generates G ie gh has order pq
   have pq : orderOf (g*k) = p*q := by
     sorry
-  have p4 : orderOf h = Fintype.card P := by exact orderOf_eq_card_of_forall_mem_zpowers hP
-  have q4 : orderOf h = Fintype.card P := by exact orderOf_eq_card_of_forall_mem_zpowers hP
+
+
 --Show that the Sylow p-subgroup is unique
   have pp3 : Subgroup.index P = q := by
     sorry
