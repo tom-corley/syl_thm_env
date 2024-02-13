@@ -53,7 +53,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   have p3 : IsCyclic P := by
     exact isCyclic_of_prime_card hP
 -- idk why its complaining anymore i was trying to get a generator for P
---  obtain ⟨g, hg⟩ := IsCyclic.exists_generator P
+  obtain ⟨g, hg⟩ := IsCyclic.exists_generator P
 
 -- Define the Sylow q-subgroup
   have q0 : q ∣ Fintype.card G := by
@@ -70,7 +70,8 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   obtain ⟨h, hh⟩ := by
     exact q
 -- Show gh generates G ie gh has order pq
-  have pq : orderOf (g*h)
+  have pq : orderOf (g*h) = pq := by
+    sorry
 
 
 --Show that the Sylow p-subgroup is unique
