@@ -54,6 +54,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
     exact isCyclic_of_prime_card hP
 -- idk why its complaining anymore i was trying to get a generator for P
 --  obtain ⟨g, hg⟩ := IsCyclic.exists_generator P
+  have: ∃ g ∈ P, ∀ (x : P), x ∈ Subgroup.zpowers g:= by apply IsCyclic.exists_generator
 
 -- Define the Sylow q-subgroup
   have q0 : q ∣ Fintype.card G := by
