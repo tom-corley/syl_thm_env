@@ -71,7 +71,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 -- Show gh generates G ie gh has order pq
-  have pq : g*k \
+  have pq : ↑(g * k) ∈ G := by -- idk how to do it
     sorry
 
   have pp4 : Fintype.card (Sylow p G) ∣ q := by
