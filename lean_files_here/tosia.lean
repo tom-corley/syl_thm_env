@@ -4,6 +4,7 @@ import Mathlib.Data.ZMod.Basic -- Contains definition of modular equality
 import Mathlib.GroupTheory.Index -- Contains definition of group index
 import Mathlib.GroupTheory.Subgroup.Basic -- Contains definition of a normal subgroup
 import Mathlib.Data.Nat.Prime -- Contains definition of a prime
+import Mathlib.Data.Nat.ModEq
 
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
@@ -40,7 +41,10 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
   have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Fintype.card G)/(Fintype.card Q) := by sorry
   have h₆ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by sorry
-  have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by exact of_decide_eq_false rfl
+  have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by
+    -- intro h
+    -- contradiction
+    decide
 
   -- Establish that there is exactly one Sylow 5-subgroup in G
 
