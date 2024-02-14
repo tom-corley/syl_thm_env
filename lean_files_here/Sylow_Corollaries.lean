@@ -64,12 +64,11 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 
 -- Show g and k commute
-  have g_k_commute : Commute (g : G) k := by
-    sorry
-
+  have g_k_commute : Commute (g : G) k := by sorry
+   -- exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime
 -- Show gh generates G ie gh has order pq
   have pq : Nat.Coprime (orderOf g) (orderOf k) → orderOf ((g : G) * k) = orderOf g * orderOf k := by
-    --exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime g_k_commute
+    exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime g_k_commute
    sorry
 
   have order : Fintype.card G = orderOf ((g : G) * k) := by

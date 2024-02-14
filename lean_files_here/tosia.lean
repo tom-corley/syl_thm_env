@@ -62,6 +62,18 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- This final step uses the definition of a simple group, which cannot have non-trivial normal subgroups
   exact h₁₀
 
+variables {G : Type*} [Group G] {H K : Subgroup G} [Fintype H] [Fintype K]
+variables {p q : ℕ} [Fact (Nat.Prime p)] [Fact (Nat.Prime q)]
+variables (hpq : p ≠ q) (hH : IsCyclic H) (hK : IsCyclic K)
+variables (hp : Fintype.card H = p) (hq : Fintype.card K = q)
+
+theorem cyclic_subgroups_of_distinct_prime_orders_commute
+  : ∀ (g : H) (k : K), Commute (g : G) k := by
+  intro g
+  intro k
+  exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime h_coprime
+
+
 
 lemma group_order_pq_not_simple' {p : ℕ} {q : ℕ} [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)] (hpq : p < q) {G : Type _} [Group G] [Fintype G] (h : Fintype.card G = p * q) : ¬ IsSimpleGroup G := by
   -- denote a Sylow `q` subgroup by `Q`
