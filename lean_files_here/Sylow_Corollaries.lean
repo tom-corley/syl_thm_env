@@ -14,6 +14,7 @@ import Mathlib.GroupTheory.Coset
 import Mathlib.GroupTheory.GroupAction.Defs
 
 open scoped Classical
+open Subgroup
 
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
@@ -62,9 +63,21 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 
+-- Show g and k commute
+  -- have gk_commute : (g : G)*k = k*g := by
+  --  have h₁ : (g : G) * k = g⁻¹⁻¹ * k := by rw [inv_inv]
+  --  have h₂ : (k : G) * g = k * g⁻¹⁻¹ := by rw [inv_inv]
+  -- rw [←mul_assoc, ←mul_assoc, h₁, ←mul_assoc g⁻¹, mul_right_inv, one_mul, h₂]
+
 -- Show gh generates G ie gh has order pq
-  have pq : orderOf ((g : G) * k) = p*q := by
-      apply?
+  have pq : orderOf ((g : G) * k) = orderOf g * orderOf k := by
+    have g_k_commute : Commute (g : G) k := by
+      sorry
+    exact?
+
+
+
+
 
 
 --Show that the Sylow p-subgroup is unique
