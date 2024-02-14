@@ -23,7 +23,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- We extract the actual subgroup Q which satisfies the Sylow p-subgroup conditions for p=5
   obtain ⟨Q, hQ⟩ := h₃
 
-  have : Fintype ↥Q := Fintype.ofFinite ↥Q
+  have : Fintype Q := Fintype.ofFinite Q
 
   have : (Nat.factorization 20) 5 = 1 := sorry
   have card_eq : Fintype.card Q = 5 ^ (Nat.factorization (Fintype.card G)) 5 := by
@@ -36,14 +36,15 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
 
    -- Use Sylow's theorems to deduce the number of Sylow p-subgroups is congruent to 1 mod p
   have h₄ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := card_sylow_modEq_one 5 G
-  have h₅ : Fintype.card (Sylow 5 G) = 5 ∨ Fintype.card (Sylow 5 G) = 1 := by sorry
 
   -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
-  have h₆ : (Fintype.card (Sylow 5 G)) ∣ (Fintype.card G)/(Fintype.card Q) := by sorry
-  have h₇ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by sorry
+  have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Fintype.card G)/(Fintype.card Q) := by sorry
+  have h₆ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by sorry
+  have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by exact of_decide_eq_false rfl
 
   -- Establish that there is exactly one Sylow 5-subgroup in G
-  have h₈ : Fintype.card (Sylow 5 G) = 1 := by exact?
+
+  have h₈ : Fintype.card (Sylow 5 G) = 1 := by sorry
 
   -- Conclude the existence and uniqueness of the Sylow 5-subgroup, implying it is normal
   -- The uniqueness of the Sylow subgroup follows from h₈ and the properties of Sylow subgroups
