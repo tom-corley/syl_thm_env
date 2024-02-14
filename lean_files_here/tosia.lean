@@ -36,14 +36,14 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
 
    -- Use Sylow's theorems to deduce the number of Sylow p-subgroups is congruent to 1 mod p
   have h₄ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := card_sylow_modEq_one 5 G
-  -- have h₅ : Fintype.card (Sylow 5 G) = 5 ∨ Fintype.card (Sylow 5 G) = 1 := by sorry
+  have h₅ : Fintype.card (Sylow 5 G) = 5 ∨ Fintype.card (Sylow 5 G) = 1 := by sorry
 
   -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
   have h₆ : (Fintype.card (Sylow 5 G)) ∣ (Fintype.card G)/(Fintype.card Q) := by sorry
   have h₇ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by sorry
 
   -- Establish that there is exactly one Sylow 5-subgroup in G
-  have h₈ : Fintype.card (Sylow 5 G) = 1 := by sorry
+  have h₈ : Fintype.card (Sylow 5 G) = 1 := by exact?
 
   -- Conclude the existence and uniqueness of the Sylow 5-subgroup, implying it is normal
   -- The uniqueness of the Sylow subgroup follows from h₈ and the properties of Sylow subgroups
@@ -56,4 +56,16 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   -- This final step uses the definition of a simple group, which cannot have non-trivial normal subgroups
   exact h₁₀
-```
+
+
+lemma group_order_pq_not_simple' {p : ℕ} {q : ℕ} [hp : Fact (Nat.Prime p)] [hq : Fact (Nat.Prime q)] (hpq : p < q) {G : Type _} [Group G] [Fintype G] (h : Fintype.card G = p * q) : ¬ IsSimpleGroup G := by
+  -- denote a Sylow `q` subgroup by `Q`
+  cases' IsPGroup.exists_le_sylow (IsPGroup.of_bot (p := q) (G := G)) with Q triv
+  let N := Subgroup.normalizer (Q : Subgroup G)
+  -- `Q` has `q` elements so `Q ≠ ⊥`
+  have nontriv₁ : (Q : Subgroup G) ≠ ⊥ := by
+    by_contra contra
+    rw [← Subgroup.card_eq_one] at contra
+    have hQ := Sylow.card_eq_multiplicity Q
+    classical
+    rw [← Nat.card_eq_fintype_card] at hQ
