@@ -72,7 +72,10 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
     --exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime g_k_commute
    sorry
 
-  
+  have order : Fintype.card G = orderOf ((g : G) * k) := by
+    sorry
+
+  exact isCyclic_of_orderOf_eq_card (↑g * ↑k) (id order.symm)
 
 
 
