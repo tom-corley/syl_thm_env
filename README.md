@@ -8,7 +8,7 @@ In formal written mathematics, A group $G$ is often defined to be a set $G$, end
 2.  Identity: $ \; \; \; \; \; \; \; \; \; \;\exists 1_G \in G: \; \forall g \in G, \; 1_G \circ g = g \circ 1_G = g $
 3.  Inverses: $ \; \; \; \; \; \; \; \; \; \;\forall g \in G, \exists g^{-1} \in G: \;  g \circ g^{-1} = g^{-1} \circ g = 1_G $
 
-For formal verification, and in particular in this case, and also the setting of functional programming it is instead advisable to build up to the structure of a group recursively, through three intermediate structures. We do so by defining the following: 
+For formal verification, and in particular in this case, and also the setting of functional programming it is instead advisable to build up to the structure of a group recursively, through three intermediate alstructures. We do so by defining the following: 
 
     Setoid: A set, equipped with a closed binary operation on itself.
 
@@ -66,6 +66,27 @@ We then used our implementation to give some examples of proving the simplicity,
 A group of order 20 is simple:
 
 A group of order ? is non-simple:
+
+## Progress Report / Evaluation
+
+During the course of the project, our goals shifted many times, and it became apparent after a great deal of effort that programming a unique and extensive proof of Sylow's Theorem's with only minimal use of dependencies was too ambitious a goal, and we have ultimately been unable to reach some of the intended goals of the project. 
+
+However, as a group, we have expended a vast amout of time and effort furthering our understanding of Lean, and while we have not been able to do everything we originally intended to do, we still have a lot to show for our efforts.
+
+Firstly, we have commented extensively on the Sylow.lean file, and have worked very hard to understand the intricacies of how Sylow's theorem's are set out in Mathlib.
+
+Secondly, we have an initial skeleton, titled Sylow_Skeletonlean which is filled out with attempted proofs, some of which more complete then others. 
+
+We then have a second skeleton, New_Skeleton.lean, which is largely empty, but contains some initial attempts to redefine key concepts.
+
+The final piece of work making up our submission is the file Sylow_Corollaries.lean, which contains attempted proofs deduced from the theorems and definitions contained in the Sylow.lean file. These include Cauchy's theorem, as well as classifications for specific families of finite groups. 
+
+We understand that this submission is somewhatunorthodox, byt our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
+
+Tom, Antonita & Roshan
+
+
+
 
 
 
