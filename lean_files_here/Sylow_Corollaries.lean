@@ -38,6 +38,8 @@ theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
     rw [Sylow.smul_eq_of_normal] at h1 h2
     rw [← h1, ← h2]
 
+-- If G has a unique Sylow p-subgroup P, then it is normal in G
+
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
 theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
 -- Define the Sylow p-subgroup
