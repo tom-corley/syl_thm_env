@@ -75,24 +75,27 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 
 -- Show g and k commute
-  have g_k_commute : Commute (g : G) k := by
-    sorry
+  have g_k_commute : Commute (g : G) (k : G) := by sorry
 
--- Show gh generates G ie gh has order pq
-  have pq : Nat.Coprime (orderOf (g : G)) (orderOf (k : G)) → orderOf (g * k : G) = orderOf (g : G) * orderOf (k : G) := by
-    exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime g_k_commute
-  rw [orderOf_coe, orderOf_coe, p4, q4, p2, q2] at pq
-
+-- Show p and q are coprime
   have pq_coprime : Nat.gcd p q = 1 := by
    refine (Nat.coprime_primes ?pp ?pq).mpr ?_
    apply hp.1
    apply hq.1
    exact Nat.ne_of_lt hpq
 
+-- Show gh generates G ie gh has order pq
+  have pq : Nat.Coprime (orderOf (g : G)) (orderOf (k : G)) → orderOf (g * k : G) = orderOf (g : G) * orderOf (k : G) := by
+    exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime g_k_commute
+-- Rewrite this statement so we can use it
+  rw [orderOf_coe, orderOf_coe, p4, q4, p2, q2] at pq
+
+-- Show that the order of G matches the order of gk
   have order : Fintype.card G = orderOf (g* k : G) := by
     rw [hpqq, pq]
     apply pq_coprime
 
+-- Finally we can use the fact that G contains an element which has order pq, so it must generate G
   exact isCyclic_of_orderOf_eq_card (↑g * ↑k) (id order.symm)
 
 
