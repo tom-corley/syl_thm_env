@@ -15,10 +15,6 @@ import Mathlib.GroupTheory.GroupAction.Defs
 
 open scoped Classical
 
-
-
-
-
 variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
 
 variable {H : Subgroup G}
@@ -74,15 +70,15 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 
--- Show g and k commute
-  have g_k_commute : Commute (g : G) (k : G) := by sorry
-
 -- Show p and q are coprime
   have pq_coprime : Nat.gcd p q = 1 := by
    refine (Nat.coprime_primes ?pp ?pq).mpr ?_
    apply hp.1
    apply hq.1
    exact Nat.ne_of_lt hpq
+
+-- Show g and k commute
+  have g_k_commute : Commute (g : G) (k : G) := by sorry
 
 -- Show gh generates G ie gh has order pq
   have pq : Nat.Coprime (orderOf (g : G)) (orderOf (k : G)) → orderOf (g * k : G) = orderOf (g : G) * orderOf (k : G) := by
