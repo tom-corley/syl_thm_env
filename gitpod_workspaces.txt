@@ -1,6 +1,6 @@
 Gitpod Workspaces with Mathlib and lean (lmk if there are issues):
 
 Roshan - https://gitpod.io/start/#tomcorley-sylthmenv-lyph4qf38ac
-Antonita - https://gitpod.io/start/#tomcorley-sylthmenv-rb9gxveejg6
+Antonina - https://gitpod.io/start/#tomcorley-sylthmenv-rb9gxveejg6
 Ben - https://gitpod.io/start/#tomcorley-sylthmenv-2u377psepfs
 Tom - https://gitpod.io/start/#tomcorley-sylthmenv-wog85wimlwy
