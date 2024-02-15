@@ -67,9 +67,10 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq:
   have g_k_commute : Commute (g : G) k := by sorry
    -- exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime
 -- Show gh generates G ie gh has order pq
-  have pq : Nat.Coprime (orderOf g) (orderOf k) → orderOf ((g : G) * k) = orderOf g * orderOf k := by
+  have pq : Nat.Coprime (orderOf (g : G)) (orderOf (k : G)) → orderOf (g * k : G) = orderOf (g : G) * orderOf (k : G) := by
     exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime g_k_commute
-   sorry
+
+  rw [P.orderOf_coe, Q.orderOf_coe, p4, q4, p2, q2] at pq
 
   have order : Fintype.card G = orderOf ((g : G) * k) := by
     sorry
