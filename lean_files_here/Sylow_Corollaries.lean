@@ -56,6 +56,9 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
     exact card_sylow_dvd_index Q
 
 -- a Sylow q-subgroup exists
+  have q0 : q ∣ Fintype.card G := by
+    rw [hG]
+    exact Nat.dvd_mul_left q p
   have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
   rw [pow_one] at q1
   obtain ⟨Q, hQ⟩ := q1
@@ -87,9 +90,7 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   | inl h => exact h
   | inr h => rw [h] at h1
              exact (h6 h1).elim
-  have q0 : q ∣ Fintype.card G := by
-    rw [hG]
-    exact Nat.dvd_mul_left q p
+
 
 
 
