@@ -46,6 +46,22 @@ theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
 -- If G is order pq such that p < q, then G has a unique Sylow q-subgroup
 theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)]
 (Q : Sylow q G) (h : p<q) (hG: Fintype.card G = p*q) : Fintype.card (Sylow q G) = 1 := by
+-- The Sylow q-subgroup has order q
+  have q0 : q ∣ Fintype.card G := by
+    rw [hG]
+    exact Nat.dvd_mul_left q p
+  have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
+  rw [pow_one] at q1
+  have q2 : Fintype.card (Q : Subgroup G) = q := by
+    have pp : p.Prime := Fact.out
+    have qp : q.Prime := Fact.out
+    rw [Sylow.card_eq_multiplicity]
+    convert pow_one _
+    rw [hG]
+    rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes pp qp).mpr h.ne)]
+    rw [Nat.factorization_eq_zero_of_lt h]
+    rw [qp.factorization_self]
+
 -- Number of Sylow q-subgroups is congruent to 1 MOD q
   have h1 : 1 ≡ Fintype.card (Sylow q G) [MOD q] := by
     exact Nat.ModEq.symm (card_sylow_modEq_one q G)
@@ -54,14 +70,6 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
 -- Number of Sylow q-subgroups divide the index |G:Q|
   have h2 : Fintype.card (Sylow q G) ∣ (Q : Subgroup G).index := by
     exact card_sylow_dvd_index Q
-
--- The Sylow q-subgroup has order q
-  have q0 : q ∣ Fintype.card G := by
-    rw [hG]
-    exact Nat.dvd_mul_left q p
-  have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
-  rw [pow_one] at q1
-  have q2 : Fintype.card (Q : Subgroup G) = q := by sorry
 
 -- Index |G:Q| is equal to p
   have h3 : Fintype.card G = (Q : Subgroup G).index * Fintype.card Q := by
@@ -89,15 +97,55 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   | inr h => rw [h] at h1
              exact (h6 h1).elim
 
+  exact Nat.not_eq_zero_of_lt h
 
-
+  sorry
 
   done
 
 
 -- If G is order pq such that p doesn't divide q-1, then G has a normal Sylow p-subgroup
-theorem pq_normal_sylow_p_subgroup [Finite (Sylow p G)] (P : Sylow q G)
-(h : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : (P : Subgroup G).Normal := by
+theorem pq_normal_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (P : Sylow p G)
+(h : p < q) (hh : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : (P : Subgroup G).Normal := by
+-- p does not divide q
+  have p_not_dvd_q : ¬ (p ∣ q) := by
+    have cpq : Nat.Coprime p q := by
+      have p_not_q : p ≠ q := by exact Nat.ne_of_lt h
+      exact (Nat.coprime_primes hp.1 hq.1).2 p_not_q
+    exact (Nat.Prime.coprime_iff_not_dvd hp.1).1 cpq
+
+-- The Sylow p-subgroup has order p
+  have p0 : p ∣ Fintype.card G := by
+    rw [hG]
+    exact Nat.dvd_mul_right p q
+  have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
+  rw [pow_one] at p1
+  have p2 : Fintype.card (P : Subgroup G) = p := by
+    have pp : p.Prime := Fact.out
+    have qp : q.Prime := Fact.out
+    rw [Sylow.card_eq_multiplicity]
+    convert pow_one _
+    rw [hG]
+    rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes pp qp).mpr h.ne)]
+    rw [Nat.Prime.factorization_self]
+    rw [Nat.factorization_eq_zero_of_not_dvd]
+    apply p_not_dvd_q
+    exact hp.1
+
+-- Number of Sylow p-subgroups is congruent to 1 MOD p
+  have h1 : 1 ≡ Fintype.card (Sylow p G) [MOD p] := by
+    exact Nat.ModEq.symm (card_sylow_modEq_one p G)
+  rw [Nat.modEq_iff_dvd'] at h1
+
+-- Number of Sylow p-subgroups divide the index |G:P|
+  have h2 : Fintype.card (Sylow p G) ∣ (P : Subgroup G).index := by
+    exact card_sylow_dvd_index P
+
+
+
+
+
+
   sorry
 
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
