@@ -55,22 +55,20 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   have h2 : Fintype.card (Sylow q G) ∣ (Q : Subgroup G).index := by
     exact card_sylow_dvd_index Q
 
--- a Sylow q-subgroup exists
+-- The Sylow q-subgroup has order q
   have q0 : q ∣ Fintype.card G := by
     rw [hG]
     exact Nat.dvd_mul_left q p
   have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
   rw [pow_one] at q1
-  obtain ⟨Q, hQ⟩ := q1
+  have q2 : Fintype.card (Q : Subgroup G) = q := by sorry
 
 -- Index |G:Q| is equal to p
-  have h3 : (Q : Subgroup G).index = p := by
-    apply?
+  have h3 : Fintype.card G = (Q : Subgroup G).index * Fintype.card Q := by
+    exact (Subgroup.index_mul_card (Q : Subgroup G)).symm
+  rw [hG, q2, mul_left_inj'] at h3
 
-    sorry
-
-
-  rw [h3] at h2
+  rw [← h3] at h2
 
 -- Using what we have the only possible values are 1 and p
   have h4 : Fintype.card (Sylow q G) = 1 ∨ Fintype.card (Sylow q G) = p := by
