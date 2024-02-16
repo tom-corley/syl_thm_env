@@ -97,14 +97,13 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   | inr h => rw [h] at h1
              exact (h6 h1).elim
 
-  exact Nat.not_eq_zero_of_lt h
-
+  apply Nat.not_eq_zero_of_lt h
   sorry
 
   done
 
 
--- If G is order pq such that p doesn't divide q-1, then G has a normal Sylow p-subgroup
+-- If G is order pq such that p doesn't divide q-1, then G has a unique Sylow p-subgroup
 theorem pq_normal_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (P : Sylow p G)
 (h : p < q) (hh : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : (P : Subgroup G).Normal := by
 -- p does not divide q
@@ -140,6 +139,13 @@ theorem pq_normal_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
 -- Number of Sylow p-subgroups divide the index |G:P|
   have h2 : Fintype.card (Sylow p G) ∣ (P : Subgroup G).index := by
     exact card_sylow_dvd_index P
+
+-- Index |G:Q| is equal to q
+  have h3 : Fintype.card G = (P : Subgroup G).index * Fintype.card P := by
+    exact (Subgroup.index_mul_card (P : Subgroup G)).symm
+  rw [hG, p2, mul_comm, mul_left_inj'] at h3
+
+
 
 
 
