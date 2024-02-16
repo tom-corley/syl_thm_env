@@ -46,7 +46,6 @@ theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
 -- If G is order pq such that p < q, then G has a unique Sylow q-subgroup
 theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)]
 (Q : Sylow q G) (h : p<q) (hG: Fintype.card G = p*q) : Fintype.card (Sylow q G) = 1 := by
-
 -- Number of Sylow q-subgroups is congruent to 1 MOD q
   have h1 : 1 ≡ Fintype.card (Sylow q G) [MOD q] := by
     exact Nat.ModEq.symm (card_sylow_modEq_one q G)
@@ -56,9 +55,17 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   have h2 : Fintype.card (Sylow q G) ∣ (Q : Subgroup G).index := by
     exact card_sylow_dvd_index Q
 
+-- a Sylow q-subgroup exists
+  have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
+  rw [pow_one] at q1
+  obtain ⟨Q, hQ⟩ := q1
+
 -- Index |G:Q| is equal to p
   have h3 : (Q : Subgroup G).index = p := by
+    apply?
+
     sorry
+
 
   rw [h3] at h2
 
@@ -68,19 +75,27 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
     exact hp.1
 
 -- Using that p < q, we have h1 cannot hold if number of Sylow q-subgroups is p
-  have h5 : ¬ (q ∣ p - 1) := by sorry
+  have h5 : p-1 < q := by exact tsub_lt_of_lt h
+  have h6 : ¬ (q ∣ p - 1) := by
+    refine Nat.not_dvd_of_pos_of_lt ?h1 h5
+    have p0 : 2 ≤ p := by exact Nat.Prime.two_le hp.1
+    have p1 : 1 < p := by exact p0
+    exact Nat.sub_pos_of_lt p0
 
 -- Go through the cases we got in h4 to show which one is true
   cases h4 with
   | inl h => exact h
   | inr h => rw [h] at h1
-             exact (h5 h1).elim
+             exact (h6 h1).elim
+  have q0 : q ∣ Fintype.card G := by
+    rw [hG]
+    exact Nat.dvd_mul_left q p
 
-  have h6 : 1 ≤ Fintype.card (Sylow q G) := by
-    sorry
-  exact h6
+
 
   done
+
+
 -- If G is order pq such that p doesn't divide q-1, then G has a normal Sylow p-subgroup
 theorem pq_normal_sylow_p_subgroup [Finite (Sylow p G)] (P : Sylow q G)
 (h : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : (P : Subgroup G).Normal := by
