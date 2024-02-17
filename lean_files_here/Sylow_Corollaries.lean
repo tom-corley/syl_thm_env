@@ -210,7 +210,9 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
 
 -- q does not divide p
   have q_not_dvd_p : ¬ (q∣ p) := by
-    apply blabalbalaba
+    refine (Nat.Prime.coprime_iff_not_dvd ?pp).mp ?_
+    exact hq.1
+    exact Nat.Coprime.symm coprime_p_q
 
 -- We want lean to consider P as a Sylow p subgroup so we can apply our earlier theorems
 
@@ -246,22 +248,26 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
       rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr hpq.ne)]
       rw [Nat.Prime.factorization_self]
       rw [Nat.factorization_eq_zero_of_not_dvd]
+      exact q_not_dvd_p
+      exact hq.1
+    rw [q6, pow_one]
 
-    rw [p6, pow_one]
+  have Q : Sylow q G := by exact Subgroup_to_Sylow G Q q5
 
-  have P : Sylow p G := by exact Subgroup_to_Sylow G P p5
+-- Showing that Q is the unique Sylow q-subgroup and hence it is normal in G
 
--- Showing that P is the unique Sylow p-subgroup and hence it is normal in G
-
-  have p7 : Fintype.card (Sylow p G) = 1 := by
-    apply pq_unique_sylow_p_subgroup p q
-    exact P
+  have q7 : Fintype.card (Sylow q G) = 1 := by
+    apply pq_unique_sylow_q_subgroup p q
+    exact Q
     exact hpq
-    exact h
     exact hpqq
 
-  have p8 : (P : Subgroup G).Normal := by
-    exact normal_of_unique p G P p7
+  have q8 : (Q : Subgroup G).Normal := by
+    exact normal_of_unique q G Q q7
+
+-- P and Q have trivial intersection
+
+  have epic : P ∩ Q =
 
 -- Show g and k commute
   have g_k_commute : Commute (g : G) (k : G) := by sorry
@@ -275,7 +281,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
 -- Show that the order of G matches the order of gk
   have order : Fintype.card G = orderOf (g* k : G) := by
     rw [hpqq, pq]
-    apply pq_coprime
+    apply coprime_p_q
 
 -- Finally we can use the fact that G contains an element which has order pq, so it must generate G
   exact isCyclic_of_orderOf_eq_card (↑g * ↑k) (id order.symm)
