@@ -21,9 +21,29 @@ variable (p : ℕ) [Fact p.Prime] (q : ℕ) [Fact q.Prime] (G : Type*) [Group G]
 
 variable {H : Subgroup G}
 
+theorem card_sylow_eq_one_unique_sylow [Finite (Sylow p G)] (h1: Fintype.card (Sylow p G) = 1) : Nonempty (Unique (Sylow p G)) := by
+-- Fintype.card_eq_one_iff_nonempty_unique.mp h1
+  exact Fintype.card_eq_one_iff_nonempty_unique.mp h1
+
+def card_sylow_eq_one_unique_sylow_def [Finite (Sylow p G)] (h1: Fintype.card (Sylow p G) = 1) (P : Sylow p G) : Unique (Sylow p G) :=
+letI := Fintype.card_le_one_iff_subsingleton.mp h1.le
+uniqueOfSubsingleton P
+
+
+theorem  whatever (hpq: p<q) [hp : Fact p.Prime] [hq : Fact q.Prime] : ¬ (q∣ p) := by
+  refine Nat.not_dvd_of_pos_of_lt ?h1 hpq
+  exact Fin.size_pos'
+  done
+
 -- theorem card_sylow_eq_index_normalizer [Fact p.Prime] [Fintype (Sylow p G)] (P : Sylow p G) :
     -- card (Sylow p G) = (P : Subgroup G).normalizer.index :=
 
+theorem card_eq_one_unique (α : Type u) (h1: Cardinal.mk α = 1): Subsingleton α := by
+
+
+
+theorem Subsingleton.unique {α : Sort u} [h : Subsingleton α] (a : α) : Unique α := by
+  exact uniqueOfSubsingleton a
 
 theorem dskan [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
     (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
@@ -32,16 +52,14 @@ theorem dskan [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
 theorem card_eq_one_unique (α : Type u) [Fintype α] (h1: Fintype.card α = 1): NonEmpty (Unique α) := by
   sorry
 
-theorem mk_eq_one (α : Type u) [Fintype α] (h1: Fintype.card α = 1) : NonEmpty (Unique α) := by
- sorry
- done
+theorem mk_eq_one (α : Type u) [Fintype α] (h1: Fintype.card α = 1) : (Unique α) := by
+ rw [Cardinal.eq_one_iff_unique]
+ doneCardinal.eq_one_iff_unique
 
 
-theorem shsshs [Finite (Sylow p G)] (h1: Fintype.card (Sylow p G) = 1) (P : Sylow p G) : (P: Subgroup G).Normal:= by
-  have a1 :Fintype.card (Sylow p G) = (P : Subgroup G).normalizer.index  := by
-    exact card_sylow_eq_index_normalizer P
-  rw [h1] at a1
-  exact?
+
+theorem card_sylow_eq_one_unique_sylow [Finite (Sylow p G)] (h1: Fintype.card (Sylow p G) = 1) (P : Sylow p G) : Unique (Sylow p G) := by
+  sorry
 
 theorem unique_element_of_card_one {A : Type} {s : Set A} [Fintype s] (h1: Fintype.card s = 1 ) (x : s):
   ∃! x, x ∈ s := by sorry
