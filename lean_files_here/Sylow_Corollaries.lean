@@ -44,7 +44,7 @@ theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
   sorry
 
 -- If G is order pq such that p < q, then G has a unique Sylow q-subgroup
-theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)]
+theorem pq_unique_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)]
 (Q : Sylow q G) (h : p<q) (hG: Fintype.card G = p*q) : Fintype.card (Sylow q G) = 1 := by
 -- The Sylow q-subgroup has order q
   have q0 : q ∣ Fintype.card G := by
@@ -88,7 +88,6 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   have h6 : ¬ (q ∣ p - 1) := by
     refine Nat.not_dvd_of_pos_of_lt ?h1 h5
     have p0 : 2 ≤ p := by exact Nat.Prime.two_le hp.1
-    have p1 : 1 < p := by exact p0
     exact Nat.sub_pos_of_lt p0
 
 -- Go through the cases we got in h4 to show which one is true
@@ -98,14 +97,17 @@ theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
              exact (h6 h1).elim
 
   apply Nat.not_eq_zero_of_lt h
-  sorry
+
+  have h7: Fintype.card (Sylow q G) ≠ 0 := by
+    exact Fintype.card_ne_zero
+  exact Nat.one_le_iff_ne_zero.mpr h7
 
   done
 
 
 -- If G is order pq such that p doesn't divide q-1, then G has a unique Sylow p-subgroup
-theorem pq_normal_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (P : Sylow p G)
-(h : p < q) (hh : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : (P : Subgroup G).Normal := by
+theorem pq_unique_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (P : Sylow p G)
+(h : p < q) (hh : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : Fintype.card (Sylow p G) = 1 := by
 -- p does not divide q
   have p_not_dvd_q : ¬ (p ∣ q) := by
     have cpq : Nat.Coprime p q := by
@@ -145,17 +147,26 @@ theorem pq_normal_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
     exact (Subgroup.index_mul_card (P : Subgroup G)).symm
   rw [hG, p2, mul_comm, mul_left_inj'] at h3
 
+  rw [← h3] at h2
 
+-- Using what we have the only possible values are 1 and q
+  have h4 : Fintype.card (Sylow p G) = 1 ∨ Fintype.card (Sylow p G) = q := by
+    refine Nat.Prime.eq_one_or_self_of_dvd ?pp (Fintype.card (Sylow p G)) h2
+    exact hq.1
 
+  cases h4 with
+  | inl h => exact h
+  | inr h => rw [h] at h1
+             exact (hh h1).elim
 
+  exact NeZero.ne p
 
-
-
-
-  sorry
+  have h5: Fintype.card (Sylow p G) ≠ 0 := by
+    exact Fintype.card_ne_zero
+  exact Nat.one_le_iff_ne_zero.mpr h5
 
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
+theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Sylow p G)] (hpq: p<q)
 (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
 -- Define the Sylow p-subgroup
   have p0 : p ∣ Fintype.card G := by
@@ -189,6 +200,20 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
    apply hp.1
    apply hq.1
    exact Nat.ne_of_lt hpq
+
+-- The Sylow p-subgroup P is unique and hence normal
+
+  have p5 : Fintype.card (Sylow p G) = 1 := by
+    apply pq_unique_sylow_p_subgroup p q
+    sorry
+    apply hpq
+    apply h
+    apply hpqq
+
+  have p6 : (↑P : Subgroup G).Normal := by
+    apply normal_of_unique p P
+
+
 
 -- Show g and k commute
   have g_k_commute : Commute (g : G) (k : G) := by sorry
