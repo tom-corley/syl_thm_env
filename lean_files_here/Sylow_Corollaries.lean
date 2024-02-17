@@ -104,7 +104,6 @@ theorem pq_unique_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
 
   done
 
-
 -- If G is order pq such that p doesn't divide q-1, then G has a unique Sylow p-subgroup
 theorem pq_unique_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (P : Sylow p G)
 (h : p < q) (hh : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : Fintype.card (Sylow p G) = 1 := by
@@ -165,6 +164,12 @@ theorem pq_unique_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
     exact Fintype.card_ne_zero
   exact Nat.one_le_iff_ne_zero.mpr h5
 
+-- The following theorem is a definition in the Sylow.lean file
+-- We put it here as we can use it to switch P from subgroup to Sylow p-subgroup
+theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
+    (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
+  exact Sylow.ofCard H card_eq
+
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
 theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Sylow p G)] (hpq: p<q)
 (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
@@ -195,22 +200,38 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 
 -- Show p and q are coprime
-  have pq_coprime : Nat.gcd p q = 1 := by
-   refine (Nat.coprime_primes ?pp ?pq).mpr ?_
-   apply hp.1
-   apply hq.1
-   exact Nat.ne_of_lt hpq
+  have cpq : Nat.Coprime p q := by
+      have p_not_q : p ≠ q := by exact Nat.ne_of_lt hpq
+      exact (Nat.coprime_primes hp.1 hq.1).2 p_not_q
 
--- The Sylow p-subgroup P is unique and hence normal
+-- p does not divide q
+  have p_not_dvd_q : ¬ (p ∣ q) := by
+      exact (Nat.Prime.coprime_iff_not_dvd hp.1).1 cpq
 
-  have p5 : Fintype.card (Sylow p G) = 1 := by
+-- We want lean to consider P as a Sylow p subgroup so we can apply our earlier theorems
+
+  have p5 : Fintype.card P = p ^ (Fintype.card G).factorization p := by
+    rw [hP, hpqq]
+    have p6 : (Nat.factorization (p * q)) p = 1 := by
+      rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr hpq.ne)]
+      rw [Nat.Prime.factorization_self]
+      rw [Nat.factorization_eq_zero_of_not_dvd]
+      apply p_not_dvd_q
+      exact hp.1
+    rw [p6, pow_one]
+
+-- Showing that P is the unique Sylow p-subgroup and hence it is normal in G
+
+  have P : Sylow p G := by exact Subgroup_to_Sylow G P p5
+
+  have p7 : Fintype.card (Sylow p G) = 1 := by
     apply pq_unique_sylow_p_subgroup p q
-    sorry
-    apply hpq
-    apply h
-    apply hpqq
+    exact P
+    exact hpq
+    exact h
+    exact hpqq
 
-  have p6 : (↑P : Subgroup G).Normal := by
+  have p8 : (P : Subgroup G).Normal := by
     apply normal_of_unique p P
 
 
