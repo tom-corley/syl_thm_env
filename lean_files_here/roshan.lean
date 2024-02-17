@@ -10,8 +10,4 @@ example (hG : Fintype.card G = 20) (Q: Subgroup G) (h: Q.Normal): ¬ IsSimpleGro
   have h1 : Q ≠ ⊥ := by sorry
 
   have h2 : Q ≠ ⊤ := by sorry
-
-  intro h3
-  have := h3.eq_bot_or_eq_top_of_normal Q h
-  cases this <;> contradiction -- `exact this.elim h1 h2` will also work here
-  done
+  cases
