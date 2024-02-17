@@ -267,7 +267,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
 
 -- P and Q have trivial intersection
 
-  have epic : P ∩ Q =
+  have intersection_trivial : (P : Subgroup G) ⊓ (Q : Subgroup G) = ⊥ := by sorry
 
 -- Show g and k commute
   have g_k_commute : Commute (g : G) (k : G) := by sorry
