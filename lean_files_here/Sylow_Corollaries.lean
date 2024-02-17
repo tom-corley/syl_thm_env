@@ -269,6 +269,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
 
   have epic : P ∩ Q =
 
+∩ 
 -- Show g and k commute
   have g_k_commute : Commute (g : G) (k : G) := by sorry
 

@@ -29,6 +29,10 @@ def card_sylow_eq_one_unique_sylow_def [Finite (Sylow p G)] (h1: Fintype.card (S
 letI := Fintype.card_le_one_iff_subsingleton.mp h1.le
 uniqueOfSubsingleton P
 
+-- If G has a unique Sylow p-subgroup P, then it is normal in G
+theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
+(h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := 
+
 
 theorem  whatever (hpq: p<q) [hp : Fact p.Prime] [hq : Fact q.Prime] : ¬ (q∣ p) := by
   refine Nat.not_dvd_of_pos_of_lt ?h1 hpq
