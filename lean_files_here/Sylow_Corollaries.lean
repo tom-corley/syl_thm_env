@@ -208,6 +208,10 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
   have p_not_dvd_q : ¬ (p ∣ q) := by
       exact (Nat.Prime.coprime_iff_not_dvd hp.1).1 coprime_p_q
 
+-- q does not divide p
+  have q_not_dvd_p : ¬ (q∣ p) := by
+    apply blabalbalaba
+
 -- We want lean to consider P as a Sylow p subgroup so we can apply our earlier theorems
 
   have p5 : Fintype.card P = p ^ (Fintype.card G).factorization p := by
@@ -232,9 +236,32 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
     exact hpqq
 
   have p8 : (P : Subgroup G).Normal := by
-    apply normal_of_unique p P
+    exact normal_of_unique p G P p7
 
+-- We want lean to consider Q as a Sylow q subgroup so we can apply our earlier theorems
 
+  have q5 : Fintype.card Q = q ^ (Fintype.card G).factorization q := by
+    rw [hQ, hpqq]
+    have q6 : (Nat.factorization (p * q)) q = 1 := by
+      rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr hpq.ne)]
+      rw [Nat.Prime.factorization_self]
+      rw [Nat.factorization_eq_zero_of_not_dvd]
+
+    rw [p6, pow_one]
+
+  have P : Sylow p G := by exact Subgroup_to_Sylow G P p5
+
+-- Showing that P is the unique Sylow p-subgroup and hence it is normal in G
+
+  have p7 : Fintype.card (Sylow p G) = 1 := by
+    apply pq_unique_sylow_p_subgroup p q
+    exact P
+    exact hpq
+    exact h
+    exact hpqq
+
+  have p8 : (P : Subgroup G).Normal := by
+    exact normal_of_unique p G P p7
 
 -- Show g and k commute
   have g_k_commute : Commute (g : G) (k : G) := by sorry
