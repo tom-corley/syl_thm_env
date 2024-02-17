@@ -20,4 +20,4 @@ variable (p : ℕ) [Fact p.Prime] (q : ℕ) [Fact q.Prime] (G : Type*) [Group G]
 theorem pq_Q_order_eq_q [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)]
 (Q : Sylow q G) (h : p<q) (hG: Fintype.card G = p*q) (o: 1 ≡ a [MOD q])
 : 1 ≤ a := by
-  exact?
+  sorry
