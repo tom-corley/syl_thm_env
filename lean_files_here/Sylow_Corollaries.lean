@@ -200,13 +200,13 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
   have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 
 -- Show p and q are coprime
-  have cpq : Nat.Coprime p q := by
+  have coprime_p_q : Nat.Coprime p q := by
       have p_not_q : p ≠ q := by exact Nat.ne_of_lt hpq
       exact (Nat.coprime_primes hp.1 hq.1).2 p_not_q
 
 -- p does not divide q
   have p_not_dvd_q : ¬ (p ∣ q) := by
-      exact (Nat.Prime.coprime_iff_not_dvd hp.1).1 cpq
+      exact (Nat.Prime.coprime_iff_not_dvd hp.1).1 coprime_p_q
 
 -- We want lean to consider P as a Sylow p subgroup so we can apply our earlier theorems
 
@@ -220,9 +220,9 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
       exact hp.1
     rw [p6, pow_one]
 
--- Showing that P is the unique Sylow p-subgroup and hence it is normal in G
-
   have P : Sylow p G := by exact Subgroup_to_Sylow G P p5
+
+-- Showing that P is the unique Sylow p-subgroup and hence it is normal in G
 
   have p7 : Fintype.card (Sylow p G) = 1 := by
     apply pq_unique_sylow_p_subgroup p q
