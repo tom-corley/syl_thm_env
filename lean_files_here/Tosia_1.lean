@@ -12,6 +12,8 @@ import Mathlib.Data.Nat.Prime
 import Mathlib.GroupTheory.Sylow
 import Mathlib.GroupTheory.Coset
 import Mathlib.GroupTheory.GroupAction.Defs
+import Mathlib.Logic.Unique
+import Mathlib.Init.Set
 
 open scoped Classical
 
@@ -19,10 +21,56 @@ variable (p : ℕ) [Fact p.Prime] (q : ℕ) [Fact q.Prime] (G : Type*) [Group G]
 
 variable {H : Subgroup G}
 
-theorem shshs [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (h1: 1 ≡ Fintype.card (Sylow q G) [MOD q]): 1 ≤ Fintype.card (Sylow q G) := by
-  have h12: Fintype.card (Sylow q G) ≠ 0 := by
+-- theorem card_sylow_eq_index_normalizer [Fact p.Prime] [Fintype (Sylow p G)] (P : Sylow p G) :
+    -- card (Sylow p G) = (P : Subgroup G).normalizer.index :=
+
+
+theorem dskan [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
+    (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
+  exact Sylow.ofCard H card_eq
+
+theorem card_eq_one_unique (α : Type u) [Fintype α] (h1: Fintype.card α = 1): NonEmpty (Unique α) := by
+  sorry
+
+theorem mk_eq_one (α : Type u) [Fintype α] (h1: Fintype.card α = 1) : NonEmpty (Unique α) := by
+ sorry
+ done
+
+
+theorem shsshs [Finite (Sylow p G)] (h1: Fintype.card (Sylow p G) = 1) (P : Sylow p G) : (P: Subgroup G).Normal:= by
+  have a1 :Fintype.card (Sylow p G) = (P : Subgroup G).normalizer.index  := by
+    exact card_sylow_eq_index_normalizer P
+  rw [h1] at a1
+  exact?
+
+theorem unique_element_of_card_one {A : Type} {s : Set A} [Fintype s] (h1: Fintype.card s = 1 ) (x : s):
+  ∃! x, x ∈ s := by sorry
+
+
+
+
+theorem exists_unique_sylow_subgroup_of_cardinality_one
+  (h : Fintype.card (Sylow p G) = 1) : ∃ P : Sylow p G, True := by
+   exact (exists_const (Sylow p G)).mpr trivial
+
+theorem shswshs [Finite (Sylow q G)] (h1: Fintype.card (Sylow q G) = 1) (q0 : q ∣ Fintype.card G ): Unique (Sylow q G) := by
+  have dn :  ¬ (Fintype.card (Sylow q G) > 1) := by
+     exact Eq.not_lt (id h1.symm)
+  have dn3 : Fintype.card (Sylow q G) ≠ 0 := by
     exact Fintype.card_ne_zero
-  exact Nat.one_le_iff_ne_zero.mpr h12
+  have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
+  rw [pow_one] at q1
+  refine { uniq := fun Q ↦ ?_ }
+  obtain ⟨x, h1⟩ := MulAction.exists_smul_eq G P Q
+  obtain ⟨x, h2⟩ := MulAction.exists_smul_eq G P default
+  rw [Sylow.smul_eq_of_normal] at h1 h2
+  rw [← h1, ← h2]
+
+
+
+
+
+
   done
 
 -- Took this theorem from Mathlib.GroupTheory.OrderOfElement.

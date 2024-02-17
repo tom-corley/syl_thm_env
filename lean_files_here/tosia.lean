@@ -50,8 +50,9 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   have h₄ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := card_sylow_modEq_one 5 G
 
   -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
-  have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Fintype.card G)/(Fintype.card Q) := by sorry
-  have h₆ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by sorry
+  have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q 5
+  have h₆ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by
+    sorry
   have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by
     -- intro h
     -- contradiction
