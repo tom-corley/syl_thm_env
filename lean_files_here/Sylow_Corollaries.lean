@@ -48,10 +48,14 @@ theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
     rw [Sylow.smul_eq_of_normal] at h1 h2
     rw [← h1, ← h2]
 
+theorem d [hp : Fact p.Prime] [Finite (Sylow p G)] : MulAction.IsPretransitive G (Sylow p G) := by exact
+  instIsPretransitiveSylowToSMulToMonoidToDivInvMonoidMulAction
+
 -- If G has a unique Sylow p-subgroup P, then it is normal in G
-theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
+theorem normal_of_unique [hp : Fact p.Prime]  [Finite (Sylow p G)] (P : Sylow p G)
 (h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := by
-  apply?
+  refine { conj_mem := ?conj_mem }
+  a
 
 --==================================================================================
 --              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q)
@@ -405,7 +409,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
   have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
 
-  have h₆ : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry
+  have h₆ : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry -- THIS NEED TO BE PROVED
 
 
   have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by
@@ -429,7 +433,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   have h1 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h₂
 
-  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry
+  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEED TO BE PROVED
 
   intro h3
   have := h3.eq_bot_or_eq_top_of_normal Q h₁₀
