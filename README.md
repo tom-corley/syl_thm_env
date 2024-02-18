@@ -79,6 +79,14 @@ A final target of our project is to prove some basic results about classifying i
 
 Lemma 4.14:  Let $p < q$ be primes such that $p \nmid (q-1) $ and $G$ a group of order $pq$. Then $G \cong C_{pq}$, the cyclic group of order $pq$.
 
+## Individual Contributions
+
+Tosia:
+
+Roshan:
+
+Tom: I orchestrated a lot of the technical requirements for the project, managing the git repository and setting up cloud infrastructure for remote working on gitpod. This was originally very error prone but eventually worked consistently. I instructed my group on how to use git, and the basic concepts of branches, pushing and pulling etc. I commented hundreds of lines of mathlib code, and discussed what I found with my group to help further our understanding on how Mathlib efficiently implements Group Theory in the context of lean, explaining things like how type coercion was used to convert Sylow groups to subgroups, and how the algebraic structures like monoids and semigroups defined under groups. I streamlined and commented on lots of our code, to help make our work more legible and concise. I also wrote several drafts of the README.md file, including a lot of typesetted maths in Latex, and ensured references to our source material on group theory were accurate.
+
 ## Progress Report / Evaluation
 
 During the course of the project, our goals shifted many times, and it became apparent after a great deal of effort that programming a unique and extensive proof of Sylow's Theorem's with only minimal use of dependencies was too ambitious a goal, and we have ultimately been unable to reach some of the intended goals of the project. 
