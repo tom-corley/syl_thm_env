@@ -2,23 +2,17 @@
 
 A project exploring and then extending the implementation of group theory (more specifically Sylow's Theorems) in the functional formal verification language Lean4.
 
-In formal written mathematics, A group $G$ is often defined to be a set $G$, endowed with a closed binary operation $\circ: G \times G \to G $, such that the following three properties hold
-
-1.  Associativity: $\; \; \; \; \forall a,b,c\in G, \; a \circ (b \circ c) = (a \circ b) \circ c $
-2.  Identity: $ \; \; \; \; \; \; \; \; \; \;\exists 1_G \in G: \; \forall g \in G, \; 1_G \circ g = g \circ 1_G = g $
-3.  Inverses: $ \; \; \; \; \; \; \; \; \; \;\forall g \in G, \exists g^{-1} \in G: \;  g \circ g^{-1} = g^{-1} \circ g = 1_G $
-
-To translate these abstract ideas into computational group theory, and to generalise some of the ideas even further. Groups can also be defined recurively through three intermediate algebraic structures. We do so by defining the following: 
+In Mathlib, Groups are defined on top of three intermediate weaker algebraic structures. This helps results to be even more general, these are as follows. 
 
     Setoid: A set, equipped with a closed binary operation on itself.
 
-    Semigroup: A setoid, with property 1 (Associativity)
+    Semigroup: A setoid, with associativity
 
-    Monoid: A semigroup, with the addition of property 2 (Identity)
+    Monoid: A semigroup, with an identity element
 
 Our new definition of a group then follows:
 
-    Group: A monoid, with the addition of property 3 (Inverses)
+    Group: A monoid, with inverses for every element.
 
 This abstraction allows us to more precisely manipulate the properties of groups and implement inheritance in the type system of Lean.
 
@@ -79,7 +73,7 @@ Our plan is then to use our implementation to give some examples of proving the 
 
 A group of order 20 is simple
 
-### Group Classification 
+## Group Classification 
 
 A final target of our project is to prove some basic results about classifying infinite families of groups. One example of such a result is the following: 
 
@@ -101,7 +95,7 @@ The final piece of work making up our submission is the file Sylow_Corollaries.l
 
 We understand that this submission is somewhat unorthodox, but our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
 
-Tom, Antonina & Roshan
+Tom, Antonita & Roshan
 
 
 
