@@ -54,8 +54,12 @@ theorem d [hp : Fact p.Prime] [Finite (Sylow p G)] : MulAction.IsPretransitive G
 -- If G has a unique Sylow p-subgroup P, then it is normal in G
 theorem normal_of_unique [hp : Fact p.Prime]  [Finite (Sylow p G)] (P : Sylow p G)
 (h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := by
-  refine { conj_mem := ?conj_mem }
-  a
+  have h1 : Fintype.card (Sylow p G) = Subgroup.index (Subgroup.normalizer (P : Subgroup G)) := by
+    exact card_sylow_eq_index_normalizer P
+  rw [h] at h1
+  have h2 : Subgroup.normalizer (P : Subgroup G) = ⊤ := by exact Subgroup.index_eq_one.mp (id h1.symm)
+  exact Subgroup.normalizer_eq_top.mp h2
+
 
 --==================================================================================
 --              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q)
