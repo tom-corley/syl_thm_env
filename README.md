@@ -1,6 +1,6 @@
 # syl_thm_env
 
-A project exploring and then extending the implementation of group theory in the functional formal verification language Lean4.
+A project exploring and then extending the implementation of group theory (more specifically Sylow's Theorems) in the functional formal verification language Lean4.
 
 In formal written mathematics, A group $G$ is often defined to be a set $G$, endowed with a closed binary operation $\circ: G \times G \to G $, such that the following three properties hold
 
@@ -8,7 +8,7 @@ In formal written mathematics, A group $G$ is often defined to be a set $G$, end
 2.  Identity: $ \; \; \; \; \; \; \; \; \; \;\exists 1_G \in G: \; \forall g \in G, \; 1_G \circ g = g \circ 1_G = g $
 3.  Inverses: $ \; \; \; \; \; \; \; \; \; \;\forall g \in G, \exists g^{-1} \in G: \;  g \circ g^{-1} = g^{-1} \circ g = 1_G $
 
-For formal verification, and in particular in this case, and also the setting of functional programming it is instead advisable to build up to the structure of a group recursively, through three intermediate algebraic structures. We do so by defining the following: 
+To translate these abstract ideas into computational group theory, and to generalise some of the ideas even further. Groups can also be defined recurively through three intermediate algebraic structures. We do so by defining the following: 
 
     Setoid: A set, equipped with a closed binary operation on itself.
 
@@ -16,7 +16,7 @@ For formal verification, and in particular in this case, and also the setting of
 
     Monoid: A semigroup, with the addition of property 2 (Identity)
 
-Our new definition of a group then follows...
+Our new definition of a group then follows:
 
     Group: A monoid, with the addition of property 3 (Inverses)
 
@@ -28,44 +28,62 @@ In the following, G denotes a finite group, and p a prime:
 
 We define the following:
 
-    p-Subgroup: A subgroup with order p^i for some natural number i
-    Sylow p-Subgroup: A p-subgroup with i maximal, i.e its index in G is not divisible by p
-    &Syl_p(G)$: The set of Sylow p-subgroups in G
+p-Subgroup: A subgroup with order p^i for some natural number i
 
-Insert theorems 1-4 here:
+Sylow p-Subgroup: A p-subgroup with i maximal, i.e its index in G is not divisible by p
+
+$Syl_p(G)$: The set of Sylow p-subgroups in G
+
+The norwegian mathemitician Peter Ludwig Sylow first proposed the following four theorems in 1872, which were later proven many times in vastly different ways.
+
 1. Existence: If a prime p divides G, there is a Sylow p-subgroup of G
 2. Conjugacy: Any two Sylow p-subgroups of a group G are conjugate
 3. Containment: Any p-subgroup of G is contained within a Sylow p-subgroup
-4. Congruency: The number of Sylow p-subgroups is congruent to 1 modulo p, that is $|Syl_p(G)| \equiv 1 (\mod p)$
+4. Congruency: The number of Sylow p-subgroups is congruent to 1 modulo p, that is $|Syl_p(G)| \equiv 1\mod p$
 
-The proofs we implemented are based on the Lecture Notes for MA3K4 Introduction to Group Theory by Gareth Tracey. 
+The proofs we plan to implement are based on the Lecture Notes for MA3K4 Introduction to Group Theory by Gareth Tracey. 
 
-To prove theorems 1 and 4, we require two number theoretic lemmas as follows:
+To prove theorems 1 and 4, we require the following lemma from number theory:
 
-Lemma 3.3 ___
-Proposition 3.4 ____
+Lemma 3.3: Let $p$ be prime, and let n and m be coprime integers. Then the following holds.
 
-We then prove the result.
+(i) $ \forall 1\le i \le p-1, \; \; p \mid \binom{p}{i} $, and
+(ii) $\binom{p^nm}{p^n} \equiv m \mod p$
+
+A proof by Wielandt then uses this lemma, as well as the orbit stabiliser theorem, and examines the conjugacy classes of the action, to determine that it cannot have size 0 (there exists a Sylow p subgroup), and instead has size equivalent to 1 mod p.
 
 To prove theorems 2 and 3, we require one intermediary proposition about the conjugation of Sylow p-subgroups
 
-Prop 3.5 ___
+Prop 3.5: Let $H \le G$ and $P \in Syl_p(G)$, Then $\exists g \in G$ such that $H \cap gPg^{-1} \in Syl_p(H) $
 
-We then prove the result.
 
-We also went on to prove a few consequences of Sylow's Theorems, including the following:
+The result follows by applying this proposition to seperate Sylow p subgroups of G.
 
-Corollary 3.7
+We also intend to prove a few consequences of Sylow's Theorems, including: 
 
-Corollary 3.8
+Corollary 3.7: $\forall P \in Syl_p(G)$:
+
+(i) $|Syl_p(G)| = |G : N_G(P)|$
+
+(ii)$|Syl_p(G)|$ divides $ |G|/|G|_p$, where $G|_p$ denotes the largest power of p which divides the order of g
+
+(iii) $P \trianglelefteq G \iff |Syl_p(G)| = 1 $  
+
+aswell as 
+
+Cauchy's Theorem: If $p \mid |G|$, then $\exists g \in G$ such that $|g| = p$, Furthermore, the number of such elements is congruent to $-1 \equiv \mod p$
 
 ## Sylow's Game 
 
-We then used our implementation to give some examples of proving the simplicity, or non-simplicity, of some finite groups of low order, including the following:
+Our plan is then to use our implementation to give some examples of proving the simplicity, or non-simplicity, of some finite groups of low order, including the following:
 
-A group of order 20 is simple:
+A group of order 20 is simple
 
-A group of order ? is non-simple:
+### Group Classification 
+
+A final target of our project is to prove some basic results about classifying infinite families of groups. One example of such a result is the following: 
+
+Lemma 4.14:  Let $p < q$ be primes such that $p \nmid (q-1) $ and $G$ a group of order $pq$. Then $G \cong C_{pq}$, the cyclic group of order $pq$.
 
 ## Progress Report / Evaluation
 

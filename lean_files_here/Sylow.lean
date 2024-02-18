@@ -471,13 +471,14 @@ nonrec def Sylow.equivSMul (P : Sylow p G) (g : G) : P ≃* (g • P : Sylow p G
   equivSMul (MulAut.conj g) P.toSubgroup
 #align sylow.equiv_smul Sylow.equivSMul
 
-/-- Similair definition for, two Sylow subgroups in the same group -/
+/-- Similar definition for, two Sylow p subgroups in the same group, uses axiom of choice. -/
 noncomputable def Sylow.equiv [Fact p.Prime] [Finite (Sylow p G)] (P Q : Sylow p G) : P ≃* Q := by
   rw [← Classical.choose_spec (exists_smul_eq G P Q)]
   exact P.equivSMul (Classical.choose (exists_smul_eq G P Q))
 #align sylow.equiv Sylow.equiv
 
 @[simp]
+/- The orbit of the conjugation action on the set of Sylow p groups on the Sylow group P, is equivalent to the to top T.-/
 theorem Sylow.orbit_eq_top [Fact p.Prime] [Finite (Sylow p G)] (P : Sylow p G) : orbit G P = ⊤ :=
   top_le_iff.mp fun Q _ => exists_smul_eq G P Q
 #align sylow.orbit_eq_top Sylow.orbit_eq_top
@@ -487,6 +488,7 @@ theorem Sylow.stabilizer_eq_normalizer (P : Sylow p G) :
     stabilizer G P = (P : Subgroup G).normalizer := by
   ext; simp [Sylow.smul_eq_iff_mem_normalizer]
 #align sylow.stabilizer_eq_normalizer Sylow.stabilizer_eq_normalizer
+
 
 theorem Sylow.conj_eq_normalizer_conj_of_mem_centralizer [Fact p.Prime] [Finite (Sylow p G)]
     (P : Sylow p G) (x g : G) (hx : x ∈ centralizer (P : Set G))
@@ -974,5 +976,16 @@ noncomputable def directProductOfNormal [Fintype G]
       _ = card G := Nat.factorization_prod_pow_eq_self Fintype.card_ne_zero
 
 #align sylow.direct_product_of_normal Sylow.directProductOfNormal
+
+
+variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
+
+theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
+  exact exists_prime_orderOf_dvd_card p hdvd
+  done
+
+theorem sylow_card_eq_index_normaliser (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (Conjugate g P) := by
+
+
 
 end Sylow
