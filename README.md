@@ -101,15 +101,17 @@ During the course of the project, our goals shifted many times, and it became ap
 
 However, as a group, we have expended a vast amout of time and effort furthering our understanding of Lean, and while we have not been able to do everything we originally intended to do, we still have a lot to show for our efforts.
 
-Firstly, we have commented extensively on the Sylow.lean file, and have worked very hard to understand the intricacies of how Sylow's theorem's are set out in Mathlib.
+Firstly, we have commented extensively on the Sylow.lean file, and have worked very hard to understand the intricacies of how Sylow's theorem's are set out in Mathlib. This helped greatly in understanding how to structure proofs, one example was how to lay out individual claim using have, or how the up arrow is used for coercions, and also to inform us about useful pre-existing results from Mathlib4.
 
-Secondly, we have an initial skeleton, titled Sylow_Skeletonlean which is filled out with attempted proofs, some of which more complete then others. This was our first attempt at formalising the Sylow theorems and we decided to start over after realising that our definition for a Sylow p-subgroup was not the best it could be (which Antonina expands on in her video submission).
+Secondly, we have an initial skeleton, titled Sylow_Skeletonlean which is filled out with attempted proofs, some of which more complete then others. 
 
 We then have a second skeleton, New_Skeleton.lean, which is largely empty, but contains some initial attempts to redefine key concepts. We first thought to try again using what we had learnt about type classes and reading more into the Sylow.lean file. However the proofs in the Sylow.lean file seemed too complicated for us to prove by ourselves.
 
 So our goal shifted to import Sylow.lean and use it to prove corollaries that we had learnt in MA3K4. We believed this to be a much more achievable goal and that it would be able to show the breadth and depth of knowledge we have accumulated throught doing the project thus far. The final piece of work making up our submission is the file Sylow_Corollaries.lean, which contains attempted proofs deduced from the theorems and definitions contained in the Sylow.lean file. These include Cauchy's theorem, as well as classifications for groups of order pq (where p and q are distinct primes, p is less than q, and p does not divide q-1).
 
-We understand that this submission is somewhat unorthodox, but our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
+
+
+
 
 Tom, Antonina & Roshan
 
