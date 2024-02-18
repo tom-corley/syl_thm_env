@@ -95,9 +95,9 @@ During the course of the project, our goals shifted many times, and it became ap
 
 However, as a group, we have expended a vast amout of time and effort furthering our understanding of Lean, and while we have not been able to do everything we originally intended to do, we still have a lot to show for our efforts.
 
-Firstly, we have commented extensively on the Sylow.lean file, and have worked very hard to understand the intricacies of how Sylow's theorem's are set out in Mathlib.
+Firstly, we have commented extensively on the Sylow.lean file, and have worked very hard to understand the intricacies of how Sylow's theorem's are set out in Mathlib. This helped greatly in understanding how to structure proofs, one example was how to lay out individual claim using have, or how the up arrow is used for coercions, and also to inform us about useful pre-existing results from Mathlib4.
 
-Secondly, we have an initial skeleton, titled Sylow_Skeletonlean which is filled out with attempted proofs, some of which more complete then others. 
+Secondly, we have an initial skeleton, titled Sylow_Skeletonlean which is filled out with attempted proofs, some of which more complete then others. We initially struggled with getting the types accurate, and finding the correct results, and navigating the initially confusing naming conventions.  
 
 We then have a second skeleton, New_Skeleton.lean, which is largely empty, but contains some initial attempts to redefine key concepts.
 
