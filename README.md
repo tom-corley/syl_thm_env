@@ -107,7 +107,9 @@ An extra comment we want to make for the classification proof. Roshan and Antoni
 
 Throughout our attempts we have had to reorder what we proved to make sure we were using the correct type classes as we switch the types of P, Q being a subgroup to a Sylow p G and Sylow q G respectively. We learnt it was best to split our problems into smaller subgoals and have them be their own separate theorems, so that the final proof is not too long and cluttered with so many statements. 
 
-We understand that this submission is somewhat unorthodox, but our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
+
+
+
 
 Tom, Antonina & Roshan
 
