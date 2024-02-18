@@ -464,8 +464,11 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Show that the number of Sylow 5-subgroups divides the index of Q in G
   have h8 : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
 
+
+  have divs : Nat.divisors 4 = {1, 2, 4} := rfl
+
   -- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
-  have h9 : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) ∨ (Fintype.card (Sylow 5 G) = 2) := by sorry -- THIS NEED TO BE PROVED
+  have h9 : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) ∨ (Fintype.card (Sylow 5 G) = 2) := by sorry
 
   -- Show that 4 is not congruent to 1 mod 5
   have h10 : ¬ (4 ≡ 1 [MOD 5]) := by
@@ -581,9 +584,11 @@ example (hG : Fintype.card G = 462) : ¬ IsSimpleGroup G := by
 
   rw [← h8] at h11
 
--- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
+  -- Realised that the next step would require us very long proof by contradiction later on so we only consider two posssibilities of cardinality of the set of Sylow 11 subgroups even though in total there are 8 divisors of 42
+  have divs : Nat.divisors 42 = {1, 2, 3, 6, 7, 14, 21, 42} := rfl
+
+-- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be equal to our two chosen possibilities which is 1 and 42
   have h12 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by
-  -- we realised that this would require us very long proof by contradiction later on so we only consider two posssibilities even though in total there are 8 divisors of 42
     sorry
 
 -- Show that 4 is not congruent to 1 mod 5
