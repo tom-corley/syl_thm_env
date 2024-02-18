@@ -30,7 +30,7 @@ lemma orderOf_coe (a : H) : orderOf (a : G) = orderOf a :=
   orderOf_injective H.subtype Subtype.coe_injective _
 
 -- The following theorem is a definition in the Sylow.lean file
--- We put it here as we can use it to switch P from subgroup to Sylow p-subgroup
+-- We have put it here as we can use it to switch P from subgroup to Sylow p-subgroup
 theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
     (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
   exact Sylow.ofCard H card_eq
@@ -39,7 +39,7 @@ theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) 
 theorem Cauchy (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
    exact exists_prime_orderOf_dvd_card p hdvd
 
--- The following theorem tells us that Sylow p-subgroup normal in G implies that it is the unique Sylow p-subgroup
+-- The following theorem tells us that Sylow p-subgroup normal in G implies that it is the unique Sylow p-subgroup (3.7 iii in MA3K4
 theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
 (h : (P : Subgroup G).Normal) : Unique (Sylow p G) := by
     refine { uniq := fun Q ↦ ?_ }
@@ -63,7 +63,7 @@ theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
   exact normal_of_sylow_card_eq_one _ _ P h
 
 --==================================================================================
---              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q)
+--              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q-1)
 --==================================================================================
 
 -- If G is order pq such that p < q, then G has a unique Sylow q-subgroup
@@ -127,6 +127,13 @@ theorem pq_unique_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
 
   done
 
+-- If G is order pq such that p < q, then the Sylow q-subgroup is normal
+
+theorem pq_normal_sylow_q_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (Q : Sylow q G)
+(h : p < q) (hG: Fintype.card G = p*q) : (Q : Subgroup G).Normal := by
+  have h1 : Fintype.card (Sylow q G) = 1 := by exact pq_unique_sylow_q_subgroup p q G Q h hG
+  exact normal_of_sylow_card_eq_one q G Q h1
+
 -- If G is order pq such that p doesn't divide q-1, then G has a unique Sylow p-subgroup
 theorem pq_unique_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (P : Sylow p G)
 (h : p < q) (hh : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : Fintype.card (Sylow p G) = 1 := by
@@ -187,8 +194,37 @@ theorem pq_unique_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
     exact Fintype.card_ne_zero
   exact Nat.one_le_iff_ne_zero.mpr h5
 
+-- If G is order pq such that p doesn't divide q-1, then the Sylow p-subgroup is normal
+
+theorem pq_normal_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Finite (Sylow p G)] (P : Sylow p G)
+(h : p < q) (hh : ¬(p ∣ q - 1)) (hG: Fintype.card G = p*q) : (P : Subgroup G).Normal := by
+  have h1 : Fintype.card (Sylow p G) = 1 := by exact pq_unique_sylow_p_subgroup p q G P h hh hG
+  exact normal_of_sylow_card_eq_one p G P h1
+
+
+-- The following lemmas will be useful in the final theorem
+
+-- Show p and q are coprime
+
+theorem p_not_q (q : ℕ) (hpq: p<q) : p ≠ q := by
+  exact Nat.ne_of_lt hpq
+
+theorem coprime_p_q (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) : Nat.Coprime p q := by
+      have p_not_q : p ≠ q := by exact Nat.ne_of_lt hpq
+      exact (Nat.coprime_primes hp.1 hq.1).2 p_not_q
+
+-- p does not divide q
+theorem p_not_dvd_q (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) : ¬ (p ∣ q) := by
+      exact (Nat.Prime.coprime_iff_not_dvd hp.1).1 (coprime_p_q p q hpq)
+
+-- q does not divide p
+theorem q_not_dvd_p (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) : ¬ (q ∣ p) := by
+    refine (Nat.Prime.coprime_iff_not_dvd ?pp).mp ?_
+    exact hq.1
+    exact Nat.Coprime.symm (coprime_p_q p q hpq)
+
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Sylow p G)] (hpq: p<q)
+theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
 (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
 -- Define the Sylow p-subgroup
   have p0 : p ∣ Fintype.card G := by
@@ -197,11 +233,41 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
   have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
   rw [pow_one] at p1
   obtain ⟨P, hP⟩ := p1
+
+-- We want lean to consider P as a Sylow p subgroup so we can apply our earlier theorems
+
+  have p2 : Fintype.card P = p ^ (Fintype.card G).factorization p := by
+    rw [hP, hpqq]
+    have p2_1 : (Nat.factorization (p * q)) p = 1 := by
+      rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr hpq.ne)]
+      rw [Nat.Prime.factorization_self]
+      rw [Nat.factorization_eq_zero_of_not_dvd]
+      apply p_not_dvd_q
+      exact hpq
+      exact hp.1
+    rw [p2_1, pow_one]
+
+  have P : Sylow p G := by exact Subgroup_to_Sylow G P p2
+
 -- Show P is cyclic and generated by an element g of order p
-  have p3 : IsCyclic P := by
-    exact isCyclic_of_prime_card hP
+
+  have p3 : Fintype.card (P : Subgroup G) = p := by
+    rw [Sylow.card_eq_multiplicity]
+    convert pow_one _
+    rw [hpqq]
+    rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr (p_not_q p q hpq))]
+    rw [Nat.Prime.factorization_self]
+    rw [Nat.factorization_eq_zero_of_not_dvd]
+    exact p_not_dvd_q p q hpq
+    exact hp.1
+
+  have p4 : IsCyclic P := by exact isCyclic_of_prime_card p3
   obtain ⟨g, gP⟩ := IsCyclic.exists_generator (α := P)
-  have p4 : orderOf g = Fintype.card P := by exact orderOf_eq_card_of_forall_mem_zpowers gP
+  have p5 : orderOf g = Fintype.card P := by exact orderOf_eq_card_of_forall_mem_zpowers gP
+
+-- Showing that P is normal in G
+
+  have p6 : (P : Subgroup G).Normal := by exact pq_normal_sylow_p_subgroup p q G P hpq h hpqq
 
 -- Define the Sylow q-subgroup
   have q0 : q ∣ Fintype.card G := by
@@ -210,101 +276,66 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
   have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
   rw [pow_one] at q1
   obtain ⟨Q, hQ⟩ := q1
--- Show Q is cyclic and generated by an element k of order q
-  have q3 : IsCyclic Q := by
-    exact isCyclic_of_prime_card hQ
-  obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
-  have q4 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
-
--- Show p and q are coprime
-  have coprime_p_q : Nat.Coprime p q := by
-      have p_not_q : p ≠ q := by exact Nat.ne_of_lt hpq
-      exact (Nat.coprime_primes hp.1 hq.1).2 p_not_q
-
--- p does not divide q
-  have p_not_dvd_q : ¬ (p ∣ q) := by
-      exact (Nat.Prime.coprime_iff_not_dvd hp.1).1 coprime_p_q
-
--- q does not divide p
-  have q_not_dvd_p : ¬ (q∣ p) := by
-    refine (Nat.Prime.coprime_iff_not_dvd ?pp).mp ?_
-    exact hq.1
-    exact Nat.Coprime.symm coprime_p_q
-
--- We want lean to consider P as a Sylow p subgroup so we can apply our earlier theorems
-
-  have p5 : Fintype.card P = p ^ (Fintype.card G).factorization p := by
-    rw [hP, hpqq]
-    have p6 : (Nat.factorization (p * q)) p = 1 := by
-      rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr hpq.ne)]
-      rw [Nat.Prime.factorization_self]
-      rw [Nat.factorization_eq_zero_of_not_dvd]
-      apply p_not_dvd_q
-      exact hp.1
-    rw [p6, pow_one]
-
-  have hg : (g : G) ∈ P := by exact SetLike.coe_mem g
-
-  have hg1 : g.1 ∈ P := g.2
-
-
-  have P : Sylow p G := by exact Subgroup_to_Sylow G P p5
-
-
-
-
--- Showing that P is the unique Sylow p-subgroup and hence it is normal in G
-
-  have p7 : Fintype.card (Sylow p G) = 1 := by
-    apply pq_unique_sylow_p_subgroup p q
-    exact P
-    exact hpq
-    exact h
-    exact hpqq
-
-  have p8 : (P : Subgroup G).Normal := by
-    exact normal_of_sylow_card_eq_one p G P p7
 
 -- We want lean to consider Q as a Sylow q subgroup so we can apply our earlier theorems
 
-  have q5 : Fintype.card Q = q ^ (Fintype.card G).factorization q := by
+  have q2 : Fintype.card Q = q ^ (Fintype.card G).factorization q := by
     rw [hQ, hpqq]
-    have q6 : (Nat.factorization (p * q)) q = 1 := by
+    have q2_1 : (Nat.factorization (p * q)) q = 1 := by
       rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr hpq.ne)]
       rw [Nat.Prime.factorization_self]
       rw [Nat.factorization_eq_zero_of_not_dvd]
-      exact q_not_dvd_p
+      exact q_not_dvd_p p q hpq
       exact hq.1
-    rw [q6, pow_one]
+    rw [q2_1, pow_one]
 
-  have Q : Sylow q G := by exact Subgroup_to_Sylow G Q q5
+  have Q : Sylow q G := by exact Subgroup_to_Sylow G Q q2
 
--- Showing that Q is the unique Sylow q-subgroup and hence it is normal in G
+-- Show Q is cyclic and generated by an element k of order q
+  have q3 : Fintype.card (Q : Subgroup G) = q := by
+    rw [Sylow.card_eq_multiplicity]
+    convert pow_one _
+    rw [hpqq]
+    rw [Nat.factorization_mul_apply_of_coprime ((Nat.coprime_primes hp.1 hq.1).mpr hpq.ne)]
+    rw [Nat.factorization_eq_zero_of_lt hpq]
+    rw [Nat.Prime.factorization_self]
+    exact hq.1
 
-  have q7 : Fintype.card (Sylow q G) = 1 := by
-    apply pq_unique_sylow_q_subgroup p q
-    exact Q
-    exact hpq
-    exact hpqq
+  have q4 : IsCyclic Q := by
+    exact isCyclic_of_prime_card q3
+  obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
+  have q5 : orderOf k = Fintype.card Q := by exact orderOf_eq_card_of_forall_mem_zpowers kQ
 
-  have q8 : (Q : Subgroup G).Normal := by
-    exact normal_of_sylow_card_eq_one q G Q q7
+-- Showing that Q is normal in G
+
+  have q6 : (Q : Subgroup G).Normal := by
+    exact pq_normal_sylow_q_subgroup p q G Q hpq hpqq
 
 -- P and Q have trivial intersection
 
-  have intersection_trivial : (P : Subgroup G) ⊓ (Q : Subgroup G) = ⊥ := by sorry
+  have intersection_trivial : (P : Subgroup G) ⊓ (Q : Subgroup G) = (⊥ : Subgroup G) := by
+    sorry
 
 -- gkg^(-1)k^(-1) lies in both P and Q so must be the identity element
 
   have in_P : (g*k*g⁻¹*k⁻¹ : G) ∈ P := by
     simp_rw [mul_assoc (g : G)]
-    apply P.mul_mem g.prop
-    apply p8.conj_mem
+    apply (P : Subgroup G).mul_mem g.prop
+    apply p6.conj_mem
     apply P.inv_mem g.prop
 
-  have in_Q : (g*k*g⁻¹*k⁻¹ : G) ∈ Q := by sorry
+  have in_Q : (g*k*g⁻¹*k⁻¹ : G) ∈ Q := by
+    refine (mul_mem_cancel_right ?h).mpr ?_
+    exact SetLike.coe_mem k⁻¹
+    apply q6.conj_mem
+    exact SetLike.coe_mem k
 
-  have is_id : (g*k*g⁻¹*k⁻¹ : G) = 1 := by sorry
+  have in_P_int_Q : (g*k*g⁻¹*k⁻¹ : G) ∈ (P : Subgroup G) ⊓ (Q : Subgroup G) := by sorry
+
+  have in_bot : (g*k*g⁻¹*k⁻¹ : G) ∈ (⊥ : Subgroup G) := by sorry
+
+  have is_id : (g*k*g⁻¹*k⁻¹ : G) = 1 := by exact in_bot
+
 
 -- Show g and k commute
   have g_k_commute : Commute (g : G) (k : G) := by
@@ -314,12 +345,12 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
   have pq : Nat.Coprime (orderOf (g : G)) (orderOf (k : G)) → orderOf (g * k : G) = orderOf (g : G) * orderOf (k : G) := by
     exact Commute.orderOf_mul_eq_mul_orderOf_of_coprime g_k_commute
 -- Rewrite this statement so we can use it
-  rw [orderOf_coe, orderOf_coe, p4, q4, hP, hQ] at pq
+  rw [orderOf_coe, orderOf_coe, p5, q5, p3, q3] at pq
 
 -- Show that the order of G matches the order of gk
   have order : Fintype.card G = orderOf (g* k : G) := by
     rw [hpqq, pq]
-    apply coprime_p_q
+    exact coprime_p_q p q hpq
 
 -- Finally we can use the fact that G contains an element which has order pq, so it must generate G
   exact isCyclic_of_orderOf_eq_card (↑g * ↑k) (id order.symm)
@@ -533,7 +564,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   have h1 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h₂
 
-  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEED TO BE PROVED
+  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEEDS TO BE PROVED
 
   intro h3
   have := h3.eq_bot_or_eq_top_of_normal Q h₁₀
