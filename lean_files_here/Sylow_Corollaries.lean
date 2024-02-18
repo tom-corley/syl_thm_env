@@ -201,8 +201,8 @@ theorem pq_normal_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   have h1 : Fintype.card (Sylow p G) = 1 := by exact pq_unique_sylow_p_subgroup p q G P h hh hG
   exact normal_of_sylow_card_eq_one p G P h1
 
-
 -- The following lemmas will be useful in the final theorem
+-- (Note: I am aware these proofs may have been used above and I could have introduced these earlier to make the code more efficient)
 
 -- Show p and q are coprime
 
