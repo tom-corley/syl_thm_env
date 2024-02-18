@@ -79,7 +79,7 @@ Our plan is then to use our implementation to give some examples of proving the 
 
 A group of order 20 is simple
 
-### Group Classification 
+## Group Classification 
 
 A final target of our project is to prove some basic results about classifying infinite families of groups. One example of such a result is the following: 
 
@@ -101,7 +101,7 @@ The final piece of work making up our submission is the file Sylow_Corollaries.l
 
 We understand that this submission is somewhat unorthodox, but our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
 
-Tom, Antonina & Roshan
+Tom, Antonita & Roshan
 
 
 

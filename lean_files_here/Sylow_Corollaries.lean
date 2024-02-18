@@ -30,7 +30,7 @@ lemma orderOf_coe (a : H) : orderOf (a : G) = orderOf a :=
   orderOf_injective H.subtype Subtype.coe_injective _
 
 -- The following theorem is a definition in the Sylow.lean file
--- We put it here as we can use it to switch P from subgroup to Sylow p-subgroup
+-- We have put it here as we can use it to switch P from subgroup to Sylow p-subgroup
 theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
     (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
   exact Sylow.ofCard H card_eq
@@ -39,7 +39,7 @@ theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) 
 theorem Cauchy (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
    exact exists_prime_orderOf_dvd_card p hdvd
 
--- The following theorem tells us that Sylow p-subgroup normal in G implies that it is the unique Sylow p-subgroup
+-- The following theorem tells us that Sylow p-subgroup normal in G implies that it is the unique Sylow p-subgroup (3.7 iii in MA3K4
 theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
 (h : (P : Subgroup G).Normal) : Unique (Sylow p G) := by
     refine { uniq := fun Q ↦ ?_ }
@@ -450,7 +450,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   have h1 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h₂
 
-  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEED TO BE PROVED
+  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEEDS TO BE PROVED
 
   intro h3
   have := h3.eq_bot_or_eq_top_of_normal Q h₁₀
