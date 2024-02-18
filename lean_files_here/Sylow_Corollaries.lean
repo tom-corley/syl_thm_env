@@ -582,7 +582,8 @@ example (hG : Fintype.card G = 462) : ¬ IsSimpleGroup G := by
   rw [← h8] at h11
 
 -- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
-  have h12 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by -- we realised that
+  have h12 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by
+  -- we realised that this would require us very long proof by contradiction later on so we only consider two posssibilities even though in total there are 8 divisors of 42
     sorry
 
 -- Show that 4 is not congruent to 1 mod 5
