@@ -29,6 +29,12 @@ variable {H : Subgroup G}
 lemma orderOf_coe (a : H) : orderOf (a : G) = orderOf a :=
   orderOf_injective H.subtype Subtype.coe_injective _
 
+-- The following theorem is a definition in the Sylow.lean file
+-- We put it here as we can use it to switch P from subgroup to Sylow p-subgroup
+theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
+    (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
+  exact Sylow.ofCard H card_eq
+
 -- Cauchy's Theorem - G contains an element of order p
 theorem Cauchy (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
    exact exists_prime_orderOf_dvd_card p hdvd
@@ -44,7 +50,8 @@ theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
 
 -- If G has a unique Sylow p-subgroup P, then it is normal in G
 theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
-(h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := by sorry
+(h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := by
+  apply?
 
 --==================================================================================
 --              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q)
@@ -170,12 +177,6 @@ theorem pq_unique_sylow_p_subgroup [hp : Fact p.Prime] [hq : Fact q.Prime] [Fini
   have h5: Fintype.card (Sylow p G) ≠ 0 := by
     exact Fintype.card_ne_zero
   exact Nat.one_le_iff_ne_zero.mpr h5
-
--- The following theorem is a definition in the Sylow.lean file
--- We put it here as we can use it to switch P from subgroup to Sylow p-subgroup
-theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) [Fintype H]
-    (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
-  exact Sylow.ofCard H card_eq
 
 -- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
 theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Sylow p G)] (hpq: p<q)
@@ -352,34 +353,6 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
   }
 
 
-
-
-
-
-
-
-  sorry
-
-
--- review of your code (KB)
--- (KB) for problem at the very end, it seems to be fixed by using `Finite` instead of `Fintype`.
-variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Finite G]
-
--- (KB) Your comment below should be a *docstring*, so start with `/--`, finish with `-/`
--- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pqKB (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hdvd: p<q ∧ Nat.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
--- Define the Sylow p-subgroup
-  have h0 : Fintype G := by
-    exact Fintype.ofFinite (G)
-  have h1 : p ∣ Nat.card G := by
-    rw [hdvd.2]
-    exact Nat.dvd_mul_right p q
-  have h2 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ h1)
-  rw [pow_one] at p1
-  obtain ⟨P, hP⟩ := by exact p1
-
-
-
 --==================================================================================
 --                                   SYLOW GAME
 --==================================================================================
@@ -396,12 +369,15 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
 
   -- Apply Sylow's theorem to conclude the existence of a Sylow 5-subgroup
   -- The theorem guarantees a subgroup of order 5^1, as 5 is a prime dividing the group's order
-  have h₃ := Sylow.exists_subgroup_card_pow_prime 5 <| (pow_one 5).symm ▸ h₂
+  have h₃ := Sylow.exists_subgroup_card_pow_prime 5 ((pow_one 5).symm ▸ h₂)
+  rw [pow_one] at h₃
 
   -- We extract the actual subgroup Q which satisfies the Sylow p-subgroup conditions for p=5
   obtain ⟨Q, hQ⟩ := h₃
 
-  have h₄: Fintype Q := Fintype.ofFinite Q
+
+
+  --have h₄: Fintype Q := Fintype.ofFinite Q
 
   have h₅: (Nat.factorization 20) 5 = 1 := by
     rw [h3, Nat.factorization_mul_apply_of_coprime]
@@ -410,11 +386,16 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
     apply Nat.lt.base 4
     exact rfl
 
-  have card_eq : Fintype.card Q = 5 ^ (Nat.factorization (Fintype.card G)) 5 := by
-    rw [hG]
-    convert hQ
+  have card_eq : Fintype.card Q = 5 ^ (Fintype.card G).factorization 5 := by
+    rw [hG, hQ, h₅, pow_one]
 
-  have S := Sylow.ofCard Q card_eq
+-- REMEMBER TO DELETE IF NOT USED
+ -- have S := Sylow.ofCard Q card_eq
+
+  have ff : Fintype.card G = (Q : Subgroup G).index * Fintype.card (Q : Subgroup G) := by exact (Subgroup.index_mul_card ↑Q).symm
+  rw [hG, hQ, h3, mul_left_inj'] at ff
+
+  have Q : Sylow 5 G := by exact Subgroup_to_Sylow G Q card_eq
 
   -- Now we use Sylow's theorems to analyse the number of such subgroups
 
@@ -422,9 +403,11 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   have h₄ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := card_sylow_modEq_one 5 G
 
   -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
-  have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q 5
-  have h₆ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by
-    sorry
+  have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
+
+  have h₆ : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry
+
+
   have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by
     -- intro h
     -- contradiction
@@ -432,19 +415,44 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
 
   -- Establish that there is exactly one Sylow 5-subgroup in G
 
-  have h₈ : Fintype.card (Sylow 5 G) = 1 := by sorry
+  have h8 : Fintype.card (Sylow 5 G) = 1 := by
+    cases h₆ with
+    | inl h => exact h
+    | inr h => rw [h] at h₄
+               exact (h₇ h₄).elim
 
-  -- Conclude the existence and uniqueness of the Sylow 5-subgroup, implying it is normal
-  -- The uniqueness of the Sylow subgroup follows from h₈ and the properties of Sylow subgroups
-  obtain ⟨P, hP⟩ := Fintype.card_eq_one_iff.mp h₈
 
   -- Prove that the unique Sylow subgroup P is a normal subgroup of G
   -- This will use the fact that a unique Sylow subgroup is always normal
-  have h₁₀ : Subgroup.Normal Q := by sorry
+  have h₁₀ : (Q : Subgroup G).Normal := by exact normal_of_unique 5 G Q h8
 
   -- Conclude that G is not simple because it has a normal subgroup of order 5
-  -- This final step uses the definition of a simple group, which cannot have non-trivial normal subgroups
-  exact h₁₀
+  have h1 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h₂
+
+  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry
+
+  intro h3
+  have := h3.eq_bot_or_eq_top_of_normal Q h₁₀
+  cases this <;> contradiction -- `exact this.elim h1 h2` will also work here
+
+  exact Nat.succ_ne_zero 4
+
+  done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 -- The example states that a group of order 462 cannot be simple
