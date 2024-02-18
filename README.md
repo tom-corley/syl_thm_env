@@ -95,17 +95,17 @@ During the course of the project, our goals shifted many times, and it became ap
 
 However, as a group, we have expended a vast amout of time and effort furthering our understanding of Lean, and while we have not been able to do everything we originally intended to do, we still have a lot to show for our efforts.
 
-Firstly, we have commented extensively on the Sylow.lean file, and have worked very hard to understand the intricacies of how Sylow's theorem's are set out in Mathlib.
+Firstly, we have commented extensively on the Sylow.lean file, and have worked very hard to understand the intricacies of how Sylow's theorem's are set out in Mathlib. This helped greatly in understanding how to structure proofs, one example was how to lay out individual claim using have, or how the up arrow is used for coercions, and also to inform us about useful pre-existing results from Mathlib4.
 
-Secondly, we have an initial skeleton, titled Sylow_Skeletonlean which is filled out with attempted proofs, some of which more complete then others. 
+Secondly, we have an initial skeleton, titled Sylow_Skeletonlean which is filled out with attempted proofs, some of which more complete then others. We initially struggled with getting the types accurate, and finding the correct results, and navigating the initially confusing naming conventions.  
 
 We then have a second skeleton, New_Skeleton.lean, which is largely empty, but contains some initial attempts to redefine key concepts.
 
 The final piece of work making up our submission is the file Sylow_Corollaries.lean, which contains attempted proofs deduced from the theorems and definitions contained in the Sylow.lean file. These include Cauchy's theorem, as well as classifications for specific families of finite groups. 
 
-An extra comment we want to make for the classification proof. Roshan and Antonina managed to prove this theorem completely but we had many attempts that led to nothing. For example we had made the error that for a normal group P, we have gP = Pg for all g \in G, and we thought for some reason this implies all group elements of P commute with the rest of the group, but this is very incorrect. We also made the error of proving that P is a normal subgroup of P, thinking we had shown that the group P was normal in G. We managed to correct our thinking by making sure went over the proofs we wanted to formalise, making note of every single step and what assumptions are used. This made it much clearer on how we should formalise the results. 
+We wanted to makes some extra comments regarding the classification proof. Roshan and Antonina eventually managed to prove this theorem completely but this was only after a multitude of unsucessful attempts. One example of an issue we ran into, was that for a normal group P, we have $gP = Pg \; \; \forall g \in G$, and we thought for some reason this implies all group elements of P commute with the rest of the group, but this is in fact incorrect. Another error was proving that P is a normal subgroup of P, thinking we had shown that the group P was normal in G. We managed to correct our thinking by paying close attention to our source material, and the specific proofs we wanted to formalise, making note of every single step and what assumptions are used. This eventually helped to clarify how the results should be formalised. 
 
-Throughout our attempts we have had to reorder what we proved to make sure we were using the correct type classes as we switch the types of P, Q being a subgroup to a Sylow p G and Sylow q G respectively. We learnt it was best to split our problems into smaller subgoals and have them be their own separate theorems, so that the final proof is not too long and cluttered with so many statements. 
+Throughout our attempts we have had to reorder what we proved to make sure we were using the correct type classes as we coerce the types of P, Q to a Sylow p G and Sylow q G respectively. We learnt it was best to split our problems into smaller subgoals and have them be their own separate theorems, ensuring that the final proof was more concise and unnecessary clutter was avoided. 
 
 
 

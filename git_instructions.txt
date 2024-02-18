@@ -19,3 +19,9 @@ git add : this prepares ("stages") any changes you have made to be committed to 
 git commit -m "<your_message_here>" : this commits the changes you make, to your local branch. You should always try to include a commit message, because this lets everyone else know what your changes were
 
 git push : this pushes the changes you have committed to your local branch onto the master branch, Updating the repository itself, and allowing other people to pull them in.
+
+git branch <branch_name> : used to create a new branch with given name 
+
+git checkout <branch_name> : used to switch onto new branch
+
+If there are conflicting changes to the repository at the same time, it may be necessary to resolve a merge conflict manually, I can do this, so just let me know, as this can be tricky at first.

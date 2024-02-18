@@ -34,7 +34,7 @@ theorem Subgroup_to_Sylow [Fintype G] {p : ℕ} [Fact p.Prime] (H : Subgroup G) 
     (card_eq : Fintype.card H = p ^ (Fintype.card G).factorization p) : Sylow p G := by
   exact Sylow.ofCard H card_eq
 
--- Cauchy's Theorem - G contains an element of order p
+-- Cauchy's Theorem - G contains an element of order p, given that p is a prime which divides the order of G
 theorem Cauchy (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
    exact exists_prime_orderOf_dvd_card p hdvd
 
@@ -62,7 +62,7 @@ theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
   exact normal_of_sylow_card_eq_one _ _ P h
 
 --==================================================================================
---              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q)
+--              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE (q-1))
 --==================================================================================
 
 -- If G is order pq such that p < q, then G has a unique Sylow q-subgroup
