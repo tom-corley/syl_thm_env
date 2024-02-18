@@ -313,7 +313,8 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
 
 -- P and Q have trivial intersection
 
-  have intersection_trivial : (P : Subgroup G) ⊓ (Q : Subgroup G) = ⊥ := by sorry
+  have intersection_trivial : (P : Subgroup G) ⊓ (Q : Subgroup G) = (⊥ : Subgroup G) := by
+    sorry
 
 -- gkg^(-1)k^(-1) lies in both P and Q so must be the identity element
 
@@ -329,7 +330,11 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
     apply q6.conj_mem
     exact SetLike.coe_mem k
 
-  have is_id : (g*k*g⁻¹*k⁻¹ : G) = 1 := by sorry
+  have in_P_int_Q : (g*k*g⁻¹*k⁻¹ : G) ∈ (P : Subgroup G) ⊓ (Q : Subgroup G) := by sorry
+
+  have in_bot : (g*k*g⁻¹*k⁻¹ : G) ∈ (⊥ : Subgroup G) := by sorry
+
+  have is_id : (g*k*g⁻¹*k⁻¹ : G) = 1 := by exact in_bot
 
 
 -- Show g and k commute
