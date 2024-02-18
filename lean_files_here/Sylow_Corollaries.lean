@@ -416,7 +416,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
   have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
 
-  have h₆ : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry
+  have h₆ : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry -- THIS NEED TO BE PROVED
 
 
   have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by
@@ -440,7 +440,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   have h1 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h₂
 
-  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry
+  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEED TO BE PROVED
 
   intro h3
   have := h3.eq_bot_or_eq_top_of_normal Q h₁₀
