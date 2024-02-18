@@ -26,26 +26,46 @@ theorem mul (g k : G) (hg : g ∈ P) (hk : k ∈ Q) (hP : (P : Subgroup G).Norma
 
 
 
-variable (p : ℕ) [Fact p.Prime] (q : ℕ) [Fact q.Prime] (G : Type*) [Group G] [Fintype G]
+-- variable (p : ℕ) [Fact p.Prime] (q : ℕ) [Fact q.Prime] (G : Type*) [Group G] [Fintype G]
 
-theorem bigtheorem (P : Sylow p G) (Q : Sylow q G) : IsCyclic G := by
+-- theorem bigtheorem (P : Sylow p G) (Q : Sylow q G) : IsCyclic G := by
 
--- obtain the generator of P and say P is normal
-  have p3 : IsCyclic P := by sorry
-  obtain ⟨g, gP⟩ := IsCyclic.exists_generator (α := P)
-  have p8 : (P : Subgroup G).Normal := by sorry
+-- -- obtain the generator of P and say P is normal
+--   have p3 : IsCyclic P := by sorry
+--   obtain ⟨g, gP⟩ := IsCyclic.exists_generator (α := P)
+--   have p8 : (P : Subgroup G).Normal := by sorry
 
--- obtain the generator of Q and say Q is normal
-  have q3 : IsCyclic Q := by sorry
-  obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
-  have q8 : (Q : Subgroup G).Normal := by sorry
+-- -- obtain the generator of Q and say Q is normal
+--   have q3 : IsCyclic Q := by sorry
+--   obtain ⟨k, kQ⟩ := IsCyclic.exists_generator (α := Q)
+--   have q8 : (Q : Subgroup G).Normal := by sorry
 
--- what I am having trouble proving given my previous post
-  have in_P : (g*k*g⁻¹*k⁻¹ : G) ∈ P := by
-    simp_rw [mul_assoc (g : G)]
-    apply P.mul_mem g.prop
-    apply p8.conj_mem
-    apply P.inv_mem g.prop
+-- -- what I am having trouble proving given my previous post
+--   have in_P : (g*k*g⁻¹*k⁻¹ : G) ∈ P := by
+--     simp_rw [mul_assoc (g : G)]
+--     apply P.mul_mem g.prop
+--     apply p8.conj_mem
+--     apply P.inv_mem g.prop
 
 
-  sorry
+--   sorry
+
+
+
+-- -- P and Q have trivial intersection
+
+--   have intersection_trivial : (O : Subgroup G) ⊓ (Q : Subgroup G) = ⊥ := by sorry
+
+-- -- gkg^(-1)k^(-1) lies in both P and Q so must be the identity element
+
+--   have in_P : (g*k*g⁻¹*k⁻¹ : G) ∈ O := by
+--     simp_rw [mul_assoc (g : G)]
+--     apply (O : Subgroup G).mul_mem g.prop
+--     apply p8.conj_mem
+--     apply P.inv_mem g.prop
+
+--   have in_Q : (g*k*g⁻¹*k⁻¹ : G) ∈ Q := by sorry
+
+--   have is_id : (g*k*g⁻¹*k⁻¹ : G) = 1 := by sorry
+
+
