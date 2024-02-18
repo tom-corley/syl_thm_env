@@ -8,7 +8,7 @@ In formal written mathematics, A group $G$ is often defined to be a set $G$, end
 2.  Identity: $ \; \; \; \; \; \; \; \; \; \;\exists 1_G \in G: \; \forall g \in G, \; 1_G \circ g = g \circ 1_G = g $
 3.  Inverses: $ \; \; \; \; \; \; \; \; \; \;\forall g \in G, \exists g^{-1} \in G: \;  g \circ g^{-1} = g^{-1} \circ g = 1_G $
 
-For formal verification, and in particular in this case, and also the setting of functional programming it is instead advisable to build up to the structure of a group recursively, through three intermediate alstructures. We do so by defining the following: 
+For formal verification, and in particular in this case, and also the setting of functional programming it is instead advisable to build up to the structure of a group recursively, through three intermediate algebraic structures. We do so by defining the following: 
 
     Setoid: A set, equipped with a closed binary operation on itself.
 
@@ -81,7 +81,7 @@ We then have a second skeleton, New_Skeleton.lean, which is largely empty, but c
 
 The final piece of work making up our submission is the file Sylow_Corollaries.lean, which contains attempted proofs deduced from the theorems and definitions contained in the Sylow.lean file. These include Cauchy's theorem, as well as classifications for specific families of finite groups. 
 
-We understand that this submission is somewhatunorthodox, byt our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
+We understand that this submission is somewhat unorthodox, but our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
 
 Tom, Antonita & Roshan
 

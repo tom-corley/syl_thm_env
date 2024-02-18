@@ -452,6 +452,7 @@ theorem card_sylow_modEq_one [Fact p.Prime] [Fintype (Sylow p G)] :
   exact (P.2.card_modEq_card_fixedPoints (Sylow p G)).trans (by rw [this])
 #align card_sylow_modeq_one card_sylow_modEq_one
 
+/-- This theorem states that the number of Sylow p-subgroups of a finite group is not divisible by the prime p.-/
 theorem not_dvd_card_sylow [hp : Fact p.Prime] [Fintype (Sylow p G)] : ¬p ∣ card (Sylow p G) :=
   fun h =>
   hp.1.ne_one
@@ -462,12 +463,15 @@ theorem not_dvd_card_sylow [hp : Fact p.Prime] [Fintype (Sylow p G)] : ¬p ∣ c
 
 variable {p} {G}
 
-/-- Sylow subgroups are isomorphic -/
+/-- Defining an equivalence relation for a Sylow subgroup being isomorphic to its conjugate, the nonrec keyword indicates that the definition does not call itself
+An equivalence relation for group isomorphisms which has been defined in previous Mathlib files is used, the new relation holds iff
+if the relation for general groups holds for P coerced from a Sylow group to a subgroup.
+ -/
 nonrec def Sylow.equivSMul (P : Sylow p G) (g : G) : P ≃* (g • P : Sylow p G) :=
   equivSMul (MulAut.conj g) P.toSubgroup
 #align sylow.equiv_smul Sylow.equivSMul
 
-/-- Sylow subgroups are isomorphic -/
+/-- Similair definition for, two Sylow subgroups in the same group -/
 noncomputable def Sylow.equiv [Fact p.Prime] [Finite (Sylow p G)] (P Q : Sylow p G) : P ≃* Q := by
   rw [← Classical.choose_spec (exists_smul_eq G P Q)]
   exact P.equivSMul (Classical.choose (exists_smul_eq G P Q))
@@ -478,6 +482,7 @@ theorem Sylow.orbit_eq_top [Fact p.Prime] [Finite (Sylow p G)] (P : Sylow p G) :
   top_le_iff.mp fun Q _ => exists_smul_eq G P Q
 #align sylow.orbit_eq_top Sylow.orbit_eq_top
 
+/- Theorem states that the stabiliser of the action of G on the set of Sylow p groups by conjugation is the normaliser of the Sylow p group P.-/
 theorem Sylow.stabilizer_eq_normalizer (P : Sylow p G) :
     stabilizer G P = (P : Subgroup G).normalizer := by
   ext; simp [Sylow.smul_eq_iff_mem_normalizer]
