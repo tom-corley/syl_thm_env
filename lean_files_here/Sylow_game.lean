@@ -112,29 +112,55 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   have h8 : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
 
   -- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
-  have h9 : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry -- THIS NEED TO BE PROVED
+  have h9 : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) ∨ (Fintype.card (Sylow 5 G) = 2) := by sorry -- THIS NEED TO BE PROVED
 
   -- Show that 4 is not congruent to 1 mod 5
   have h10 : ¬ (4 ≡ 1 [MOD 5]) := by
     decide
 
+  have h11 : ¬ (2 ≡ 1 [MOD 5]) := by
+    decide
 
   -- Establish that there is exactly one Sylow 5-subgroup in G
-  have h11 : Fintype.card (Sylow 5 G) = 1 := by
+
+  have h12 : Fintype.card (Sylow 5 G) = 1 := by
     cases h9 with
     | inl h => exact h
-    | inr h => rw [h] at h7
-               exact (h10 h7).elim
+    | inr h => cases h with
+               | inl h => rw [h] at h7
+                          exact (h10 h7).elim
+               | inr h => rw [h] at h7
+                          exact (h11 h7).elim
 
-  -- Prove that the unique Sylow subgroup P is a normal subgroup of G
+   -- Prove that the unique Sylow subgroup P is a normal subgroup of G
   -- This will use the fact that a unique Sylow subgroup is always normal
-  have h12 : (Q : Subgroup G).Normal := by exact normal_of_sylow_card_eq_one 5 G Q h11
+  have h12 : (Q : Subgroup G).Normal := by exact normal_of_sylow_card_eq_one 5 G Q h12
 
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   -- This conclusion relies on demonstrating that Q, as a subgroup of G, is neither trivial nor G itself
   have h13 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h2
 
-  have h14 : (Q : Subgroup G) ≠ ⊤ := by apply?
+  -- have h14 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
+  --   have ha: Fintype.card (Q : Subgroup G) = 11 := by
+  --     rw [Sylow.card_eq_multiplicity]
+  --     convert pow_one _
+  --     rw [hG]
+  --     exact h7
+
+  --   have hb : Fintype.card (⊤ : Subgroup G) = Fintype.card G := by
+  --     exact (Subgroup.card_eq_iff_eq_top ⊤).mpr rfl
+  --   rw [hG] at hb
+
+  --   have hp : Fintype.card (Q : Subgroup G) ≠ Fintype.card (⊤ : Subgroup G) := by
+  --     rw [ha, hb]
+  --     decide
+  --   exact ne_of_apply_ne (fun Q => Fintype.card { x // x ∈ Q}) hp
+
+  -- I managed to simplify the proof of h14 in a following way
+  have h13 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
+    have ha: Fintype.card (Q : Subgroup G) = 5 := by
+      simp [Sylow.card_eq_multiplicity, hG, h5]
+    simp [← Q.card_eq_iff_eq_top, ha, hG]
 
   intro h
   have := h.eq_bot_or_eq_top_of_normal Q h12
@@ -179,15 +205,18 @@ example (hG : Fintype.card G = 462) : ¬ IsSimpleGroup G := by
     apply rfl
     exact rfl
 
-  have card_eq : Fintype.card Q = 11 ^ (Nat.factorization (Fintype.card G)) 11 := by
+  have card_eq1 : Fintype.card Q = 11 ^ (Nat.factorization (Fintype.card G)) 11 := by
     rw [hG]
     convert hQ
 
-  -- Show that the index of Q in G is equal to 42
-  have h6 : Fintype.card G = (Q : Subgroup G).index * Fintype.card (Q : Subgroup G) := by exact (Subgroup.index_mul_card ↑Q).symm
-  rw [hG, hQ, h3, pow_one, mul_left_inj'] at h6
+  have Q : Sylow 11 G := by exact Subgroup_to_Sylow G Q card_eq1
 
-  have Q : Sylow 11 G := by exact Subgroup_to_Sylow G Q card_eq
+  have card_eq2 : Fintype.card (Q : Subgroup G) = 11 := by
+    rw [Sylow.card_eq_multiplicity, hG, h7, pow_one]
+
+    -- Show that the index of Q in G is equal to 42
+  have h6 : Fintype.card G = (Q : Subgroup G).index * Fintype.card (Q : Subgroup G) := by exact (Subgroup.index_mul_card (Q : Subgroup G)).symm
+  rw [hG, card_eq2, h3, mul_left_inj'] at h6
 
   -- Now we use Sylow's theorems to analyse the number of such subgroups
 
@@ -197,8 +226,11 @@ example (hG : Fintype.card G = 462) : ¬ IsSimpleGroup G := by
   -- Show that the number of Sylow 11-subgroups divides the index of Q in G
   have h10 : (Fintype.card (Sylow 11 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
 
+  rw [← h6] at h10
+
 -- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
-  have h11 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by sorry
+  have h11 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by -- we realised that
+    sorry
 
 -- Show that 4 is not congruent to 1 mod 5
   have h12 : ¬ (42 ≡ 1 [MOD 11]) := by
@@ -219,16 +251,27 @@ example (hG : Fintype.card G = 462) : ¬ IsSimpleGroup G := by
   -- This conclusion relies on demonstrating that Q, as a subgroup of G, is neither trivial nor G itself
   have h13 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h2
 
+  -- have h14 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
+  --   have ha: Fintype.card (Q : Subgroup G) = 11 := by
+  --     rw [Sylow.card_eq_multiplicity]
+  --     convert pow_one _
+  --     rw [hG]
+  --     exact h7
+
+  --   have hb : Fintype.card (⊤ : Subgroup G) = Fintype.card G := by
+  --     exact (Subgroup.card_eq_iff_eq_top ⊤).mpr rfl
+  --   rw [hG] at hb
+
+  --   have hp : Fintype.card (Q : Subgroup G) ≠ Fintype.card (⊤ : Subgroup G) := by
+  --     rw [ha, hb]
+  --     decide
+  --   exact ne_of_apply_ne (fun Q => Fintype.card { x // x ∈ Q}) hp
+
+  -- I managed to simplify the proof of h14 in a following way
   have h14 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
-    have hb: Fintype.card (Q : Subgroup G) = 5 := by
-      rw[]
-    have ha : Fintype.card (⊤ : Subgroup G) = 20 := by sorry
-    have hp : Fintype.card (Q : Subgroup G) ≠ Fintype.card (⊤ : Subgroup G) := by
-      rw [hQ, ha]
-      decide
-    exact ne_of_apply_ne (fun Q => Fintype.card { x // x ∈ Q}) hp
-
-
+    have ha: Fintype.card (Q : Subgroup G) = 11 := by
+      simp [Sylow.card_eq_multiplicity, hG, h7]
+    simp [← Q.card_eq_iff_eq_top, ha, hG]
 
   intro h
   have := h.eq_bot_or_eq_top_of_normal Q h12

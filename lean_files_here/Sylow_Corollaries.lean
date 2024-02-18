@@ -418,7 +418,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   have h2 : 5 ∣ Fintype.card G := by use 4 -- 5 divides 20 (20 = 4 * 5)
 
   -- Write the equation |G| = m * p^n where p prime and gcd(p,m) = 1 but with |G| = 20, m = 4, p = 5 and n = 1
-  have h3 : 20 = 4*5 := by exact rfl
+  have h3 : 20 = 4 * 5 := by exact rfl
 
   -- Apply Sylow's theorem to conclude the existence of a Sylow 5-subgroup
   -- The theorem ensures a Sylow 5-subgroup of order 5^1, given 5 - a prime that divides the group's order at its highest power of 5
@@ -450,38 +450,62 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
    -- Use Sylow's theorems to deduce the number of Sylow p-subgroups is congruent to 1 mod p
   have h7 : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := card_sylow_modEq_one 5 G
 
-  -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
+  -- Show that the number of Sylow 5-subgroups divides the index of Q in G
   have h8 : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
 
   -- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
-  have h9 : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry -- THIS NEED TO BE PROVED
+  have h9 : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) ∨ (Fintype.card (Sylow 5 G) = 2) := by sorry -- THIS NEED TO BE PROVED
 
   -- Show that 4 is not congruent to 1 mod 5
   have h10 : ¬ (4 ≡ 1 [MOD 5]) := by
-    intro h
-    -- contradiction
+    decide
+
+  have h11 : ¬ (2 ≡ 1 [MOD 5]) := by
     decide
 
   -- Establish that there is exactly one Sylow 5-subgroup in G
-  have h11 : Fintype.card (Sylow 5 G) = 1 := by
+
+  have h12 : Fintype.card (Sylow 5 G) = 1 := by
     cases h9 with
     | inl h => exact h
-    | inr h => rw [h] at h7
-               exact (h10 h7).elim
+    | inr h => cases h with
+               | inl h => rw [h] at h7
+                          exact (h10 h7).elim
+               | inr h => rw [h] at h7
+                          exact (h11 h7).elim
 
-
-  -- Prove that the unique Sylow subgroup P is a normal subgroup of G
+   -- Prove that the unique Sylow subgroup P is a normal subgroup of G
   -- This will use the fact that a unique Sylow subgroup is always normal
-  have h12 : (Q : Subgroup G).Normal := by exact normal_of_sylow_card_eq_one 5 G Q h11
+  have h13 : (Q : Subgroup G).Normal := by exact normal_of_sylow_card_eq_one 5 G Q h12
 
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   -- This conclusion relies on demonstrating that Q, as a subgroup of G, is neither trivial nor G itself
-  have h13 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h2
+  have h14 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h2
 
-  have h14 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEED TO BE PROVED
+  -- have h14 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
+  --   have ha: Fintype.card (Q : Subgroup G) = 11 := by
+  --     rw [Sylow.card_eq_multiplicity]
+  --     convert pow_one _
+  --     rw [hG]
+  --     exact h7
+
+  --   have hb : Fintype.card (⊤ : Subgroup G) = Fintype.card G := by
+  --     exact (Subgroup.card_eq_iff_eq_top ⊤).mpr rfl
+  --   rw [hG] at hb
+
+  --   have hp : Fintype.card (Q : Subgroup G) ≠ Fintype.card (⊤ : Subgroup G) := by
+  --     rw [ha, hb]
+  --     decide
+  --   exact ne_of_apply_ne (fun Q => Fintype.card { x // x ∈ Q}) hp
+
+  -- I managed to simplify the proof of h14 in a following way
+  have h15 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
+    have ha: Fintype.card (Q : Subgroup G) = 5 := by
+      simp [Sylow.card_eq_multiplicity, hG, h5]
+    simp [← Q.card_eq_iff_eq_top, ha, hG]
 
   intro h
-  have := h.eq_bot_or_eq_top_of_normal Q h12
+  have := h.eq_bot_or_eq_top_of_normal Q h13
   cases this <;> contradiction -- could also use `exact this.elim h1 h2`
 
   -- Resolve the remaining subgoals
@@ -490,133 +514,32 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
   done
 
 
-
-
-
-example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
-  -- Establish that 5 is a prime number
-  have h1 : Fact (Nat.Prime 5) := fact_iff.mpr (by norm_num)
-
-  -- Prove that 5 divides the order of the group G
-  have h₂ : 5 ∣ Fintype.card G := by use 4 -- 5 divides 20 (20 = 4 * 5)
-
-  have h3 : 20 = 4*5 := by exact rfl
-
-  -- Apply Sylow's theorem to conclude the existence of a Sylow 5-subgroup
-  -- The theorem guarantees a subgroup of order 5^1, as 5 is a prime dividing the group's order
-  have h₃ := Sylow.exists_subgroup_card_pow_prime 5 ((pow_one 5).symm ▸ h₂)
-  rw [pow_one] at h₃
-
-  -- We extract the actual subgroup Q which satisfies the Sylow p-subgroup conditions for p=5
-  obtain ⟨Q, hQ⟩ := h₃
-
-
-
-  --have h₄: Fintype Q := Fintype.ofFinite Q
-
-  have h₅: (Nat.factorization 20) 5 = 1 := by
-    rw [h3, Nat.factorization_mul_apply_of_coprime]
-    norm_num
-    rw [Nat.factorization_eq_zero_of_lt]
-    apply Nat.lt.base 4
-    exact rfl
-
-  have card_eq : Fintype.card Q = 5 ^ (Fintype.card G).factorization 5 := by
-    rw [hG, hQ, h₅, pow_one]
-
--- REMEMBER TO DELETE IF NOT USED
- -- have S := Sylow.ofCard Q card_eq
-
-  have ff : Fintype.card G = (Q : Subgroup G).index * Fintype.card (Q : Subgroup G) := by exact (Subgroup.index_mul_card ↑Q).symm
-  rw [hG, hQ, h3, mul_left_inj'] at ff
-
-  have Q : Sylow 5 G := by exact Subgroup_to_Sylow G Q card_eq
-
-  -- Now we use Sylow's theorems to analyse the number of such subgroups
-
-   -- Use Sylow's theorems to deduce the number of Sylow p-subgroups is congruent to 1 mod p
-  have h₄ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := card_sylow_modEq_one 5 G
-
-  -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
-  have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
-
-  have h₆ : (Fintype.card (Sylow 5 G) = 1) ∨ (Fintype.card (Sylow 5 G) = 4) := by sorry -- THIS NEED TO BE PROVED
-
-
-  have h₇ : ¬ (4 ≡ 1 [MOD 5]) := by
-    -- intro h
-    -- contradiction
-    decide
-
-  -- Establish that there is exactly one Sylow 5-subgroup in G
-
-  have h8 : Fintype.card (Sylow 5 G) = 1 := by
-    cases h₆ with
-    | inl h => exact h
-    | inr h => rw [h] at h₄
-               exact (h₇ h₄).elim
-
-
-  -- Prove that the unique Sylow subgroup P is a normal subgroup of G
-  -- This will use the fact that a unique Sylow subgroup is always normal
-  have h₁₀ : (Q : Subgroup G).Normal := by exact normal_of_sylow_card_eq_one 5 G Q h8
-
-  -- Conclude that G is not simple because it has a normal subgroup of order 5
-  have h1 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h₂
-
-  have h2 : (Q : Subgroup G) ≠ ⊤ := by sorry -- THIS NEEDS TO BE PROVED
-
-  intro h3
-  have := h3.eq_bot_or_eq_top_of_normal Q h₁₀
-  cases this <;> contradiction -- `exact this.elim h1 h2` will also work here
-
-  exact Nat.succ_ne_zero 4
-
-  done
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- The example states that a group of order 462 cannot be simple
-example (hG : Fintype.card G = 36) : ¬ IsSimpleGroup G := by
+-- We repeat the same reasoning to show that the group of order 462 is not simple
+example (hG : Fintype.card G = 462) : ¬ IsSimpleGroup G := by
   -- Establish that 11 is a prime number
-  have h1 : Fact (Nat.Prime 3) := fact_iff.mpr (by norm_num)
+  have h1 : Fact (Nat.Prime 11) := fact_iff.mpr (by norm_num)
 
   -- Prove that 11 divides the order of the group G
-  have h₂ : 3 ∣ Fintype.card G := by use -- 11 divides 462 (462 = 11 * 42)
+  have h2 : 11 ∣ Fintype.card G := by use 42 -- 11 divides 462 (462 = 11 * 42)
 
-  have h3 : 462 = 11*42 := by exact rfl
+  have h3 : 462 = 42 * 11:= by exact rfl
 
   have h4: 42 = 2 *21 := by exact rfl
 
   have h5: 21 = 3 *7 := by exact rfl
 
-  -- Apply Sylow's theorem to conclude the existence of a Sylow 5-subgroup
-  -- The theorem guarantees a subgroup of order 5^1, as 5 is a prime dividing the group's order
-  have h₃ := Sylow.exists_subgroup_card_pow_prime 11 <| (pow_one 11).symm ▸ h₂
+  -- Apply Sylow's theorem to conclude the existence of a Sylow 11-subgroup
+-- The theorem ensures a Sylow 11-subgroup of order 11^1, given 11 - a prime that divides the group's order at its highest power of 11
+  have h6 := Sylow.exists_subgroup_card_pow_prime 11 <| (pow_one 11).symm ▸ h2
 
-  -- We extract the actual subgroup Q which satisfies the Sylow p-subgroup conditions for p=11
-  obtain ⟨Q, hQ⟩ := h₃
+  -- We extract the actual subgroup Q which satisfies the Sylow p-subgroup conditions for p equal to 11
+  obtain ⟨Q, hQ⟩ := h6
 
-  have h₄: Fintype Q := Fintype.ofFinite Q
-
-  have h₅: (Nat.factorization 462) 11 = 1 := by
+  -- Show that in the prime factorisation of 20, 5 appears exactly once.
+  have h7: (Nat.factorization 462) 11 = 1 := by
     rw [h3, Nat.factorization_mul_apply_of_coprime]
     norm_num
-    rw [h4, Nat.factorization_mul_apply_of_coprime
+    rw [h4, Nat.factorization_mul_apply_of_coprime]
     norm_num
     rw [h5, Nat.factorization_mul_apply_of_coprime]
     norm_num
@@ -624,37 +547,77 @@ example (hG : Fintype.card G = 36) : ¬ IsSimpleGroup G := by
     apply rfl
     exact rfl
 
-  have card_eq : Fintype.card Q = 11 ^ (Nat.factorization (Fintype.card G)) 11 := by
+  have card_eq1 : Fintype.card Q = 11 ^ (Nat.factorization (Fintype.card G)) 11 := by
     rw [hG]
     convert hQ
 
-  have S := Sylow.ofCard Q card_eq
+  have Q : Sylow 11 G := by exact Subgroup_to_Sylow G Q card_eq1
+
+  have card_eq2 : Fintype.card (Q : Subgroup G) = 11 := by
+    rw [Sylow.card_eq_multiplicity, hG, h7, pow_one]
+
+    -- Show that the index of Q in G is equal to 42
+  have h8 : Fintype.card G = (Q : Subgroup G).index * Fintype.card (Q : Subgroup G) := by exact (Subgroup.index_mul_card (Q : Subgroup G)).symm
+  rw [hG, card_eq2, h3, mul_left_inj'] at h8
 
   -- Now we use Sylow's theorems to analyse the number of such subgroups
 
    -- Use Sylow's theorems to deduce the number of Sylow p-subgroups is congruent to 1 mod p
-  have h₄ : Fintype.card (Sylow 11 G) ≡ 1 [MOD 11] := card_sylow_modEq_one 11 G
+  have h9 : Fintype.card (Sylow 11 G) ≡ 1 [MOD 11] := card_sylow_modEq_one 11 G
 
-  -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
-  have h₅ : (Fintype.card (Sylow 5 G)) ∣ (Fintype.card G)/(Fintype.card Q) := by sorry
-  have h₆ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 42 := by sorry
-  have h₇ : ¬ (42 ≡ 1 [MOD 11]) := by
-    -- intro h
-    -- contradiction
+  -- Show that the number of Sylow 11-subgroups divides the index of Q in G
+  have h11 : (Fintype.card (Sylow 11 G)) ∣ (Q : Subgroup G).index := by exact card_sylow_dvd_index Q
+
+  rw [← h8] at h11
+
+-- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
+  have h12 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by -- we realised that
+    sorry
+
+-- Show that 4 is not congruent to 1 mod 5
+  have h13 : ¬ (42 ≡ 1 [MOD 11]) := by
     decide
 
-  -- Establish that there is exactly one Sylow 11-subgroup in G
-
-  have h₈ : Fintype.card (Sylow 11 G) = 1 := by sorry
-
-  -- Conclude the existence and uniqueness of the Sylow 11-subgroup, implying it is normal
-  -- The uniqueness of the Sylow subgroup follows from h₈ and the properties of Sylow subgroups
-  obtain ⟨P, hP⟩ := Fintype.card_eq_one_iff.mp h₈
+-- Establish that there is exactly one Sylow 11-subgroup in G
+  have h13 : Fintype.card (Sylow 11 G) = 1 := by
+    cases h12 with
+    | inl h => exact h
+    | inr h => rw [h] at h9
+               exact (h13 h9).elim
 
   -- Prove that the unique Sylow subgroup P is a normal subgroup of G
   -- This will use the fact that a unique Sylow subgroup is always normal
-  have h₁₀ : Subgroup.Normal Q := by sorry
+  have h14 : (Q : Subgroup G).Normal := by exact normal_of_sylow_card_eq_one 11 G Q h13
 
-  -- Conclude that G is not simple because it has a normal subgroup of order 11
-  -- This final step uses the definition of a simple group, which cannot have non-trivial normal subgroups
-  exact h₁₀
+  -- Conclude that G is not simple because it has a normal subgroup of order 5
+  -- This conclusion relies on demonstrating that Q, as a subgroup of G, is neither trivial nor G itself
+  have h15 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h2
+
+  -- have h14 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
+  --   have ha: Fintype.card (Q : Subgroup G) = 11 := by
+  --     rw [Sylow.card_eq_multiplicity]
+  --     convert pow_one _
+  --     rw [hG]
+  --     exact h7
+
+  --   have hb : Fintype.card (⊤ : Subgroup G) = Fintype.card G := by
+  --     exact (Subgroup.card_eq_iff_eq_top ⊤).mpr rfl
+  --   rw [hG] at hb
+
+  --   have hp : Fintype.card (Q : Subgroup G) ≠ Fintype.card (⊤ : Subgroup G) := by
+  --     rw [ha, hb]
+  --     decide
+  --   exact ne_of_apply_ne (fun Q => Fintype.card { x // x ∈ Q}) hp
+
+  -- I managed to simplify the proof of h14 in a following way
+  have h16 : (Q : Subgroup G) ≠ (⊤ : Subgroup G) := by
+    have ha: Fintype.card (Q : Subgroup G) = 11 := by
+      simp [Sylow.card_eq_multiplicity, hG, h7]
+    simp [← Q.card_eq_iff_eq_top, ha, hG]
+
+  intro h
+  have := h.eq_bot_or_eq_top_of_normal Q h14
+  exact this.elim h15 h16
+
+  -- Resolve the remaining subgoals
+  exact Nat.succ_ne_zero 10
