@@ -321,6 +321,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
   have intersection_trivial : (P : Subgroup G) ⊓ (Q : Subgroup G) = (⊥ : Subgroup G) := by
     exact disjoint_iff.mp P_Q_disjoint
 
+-- I rewrite my disjoint statement so I can use it in my "in_P_int_Q" proof
   rw [Subgroup.disjoint_def] at P_Q_disjoint
 
 -- gkg^(-1)k^(-1) lies in both P and Q so must be the identity element
@@ -347,7 +348,6 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
 
   have is_id : (g*k*g⁻¹*k⁻¹ : G) = 1 := by exact in_bot
 
-
 -- Show g and k commute
   have g_k_commute : Commute (g : G) (k : G) := by
     exact commutatorElement_eq_one_iff_commute.mp is_id
@@ -365,56 +365,6 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q)
 
 -- Finally we can use the fact that G contains an element which has order pq, so it must generate G
   exact isCyclic_of_orderOf_eq_card (↑g * ↑k) (id order.symm)
-
-
-
-
-
---Show that the Sylow p-subgroup is unique
-  have pp3 : Subgroup.index P = q := by
-    sorry
-
-  have pp4 : Fintype.card (Sylow p G) ∣ q := by
-    sorry
-
-  have pp5 : Fintype.card (Sylow p G) ≡ 1 [MOD p] := by
-    exact card_sylow_modEq_one p G
-
-  have pp6 : Fintype.card (Sylow p G) = 1 := by
-    sorry
-
---Show the Sylow p-subgroup is normal
-  --have p2 : Nat.card (Sylow p G) = 1 := by
-   --apply exists_eq_mul_left_of_dvd(Nat.ModEq.dvd(card_sylow_modEq_one p G))
-
- -- have p3 : IsCyclic P := by
- --  exact isCyclic_of_prime_card hP
-
- -- have q3 : IsCyclic Q := by
-  --  exact isCyclic_of_prime_card hQ
-
---  have p4 : CommGroup P := by exact IsCyclic.commGroup
-
- -- have q4 : CommGroup Q := by exact IsCyclic.commGroup
-
- -- have p5: Subgroup.Normal P := by sorry
-
- -- have q5: Subgroup.Normal Q := by sorry
-
-
-
-
-  -- Show the Sylow p-subgroup is normal
--- First, let's prove that P is a subgroup of G
----have p5: Subgroup G := ⟨P, hP.1⟩
-
--- Next, we'll show that P is normal in G
-  have p6: Subgroup.Normal P  := by
-  {
-    apply Sylow.conjugate_subgroup
-    exact hP.2
-  }
-
 
 --==================================================================================
 --                                   SYLOW GAME
@@ -582,7 +532,8 @@ example (hG : Fintype.card G = 462) : ¬ IsSimpleGroup G := by
   rw [← h8] at h11
 
 -- Establish that the cardinality of the set of Sylow 5-subgroups of G can only be either equal to 1 or 4
-  have h12 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by -- we realised that
+  have h12 : Fintype.card (Sylow 11 G) = 1 ∨ Fintype.card (Sylow 11 G) = 42 := by
+  -- we realised that this would require us very long proof by contradiction later on so we only consider two posssibilities even though in total there are 8 divisors of 42
     sorry
 
 -- Show that 4 is not congruent to 1 mod 5

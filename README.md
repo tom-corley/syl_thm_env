@@ -71,7 +71,9 @@ Cauchy's Theorem: If $p \mid |G|$, then $\exists g \in G$ such that $|g| = p$, F
 
 Our plan is then to use our implementation to give some examples of proving the simplicity, or non-simplicity, of some finite groups of low order, including the following:
 
-A group of order 20 is simple
+A group of order 20 is not simple
+
+A group of order 462 is not simple
 
 ## Group Classification 
 
@@ -101,9 +103,13 @@ We then have a second skeleton, New_Skeleton.lean, which is largely empty, but c
 
 The final piece of work making up our submission is the file Sylow_Corollaries.lean, which contains attempted proofs deduced from the theorems and definitions contained in the Sylow.lean file. These include Cauchy's theorem, as well as classifications for specific families of finite groups. 
 
+An extra comment we want to make for the classification proof. Roshan and Antonina managed to prove this theorem completely but we had many attempts that led to nothing. For example we had made the error that for a normal group P, we have gP = Pg for all g \in G, and we thought for some reason this implies all group elements of P commute with the rest of the group, but this is very incorrect. We also made the error of proving that P is a normal subgroup of P, thinking we had shown that the group P was normal in G. We managed to correct our thinking by making sure went over the proofs we wanted to formalise, making note of every single step and what assumptions are used. This made it much clearer on how we should formalise the results. 
+
+Throughout our attempts we have had to reorder what we proved to make sure we were using the correct type classes as we switch the types of P, Q being a subgroup to a Sylow p G and Sylow q G respectively. We learnt it was best to split our problems into smaller subgoals and have them be their own separate theorems, so that the final proof is not too long and cluttered with so many statements. 
+
 We understand that this submission is somewhat unorthodox, but our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
 
-Tom, Antonita & Roshan
+Tom, Antonina & Roshan
 
 
 
