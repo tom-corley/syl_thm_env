@@ -48,14 +48,19 @@ theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
     rw [Sylow.smul_eq_of_normal] at h1 h2
     rw [← h1, ← h2]
 
-theorem d [hp : Fact p.Prime] [Finite (Sylow p G)] : MulAction.IsPretransitive G (Sylow p G) := by exact
-  instIsPretransitiveSylowToSMulToMonoidToDivInvMonoidMulAction
-
--- If G has a unique Sylow p-subgroup P, then it is normal in G
-theorem normal_of_unique [hp : Fact p.Prime]  [Finite (Sylow p G)] (P : Sylow p G)
+-- If G has only one Sylow p-subgroup P, then it is normal in G
+theorem normal_of_sylow_card_eq_one [Finite (Sylow p G)] (P : Sylow p G)
 (h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := by
   rw [card_sylow_eq_index_normalizer P, Subgroup.index_eq_one, Subgroup.normalizer_eq_top] at h
   exact h
+
+-- We found "unique_of_normal" in the Sylow.lean file and we wanted to provide a converse to it
+-- Although we do not use the following theorem in our code below we wanted to provide it for
+-- completion.
+theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
+(h : Nonempty (Unique (Sylow p G))) : (P : Subgroup G).Normal := by
+  rw [← Fintype.card_eq_one_iff_nonempty_unique] at h
+  exact normal_of_sylow_card_eq_one _ _ P h
 
 
 --==================================================================================
