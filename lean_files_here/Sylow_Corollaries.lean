@@ -44,8 +44,7 @@ theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
 
 -- If G has a unique Sylow p-subgroup P, then it is normal in G
 theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
-(h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := by
-  sorry
+(h : Fintype.card (Sylow p G) = 1) : (P : Subgroup G).Normal := by sorry
 
 --==================================================================================
 --              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q)
