@@ -109,10 +109,6 @@ We then have a second skeleton, New_Skeleton.lean, which is largely empty, but c
 
 So our goal shifted to import Sylow.lean and use it to prove corollaries that we had learnt in MA3K4. We believed this to be a much more achievable goal and that it would be able to show the breadth and depth of knowledge we have accumulated throught doing the project thus far. The final piece of work making up our submission is the file Sylow_Corollaries.lean, which contains attempted proofs deduced from the theorems and definitions contained in the Sylow.lean file. These include Cauchy's theorem, as well as classifications for groups of order pq (where p and q are distinct primes, p is less than q, and p does not divide q-1).
 
-
-
-
-
 Tom, Antonina & Roshan
 
 
