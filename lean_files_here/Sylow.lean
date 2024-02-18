@@ -264,7 +264,6 @@ theorem Sylow.exists_comap_eq_of_injective {H : Type*} [Group H] (P : Sylow p H)
   P.exists_comap_eq_of_ker_isPGroup (IsPGroup.ker_isPGroup_of_injective hf)
 #align sylow.exists_comap_eq_of_injective Sylow.exists_comap_eq_of_injective
 
-/- This theorem is about subtypes, which I need to understand more fully.-/
 theorem Sylow.exists_comap_subtype_eq {H : Subgroup G} (P : Sylow p H) :
     ∃ Q : Sylow p G, (Q : Subgroup G).comap H.subtype = P :=
   P.exists_comap_eq_of_injective Subtype.coe_injective
@@ -489,7 +488,7 @@ theorem Sylow.stabilizer_eq_normalizer (P : Sylow p G) :
   ext; simp [Sylow.smul_eq_iff_mem_normalizer]
 #align sylow.stabilizer_eq_normalizer Sylow.stabilizer_eq_normalizer
 
-
+/- Theorem states that, if P is a sylow p-subgroup of a group with a finite amount of Sylow p groups-/
 theorem Sylow.conj_eq_normalizer_conj_of_mem_centralizer [Fact p.Prime] [Finite (Sylow p G)]
     (P : Sylow p G) (x g : G) (hx : x ∈ centralizer (P : Set G))
     (hy : g⁻¹ * x * g ∈ centralizer (P : Set G)) :
