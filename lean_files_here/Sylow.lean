@@ -975,15 +975,4 @@ noncomputable def directProductOfNormal [Fintype G]
 
 #align sylow.direct_product_of_normal Sylow.directProductOfNormal
 
-
-variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
-
-theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
-  exact exists_prime_orderOf_dvd_card p hdvd
-  done
-
-theorem sylow_card_eq_index_normaliser (hdvd : p ∣ Fintype.card G) (P : Sylow p G) [Fintype (Sylow p G)] : Fintype.card (Sylow p G) = Subgroup.index (Conjugate g P) := by
-
-
-
 end Sylow

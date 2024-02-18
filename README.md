@@ -83,7 +83,7 @@ The final piece of work making up our submission is the file Sylow_Corollaries.l
 
 We understand that this submission is somewhat unorthodox, but our hope is that you will find some merit in it's constituent parts, though it may not form a cohesive whole.
 
-Tom, Antonita & Roshan
+Tom, Antonina & Roshan
 
 
 
