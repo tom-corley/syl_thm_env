@@ -13,22 +13,6 @@ When we wrote our definitions and got them to a point where Lean wouldn’t dire
 
 import Mathlib.Data.ZMod.Basic --includes definition of modular equality
 -- import Mathlib.GroupTheory.Index haven't used it yet but will when we talk about the index of a subgroup
-import Mathlib.Data.Finset.Card -- used for Sylow Thm about existence p | |G|
-import Mathlib.GroupTheory.OrderOfElement -- includes orderOf used for p_subgroup_3
-import Mathlib.Data.Nat.Choose.Basic -- contains Nat.choose
-import Mathlib.Algebra.Group.Basic
-import Mathlib.Algebra.Group.Defs
-import Mathlib.GroupTheory.GroupAction.ConjAct
-import Mathlib.GroupTheory.Subgroup.Basic
-import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import Mathlib.Data.Nat.Choose.Dvd --lemma 3.3
-import Mathlib.GroupTheory.Subgroup.Simple -- def of simple group
-import Std.Data.Nat.Lemmas
-import Mathlib.Data.Nat.Prime
-import Mathlib.Data.Nat.Choose.Dvd
-import Mathlib.Data.Polynomial.Basic
-import Mathlib.Algebra.BigOperators.Basic
-=======
 import Mathlib.Data.ZMod.Basic -- includes definition of modular equality; for example used in Sylow_4 theorem
 import Mathlib.GroupTheory.Index -- includes definition of index of a group; for example used in the sylow_card_eq_index_normalizer theorem
 import Mathlib.Data.Finset.Card -- includes definition of finite cardinality; for example used in Sylow_1 theorem
