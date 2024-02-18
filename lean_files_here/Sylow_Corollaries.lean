@@ -62,7 +62,6 @@ theorem normal_of_unique [Finite (Sylow p G)] (P : Sylow p G)
   rw [← Fintype.card_eq_one_iff_nonempty_unique] at h
   exact normal_of_sylow_card_eq_one _ _ P h
 
-
 --==================================================================================
 --              GROUPS OF ORDER pq ARE CYCLIC (GIVEN p DOESN'T DIVIDE q)
 --==================================================================================
@@ -256,7 +255,7 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
     exact hpqq
 
   have p8 : (P : Subgroup G).Normal := by
-    exact normal_of_unique p G P p7
+    exact normal_of_sylow_card_eq_one p G P p7
 
 -- We want lean to consider Q as a Sylow q subgroup so we can apply our earlier theorems
 
@@ -281,13 +280,15 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
     exact hpqq
 
   have q8 : (Q : Subgroup G).Normal := by
-    exact normal_of_unique q G Q q7
+    exact normal_of_sylow_card_eq_one q G Q q7
 
 -- P and Q have trivial intersection
 
   have intersection_trivial : (P : Subgroup G) ⊓ (Q : Subgroup G) = ⊥ := by sorry
 
 -- gkg^(-1)k^(-1) lies in both P and Q so must be the identity element
+
+  have hP_normal : (k*g⁻¹*k⁻¹ : G) ∈ P := by sorry
 
   have in_P : (g*k*g⁻¹*k⁻¹ : G) ∈ P := by sorry
 
@@ -434,7 +435,7 @@ example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
 
   -- Prove that the unique Sylow subgroup P is a normal subgroup of G
   -- This will use the fact that a unique Sylow subgroup is always normal
-  have h₁₀ : (Q : Subgroup G).Normal := by exact normal_of_unique 5 G Q h8
+  have h₁₀ : (Q : Subgroup G).Normal := by exact normal_of_sylow_card_eq_one 5 G Q h8
 
   -- Conclude that G is not simple because it has a normal subgroup of order 5
   have h1 : (Q : Subgroup G) ≠ ⊥ := by exact Sylow.ne_bot_of_dvd_card Q h₂
