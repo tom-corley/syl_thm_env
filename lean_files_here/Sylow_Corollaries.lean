@@ -243,7 +243,15 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
       exact hp.1
     rw [p6, pow_one]
 
+  have hg : (g : G) ∈ P := by exact SetLike.coe_mem g
+
+  have hg1 : g.1 ∈ P := g.2
+
+
   have P : Sylow p G := by exact Subgroup_to_Sylow G P p5
+
+
+
 
 -- Showing that P is the unique Sylow p-subgroup and hence it is normal in G
 
@@ -288,9 +296,11 @@ theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] [lp : Finite (Syl
 
 -- gkg^(-1)k^(-1) lies in both P and Q so must be the identity element
 
-  have hP_normal : (k*g⁻¹*k⁻¹ : G) ∈ P := by sorry
-
-  have in_P : (g*k*g⁻¹*k⁻¹ : G) ∈ P := by sorry
+  have in_P : (g*k*g⁻¹*k⁻¹ : G) ∈ P := by
+    simp_rw [mul_assoc (g : G)]
+    apply P.mul_mem g.prop
+    apply p8.conj_mem
+    apply P.inv_mem g.prop
 
   have in_Q : (g*k*g⁻¹*k⁻¹ : G) ∈ Q := by sorry
 
