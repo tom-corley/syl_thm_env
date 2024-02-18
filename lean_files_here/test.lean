@@ -1,199 +1,29 @@
-import Mathlib
+import Mathlib.Data.ZMod.Basic
+import Mathlib.GroupTheory.Index
+import Mathlib.Data.Finset.Card
+import Mathlib.GroupTheory.OrderOfElement
+import Mathlib.Data.Nat.Choose.Dvd
+import Mathlib.Data.Nat.Choose.Basic
+import Mathlib.Algebra.Group.Defs
+import Mathlib.GroupTheory.Subgroup.Basic
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Mathlib.Data.Nat.Prime
+import Mathlib.GroupTheory.Sylow
+import Mathlib.GroupTheory.Coset
+import Mathlib.GroupTheory.GroupAction.Defs
 
--- review of your code (KB)
--- (KB) for problem at the very end, it seems to be fixed by using `Finite` instead of `Fintype`.
-variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Finite G]
+open scoped Classical
 
--- (KB) Your comment below should be a *docstring*, so start with `/--`, finish with `-/`
--- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hdvd: p<q ∧ Nat.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
-  -- (KB) let's take a look at the statement of our theorem. We seem to have the `Fact` that p is prime
-  -- twice! That might confuse the typeclass system. Look at your code. You wrote it twice,
-  -- so now we have it twice.
-  -- Also, why is `hdvd` two hypotheses? It could be two, `hptlq` and `hpq`.
-  have h0 : p ∣ Nat.card G := by
-    rw [hdvd.2]
-    exact Nat.dvd_mul_right p q -- (KB) I hope you found this with `exact?`. The goal is
-    -- *obviously* going to be in the library, it's such a natural statement.
-  have h1 : ∃ P : Sylow p G, Nat.card P = p := by
+variable (p : ℕ) [Fact p.Prime] (q : ℕ) [Fact q.Prime] (G : Type*) [Group G] [Fintype G]
 
-  sorry
-
-```hs
-variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Fintype G]
-
--- The example states that a group of order 20 cannot be simple
-example (hG : Fintype.card G = 20) : ¬ IsSimpleGroup G := by
-  -- Establish that 5 is a prime number
-  have h₀ : Fact (Nat.Prime 5) := fact_iff.mpr (by norm_num)
-
-  -- Prove that 5 divides the order of the group G
-  have h₂ : 5 ∣ Fintype.card G := by use 4 -- 5 divides 20 (20 = 4 * 5)
-
-  -- Apply Sylow's theorem to conclude the existence of a Sylow 5-subgroup
-  -- The theorem guarantees a subgroup of order 5^1, as 5 is a prime dividing the group's order
-  have h₃ := Sylow.exists_subgroup_card_pow_prime 5 <| (pow_one 5).symm ▸ h₂
-
-  -- We extract the actual subgroup Q which satisfies the Sylow p-subgroup conditions for p=5
-  obtain ⟨Q, hQ⟩ := h₃
-
-  have : Fintype ↥Q := Fintype.ofFinite ↥Q
-
-  have : (Nat.factorization 20) 5 = 1 := sorry
-  have card_eq : Fintype.card Q = 5 ^ (Nat.factorization (Fintype.card G)) 5 := by
-    rw [hG]
-    convert hQ
-
-  have S := Sylow.ofCard Q card_eq
-
-  -- Now we use Sylow's theorems to analyse the number of such subgroups
-
-   -- Use Sylow's theorems to deduce the number of Sylow p-subgroups is congruent to 1 mod p
-  have h₄ : Fintype.card (Sylow 5 G) ≡ 1 [MOD 5] := card_sylow_modEq_one 5 G
-  -- have h₅ : Fintype.card (Sylow 5 G) = 5 ∨ Fintype.card (Sylow 5 G) = 1 := by sorry
-
-  -- Show that the number of Sylow 5-subgroups divides the order of the group divided by the order of a Sylow 5-subgroup
-  have h₆ : (Fintype.card (Sylow 5 G)) ∣ (Fintype.card G)/(Fintype.card Q) := by sorry
-  have h₇ : Fintype.card (Sylow 5 G) = 1 ∨ Fintype.card (Sylow 5 G) = 4 := by sorry
-
-  -- Establish that there is exactly one Sylow 5-subgroup in G
-  have h₈ : Fintype.card (Sylow 5 G) = 1 := by sorry
-
-  -- Conclude the existence and uniqueness of the Sylow 5-subgroup, implying it is normal
-  -- The uniqueness of the Sylow subgroup follows from h₈ and the properties of Sylow subgroups
-  obtain ⟨P, hP⟩ := Fintype.card_eq_one_iff.mp h₈
-
-  -- Prove that the unique Sylow subgroup P is a normal subgroup of G
-  -- This will use the fact that a unique Sylow subgroup is always normal
-  have h₁₀ : Subgroup.Normal Q := by sorry
-
-  -- Conclude that G is not simple because it has a normal subgroup of order 5
-  -- This final step uses the definition of a simple group, which cannot have non-trivial normal subgroups
-  exact h₁₀
-
-
--- Cauchy's Theorem 1 - G contains an element of order p
-theorem Cauchy_1 (hdvd : p ∣ Fintype.card G) : ∃ g : G, orderOf g = p := by
-   exact exists_prime_orderOf_dvd_card p hdvd
-   done
-
-theorem Cauchy_12 (hdvd : p ∣ Nat.card G) : ∃ g : G, orderOf g = p := by
-   have P := Sylow p G
-   sorry
-   done
-
-theorem unique_of_normal [Finite (Sylow p G)] (P : Sylow p G)
-(h : (P : Subgroup G).Normal) : Unique (Sylow p G) := by
-    refine { uniq := fun Q ↦ ?_ }
-    obtain ⟨x, h1⟩ := MulAction.exists_smul_eq G P Q
-    obtain ⟨x, h2⟩ := MulAction.exists_smul_eq G P default
-    rw [Sylow.smul_eq_of_normal] at h1 h2
-    rw [← h1, ← h2]
-    done
+theorem hh (hG: Fintype.card G = 20) : Fintype.card (⊤ : Subgroup G) = 20 := by
+  rw [Fintype.card_eq]
+  have :  (⊤ : Subgroup G) = G := by apply?
 
 
 
--- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pq (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hpq: p<q) (hpqq: Fintype.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
--- Define the Sylow p-subgroup
-  have p0 : p ∣ Fintype.card G := by
-    rw [hpqq]
-    exact Nat.dvd_mul_right p q
-  have p1 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ p0)
-  rw [pow_one] at p1
-  obtain ⟨P, hP⟩ := by exact p1
-  have p2 : Fintype.card P = p := by
-    exact hP
--- Show P is cyclic and generated by an element g
-  have p3 : IsCyclic P := by
-    exact isCyclic_of_prime_card hP
-  obtain ⟨h, hP⟩ := IsCyclic.exists_generator (α := P)
--- Define the Sylow q-subgroup
-  have q0 : q ∣ Fintype.card G := by
-    rw [hpqq]
-    exact Nat.dvd_mul_left q p
-  have q1 := Sylow.exists_subgroup_card_pow_prime q ((pow_one q).symm ▸ q0)
-  rw [pow_one] at q1
-  obtain ⟨Q, hQ⟩ := by exact q1
-  have q2 : Fintype.card Q = q := by
-    exact hQ
--- Show Q is cyclic and generated by an element h
-  have q3 : IsCyclic Q := by
-    exact isCyclic_of_prime_card hQ
--- Show gh generates G ie gh has order pq
-  have pq : orderOf h = Fintype.card P := by exact?
+theorem rf (P : Subgroup G) (hp : Fintype.card P = 5) (hg :Fintype.card (⊤ : Subgroup G) = 20) :  Fintype.card P ≠ Fintype.card (⊤ : Subgroup G) := by
+  rw [hp, hg]
+  decide
 
-
---Show that the Sylow p-subgroup is unique
-  have pp3 : Subgroup.index P = q := by
-    sorry
-
-  have pp4 : Fintype.card (Sylow p G) ∣ q := by
-    sorry
-
-  have pp5 : Fintype.card (Sylow p G) ≡ 1 [MOD p] := by
-    exact card_sylow_modEq_one p G
-
-  have pp6 : Fintype.card (Sylow p G) = 1 := by
-    sorry
-
---Show the Sylow p-subgroup is normal
-  --have p2 : Nat.card (Sylow p G) = 1 := by
-   --apply exists_eq_mul_left_of_dvd(Nat.ModEq.dvd(card_sylow_modEq_one p G))
-
- -- have p3 : IsCyclic P := by
- --  exact isCyclic_of_prime_card hP
-
- -- have q3 : IsCyclic Q := by
-  --  exact isCyclic_of_prime_card hQ
-
---  have p4 : CommGroup P := by exact IsCyclic.commGroup
-
- -- have q4 : CommGroup Q := by exact IsCyclic.commGroup
-
- -- have p5: Subgroup.Normal P := by sorry
-
- -- have q5: Subgroup.Normal Q := by sorry
-
-
-
-
-  -- Show the Sylow p-subgroup is normal
--- First, let's prove that P is a subgroup of G
----have p5: Subgroup G := ⟨P, hP.1⟩
-
--- Next, we'll show that P is normal in G
-  have p6: Subgroup.Normal P  := by
-  {
-    apply Sylow.conjugate_subgroup
-    exact hP.2
-  }
-
-
-
-
-
-
-
-
-  sorry
-
-
--- review of your code (KB)
--- (KB) for problem at the very end, it seems to be fixed by using `Finite` instead of `Fintype`.
-variable (p : ℕ) [Fact p.Prime] (G : Type*) [Group G] [Finite G]
-
--- (KB) Your comment below should be a *docstring*, so start with `/--`, finish with `-/`
--- A group of order pq for primes p and q and such that p doesn't divide q-1, is the cyclic group of pq elements
-theorem C_pqKB (q : ℕ) [hp : Fact p.Prime] [hq : Fact q.Prime] (hdvd: p<q ∧ Nat.card G = p*q) (h:¬(p ∣ q - 1)): IsCyclic G := by
--- Define the Sylow p-subgroup
-  have h0 : Fintype G := by
-    exact Fintype.ofFinite (G)
-  have h1 : p ∣ Nat.card G := by
-    rw [hdvd.2]
-    exact Nat.dvd_mul_right p q
-  have h2 := Sylow.exists_subgroup_card_pow_prime p ((pow_one p).symm ▸ h1)
-  rw [pow_one] at p1
-  obtain ⟨P, hP⟩ := by exact p1
-
-```
+theorem d (P : Subgroup G) (hp: Fintype.card P ≠ Fintype.card (⊤ : Subgroup G) ) : P ≠ ⊤ := by exact ne_of_apply_ne (fun P => Fintype.card { x // x ∈ P }) hp
